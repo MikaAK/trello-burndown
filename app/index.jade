@@ -1,0 +1,12 @@
+html
+  head
+    title Webpack NG2 Seed
+    link(rel='icon' type='image/png' href='favicon.ico')
+    - for (var i = 0, k = scripts.head.length; i < k; i++)
+     != scripts.head[i]
+
+  body
+    app
+
+    - for (var i = 0, k = scripts.body.length; i < k; i++)
+     != scripts.body[i]

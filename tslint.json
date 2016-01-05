@@ -48,9 +48,9 @@
       "check-else",
       "check-whitespace"
     ],
-    "quotemark": [true, "double"],
+    "quotemark": [true, "single"],
     "radix": true,
-    "semicolon": true,
+    "semicolon": false,
     "triple-equals": [true, "allow-null-check"],
     "typedef-whitespace": [true, {
       "call-signature": "nospace",

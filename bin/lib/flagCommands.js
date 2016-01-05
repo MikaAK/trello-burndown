@@ -4,7 +4,7 @@ export default {
   },
 
   development() {
-    process.env.NODE_ENV = 'develepment'
+    process.env.NODE_ENV = 'development'
   },
 
   staging() {
