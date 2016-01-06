@@ -5,13 +5,11 @@ var context = path.resolve(__dirname, '../../..')
 
 const WEBPACK_DEV_SERVER = path.resolve(context, 'node_modules/.bin/webpack-dev-server'),
       CONFIG_PATH = path.resolve(context, 'webpack.config.babel.js'),
-      PORT = 4000,
       stdio = 'inherit'
 
 export default function() {
   return spawnSync(WEBPACK_DEV_SERVER, [
     '--config', CONFIG_PATH,
-    '--port', PORT,
     '--colors', '--inline',
     '--hot', '--progress',
     '--history-api-fallback'

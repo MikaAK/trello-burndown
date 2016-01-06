@@ -6,6 +6,7 @@ import {HomeComponent} from './home'
 @Component({
   selector: 'app',
   template: require('./app.jade')(),
+  styles: [require('./app.css')],
   directives: [RouterOutlet]
 })
 @RouteConfig([

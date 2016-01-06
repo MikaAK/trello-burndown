@@ -10,8 +10,11 @@ import extractTextWebpackPlugin from 'extract-text-webpack-plugin'
 import IndexBuilder from './webpack-plugins/IndexBuilder'
 import S3Plugin from 'webpack-s3-plugin'
 
+const CONTEXT = path.resolve(__dirname),
+      DEV_SERVER_PORT = 4000,
+      APP_ROOT = path.resolve(CONTEXT, 'app')
+
 var devtool,
-    context = path.resolve(__dirname),
     CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
 
 var vendor = [
@@ -35,7 +38,7 @@ var tsIngores = [
 ]
 
 var createPath = function(nPath) {
-  return path.resolve(context, nPath)
+  return path.resolve(CONTEXT, nPath)
 }
 
 const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET} = process.env,
@@ -62,9 +65,16 @@ var loaders = {
     include: [createPath('app')]
   },
 
-  css: {
+  globalCss: {
     test: /\.css/,
-    loader: 'style!css?sourceMap!postcss'
+    loader: 'style!css?sourceMap!postcss',
+    include: [createPath('app/style/global')]
+  },
+
+  componentCss: {
+    test: /\.css/,
+    loader: 'raw!postcss',
+    include: [createPath('app/components')]
   },
 
   json: {
@@ -81,7 +91,7 @@ else if (env.__STAGING__ || env.__TEST__)
   devtool = 'inline-source-map'
 
 var config = {
-  context,
+  context: CONTEXT,
   devtool,
   debug: !env.__PROD__ && !env.__STAGING__,
 
@@ -98,7 +108,8 @@ var config = {
   },
 
   resolve: {
-    extensions: ['', '.ts', '.js', '.json']
+    extensions: ['', '.ts', '.js', '.json'],
+    root: APP_ROOT
   },
 
   module: {
@@ -112,7 +123,7 @@ var config = {
     new CommonsChunkPlugin({name: 'common', filename: 'common.js', minChunks: 2, chunks: ['app', 'vendor']}),
     new webpack.DefinePlugin(env),
     new HtmlWebpackPlugin({
-      templateContent: IndexBuilder(context),
+      templateContent: IndexBuilder(CONTEXT),
       favicon: path.resolve(__dirname, 'favicon.ico')
     })
   ],
@@ -125,7 +136,8 @@ var config = {
   postcss(webpack) {
     return [
       postcssImport({
-        addDependencyTo: webpack
+        addDependencyTo: webpack,
+        path: APP_ROOT
       }),
       autoprefixer,
       precss({import: {disable: true}})
@@ -133,6 +145,7 @@ var config = {
   },
 
   devServer: {
+    port: DEV_SERVER_PORT,
     // Sample Proxy Config
     //proxy: [{
       //path: '/api/*',
