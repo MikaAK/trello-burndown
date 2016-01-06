@@ -2,6 +2,9 @@
 
 import path from 'path'
 import webpack from 'webpack'
+import precss from 'precss'
+import autoprefixer from 'autoprefixer'
+import postcssImport from 'postcss-import'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import extractTextWebpackPlugin from 'extract-text-webpack-plugin'
 import IndexBuilder from './webpack-plugins/IndexBuilder'
@@ -61,7 +64,7 @@ var loaders = {
 
   css: {
     test: /\.css/,
-    loader: 'raw!css&sourceMap!postcss'
+    loader: 'style!css?sourceMap!postcss'
   },
 
   json: {
@@ -119,6 +122,16 @@ var config = {
     failOnHint: false
   },
 
+  postcss(webpack) {
+    return [
+      postcssImport({
+        addDependencyTo: webpack
+      }),
+      autoprefixer,
+      precss({import: {disable: true}})
+    ]
+  },
+
   devServer: {
     // Sample Proxy Config
     //proxy: [{
@@ -143,7 +156,7 @@ if (env.__DEV__) {
     contentImage: createPath('./favicon.ico')
   }))
 } else if (env.__PROD__ || env.__STAGING__) {
-  loaders.css.loader = extractTextWebpackPlugin('style', loaders.css.loader.replace('raw', ''))
+  loaders.css.loader = extractTextWebpackPlugin('style', loaders.css.loader.replace('style', ''))
 
   config.plugins.push(
     new webpack.optimize.OccurenceOrderPlugin(),
