@@ -5,10 +5,10 @@ import dotenv from 'dotenv'
 export default function() {
   const ENV_FILE = path.resolve(__dirname, '../../../.env')
 
-  try {
-    if (fs.lstatSync(ENV_FILE))
-      dotenv({path: ENV_FILE})
-  } catch(e) {
+  return new Promise(function(resolve) {
+    if (fs.existsSync(ENV_FILE, fs.F_OK))
+      dotenv.load({path: ENV_FILE})
 
-  }
+    resolve()
+  })
 }

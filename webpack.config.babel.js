@@ -6,7 +6,7 @@ import precss from 'precss'
 import autoprefixer from 'autoprefixer'
 import postcssImport from 'postcss-import'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import extractTextWebpackPlugin from 'extract-text-webpack-plugin'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import IndexBuilder from './webpack-plugins/IndexBuilder'
 import S3Plugin from 'webpack-s3-plugin'
 
@@ -20,6 +20,7 @@ var devtool,
 var vendor = [
   'json3',
   'es5-shim',
+  'reflect-metadata',
   'angular2/bundles/angular2-polyfills.js',
   'angular2/platform/browser',
   'angular2/platform/common_dom',
@@ -41,7 +42,7 @@ var createPath = function(nPath) {
   return path.resolve(CONTEXT, nPath)
 }
 
-const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET} = process.env,
+const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET} = process.env,
       BUILD_PATH = createPath('build')
 
 var env = {
@@ -50,6 +51,8 @@ var env = {
   __TEST__: NODE_ENV === 'test',
   __STAGING__: NODE_ENV === 'staging'
 }
+
+const IS_BUILD = env.__STAGING__ || env.__PROD__
 
 var loaders = {
   javascript: {
@@ -102,7 +105,7 @@ var config = {
 
   output: {
     path: BUILD_PATH,
-    filename: env.__STAGING__ || env.__PROD__ ? '[name]-[hash].js' : '[name].js',
+    filename: IS_BUILD ? '[name]-[hash].js' : '[name].js',
     sourceMapFilename: '[name].map',
     chunkFilename: '[id].chunk.js'
   },
@@ -119,9 +122,18 @@ var config = {
   },
 
   plugins: [
-    new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js', minChunks: Infinity}),
-    new CommonsChunkPlugin({name: 'common', filename: 'common.js', minChunks: 2, chunks: ['app', 'vendor']}),
     new webpack.DefinePlugin(env),
+    new CommonsChunkPlugin({
+      name: 'vendor',
+      filename: IS_BUILD ? 'vendor-[chunkhash].js' : 'vendor.js',
+      minChunks: Infinity
+    }),
+    new CommonsChunkPlugin({
+      name: 'common',
+      filename: IS_BUILD ? 'common-[hash].js' : 'common.js',
+      minChunks: 2,
+      chunks: ['app', 'vendor']
+    }),
     new HtmlWebpackPlugin({
       templateContent: IndexBuilder(CONTEXT),
       favicon: path.resolve(__dirname, 'favicon.ico')
@@ -168,11 +180,12 @@ if (env.__DEV__) {
     title: 'Angular2 App',
     contentImage: createPath('./favicon.ico')
   }))
-} else if (env.__PROD__ || env.__STAGING__) {
-  loaders.css.loader = extractTextWebpackPlugin('style', loaders.css.loader.replace('style', ''))
+} else if (IS_BUILD) {
+  loaders.globalCss.loader = ExtractTextPlugin.extract('style', loaders.globalCss.loader.replace('style', ''))
 
   config.plugins.push(
     new webpack.optimize.OccurenceOrderPlugin(),
+    new ExtractTextPlugin('[name]-[chunkhash].css'),
     new webpack.optimize.LimitChunkCountPlugin({maxChunks: 15}),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10000}),
     new webpack.optimize.UglifyJsPlugin()
@@ -199,14 +212,14 @@ else
       exclude: /.*\.html$/,
       s3Options: {
         accessKeyId: AWS_ACCESS_KEY,
-        secretAccessKey: AWS_SECRET_KEY
+        secretAccessKey: AWS_SECRET_ACCESS_KEY
       },
       s3UploadOptions: {
         Bucket: AWS_BUCKET,
         CacheControl: 'max-age=315360000, no-transform, public'
       },
       cdnizerOptions: {
-        defaultCDNBase: 'https://s3-us-west-2.amazonaws.com/assets.mikakalathil.ca'
+        defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
       }
     })
   )
