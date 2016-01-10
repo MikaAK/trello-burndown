@@ -1,5 +1,6 @@
 /* eslint-env es6 */
 
+import _ from 'lodash'
 import path from 'path'
 import webpack from 'webpack'
 import precss from 'precss'
@@ -21,7 +22,7 @@ var vendor = [
   'json3',
   'es5-shim',
   'reflect-metadata',
-  'angular2/bundles/angular2-polyfills.js',
+  'angular2/bundles/angular2-polyfills',
   'angular2/platform/browser',
   'angular2/platform/common_dom',
   'angular2/core',
@@ -57,8 +58,8 @@ const IS_BUILD = env.__STAGING__ || env.__PROD__
 var loaders = {
   javascript: {
     test: /\.ts/,
-    loader: `babel!ts?${tsIngores.map(num => `ignoreDiagnostics[]=${num}`).join('&')}`,
-    exclude: [/\.(test|e2e)\.ts/, /node_modules\/(?!(ng2-.+))/],
+    loader: `babel!ts?${tsIngores.map(num => `ignoreDiagnostics[]=${num}`).join('&')}!tslint`,
+    exclude: [/\.(spec|e2e)\.ts/, /node_modules\/(?!(ng2-.+))/],
     include: [createPath('app')]
   },
 
@@ -116,24 +117,12 @@ var config = {
   },
 
   module: {
-    //preLoaders: [{test: /\.ts/, loader: 'tslint'}],
     noParse: [/.+zone\.js\/dist\/.+/, /.+angular2\/bundles\/.+/],
     loaders: Object.values(loaders)
   },
 
   plugins: [
     new webpack.DefinePlugin(env),
-    new CommonsChunkPlugin({
-      name: 'vendor',
-      filename: IS_BUILD ? 'vendor-[chunkhash].js' : 'vendor.js',
-      minChunks: Infinity
-    }),
-    new CommonsChunkPlugin({
-      name: 'common',
-      filename: IS_BUILD ? 'common-[hash].js' : 'common.js',
-      minChunks: 2,
-      chunks: ['app', 'vendor']
-    }),
     new HtmlWebpackPlugin({
       templateContent: IndexBuilder(CONTEXT),
       favicon: path.resolve(__dirname, 'favicon.ico')
@@ -163,15 +152,35 @@ var config = {
       //path: '/api/*',
       //target: 'http://localhost:4000'
     //}],
+
     historyApiFallback: {
       // If you have multiple entrypoints add them here
       rewrites: [{
         from: /.*/,
         to: '/index.html'
       }]
+    },
+
+    watchOptions: {
+      aggregateTimeout: 300
     }
   }
 }
+
+if (!env.__TEST__)
+  config.plugins.push(
+    new CommonsChunkPlugin({
+      name: 'vendor',
+      filename: IS_BUILD ? 'vendor-[chunkhash].js' : 'vendor.js',
+      minChunks: Infinity
+    }),
+    new CommonsChunkPlugin({
+      name: 'common',
+      filename: IS_BUILD ? 'common-[hash].js' : 'common.js',
+      minChunks: 2,
+      chunks: ['app', 'vendor']
+    })
+  )
 
 if (env.__DEV__) {
   var WebpackNotifierPlugin = require('webpack-notifier')
@@ -196,6 +205,15 @@ if (env.__DEV__) {
     colors: true,
     reasons: true
   }
+
+  config.node = _.extend(config.node, {
+    global: 'window',
+    progress: false,
+    crypto: 'empty',
+    module: false,
+    clearImmediate: false,
+    setImmediate: false
+  })
 
   config.module.noParse = [
     /zone\.js\/dist\/zone-microtask\.js/,

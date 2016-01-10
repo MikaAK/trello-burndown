@@ -5,9 +5,9 @@ import {Component} from 'angular2/core'
   template: require('./home.jade')()
 })
 export class HomeComponent {
-  greeting: string,
+  public greeting: string,
+
   constructor() {
     this.greeting = 'webpack-ng2-seed'
   }
 }
-
