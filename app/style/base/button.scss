@@ -1,0 +1,10 @@
+button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: $button-padding;
+
+  &:focus {
+    outline: none;
+  }
+}

@@ -1,0 +1,24 @@
+// Black
+$black       : #292929;
+$light-black : #303030;
+
+// Grey
+$light-grey  : #E7E7E7;
+$lightest-grey: #F7F7F7;
+$grey        : #DBDBDB;
+$dark-grey   : darken($grey, 10);
+
+// Red
+$red         : #A93C41;
+$light-red   : lighten($red, 10);
+$dark-red    : darken($red, 10);
+
+// Green
+$blue        : #4B97D1;
+$light-blue  : lighten($blue, 10);
+$dark-blue   : darken($blue, 10);
+
+// Blue
+$green       : #48B268;
+$light-green : lighten($green, 10);
+$dark-green  : darken($green, 10);

@@ -3,9 +3,7 @@
 import _ from 'lodash'
 import path from 'path'
 import webpack from 'webpack'
-import precss from 'precss'
 import autoprefixer from 'autoprefixer'
-import postcssImport from 'postcss-import'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import IndexBuilder from './webpack-plugins/IndexBuilder'
@@ -53,7 +51,10 @@ var env = {
   __STAGING__: NODE_ENV === 'staging'
 }
 
+
 const IS_BUILD = env.__STAGING__ || env.__PROD__
+
+var sassLoader = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
 
 var loaders = {
   javascript: {
@@ -70,14 +71,14 @@ var loaders = {
   },
 
   globalCss: {
-    test: /\.css/,
-    loader: 'style!css?sourceMap!postcss',
+    test: /\.s?css/,
+    loader: `style!css?sourceMap!${sassLoader}`,
     include: [createPath('app/style/global')]
   },
 
   componentCss: {
-    test: /\.css/,
-    loader: 'raw!postcss',
+    test: /\.s?css/,
+    loader: `raw!${sassLoader}`,
     include: [createPath('app/components')]
   },
 
@@ -134,15 +135,8 @@ var config = {
     failOnHint: false
   },
 
-  postcss(webpack) {
-    return [
-      postcssImport({
-        addDependencyTo: webpack,
-        path: APP_ROOT
-      }),
-      autoprefixer,
-      precss({import: {disable: true}})
-    ]
+  postcss() {
+    return [autoprefixer]
   },
 
   devServer: {
@@ -223,7 +217,7 @@ if (env.__DEV__) {
 }
 
 if (!env.__PROD__)
-  vendor.push('zone.js/lib/browser/long-stack-trace-zone')
+  vendor.push('zone.js/dist/long-stack-trace-zone')
 else
   config.plugins.push(
     new S3Plugin({
