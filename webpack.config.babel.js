@@ -247,7 +247,7 @@ else
       }
     }),
     new S3Plugin({
-      directory: PUBLIC_PATH,
+      directory: path.resolve(PUBLIC_PATH, 'img'),
       s3Options: {
         accessKeyId: AWS_ACCESS_KEY,
         secretAccessKey: AWS_SECRET_ACCESS_KEY
