@@ -245,6 +245,20 @@ else
       cdnizerOptions: {
         defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
       }
+    }),
+    new S3Plugin({
+      directory: PUBLIC_PATH,
+      s3Options: {
+        accessKeyId: AWS_ACCESS_KEY,
+        secretAccessKey: AWS_SECRET_ACCESS_KEY
+      },
+      s3UploadOptions: {
+        Bucket: AWS_BUCKET,
+        CacheControl: 'max-age=315360000, no-transform, public'
+      },
+      cdnizerOptions: {
+        defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
+      }
     })
   )
 
