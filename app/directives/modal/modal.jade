@@ -1,5 +1,13 @@
-| Modal
+//
+  (
+    [style.opacity]='config.isOpen ? .5 : 0'
+    [style.pointer-events]='config.isOpen ? "auto" : "none"'
+  )
+.modal_backdrop
+  .modal_container
+    .modal_header
+      h3 {{ title }}
+      .diagonal.svg_medium
+        != require('svg/plus.svg')
 
-ng-content
-
-| STuff
+    ng-content

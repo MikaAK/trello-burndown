@@ -5,7 +5,7 @@ nav
     li Current Sprints
     li Past Sprints
 
-button Add Sprint
+button.btn-default((click)='modal.toggle()') Add Sprint
 
-modal
-  |help
+modal([config]='modal' title='New Sprint')
+  new-sprint
