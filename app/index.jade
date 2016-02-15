@@ -10,5 +10,6 @@ html
     app
      h1 Loading Application
 
+    script(src='https://trello.com/1/client.js?key=#{TRELLO_KEY}')
     - for (var i = 0, k = scripts.body.length; i < k; i++)
      != scripts.body[i]

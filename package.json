@@ -1,9 +1,9 @@
 {
-  "name": "webpack-ng2-seed",
+  "name": "trello-label-burndown",
   "version": "1.0.0",
-  "description": "Angular 2 seed using typescript babel and webpack",
+  "description": "Trello burndown charts with angular2 and elixir phoenix",
   "bin": {
-    "webpack-ng2-seed": "./bin/.compiled/webpack-ng2-seed.js"
+    "trello-burndown": "./bin/.compiled/webpack-ng2-seed.js"
   },
   "scripts": {
     "postinstall": "babel bin/ --out-dir bin/.compiled"
@@ -16,7 +16,7 @@
     "typescript",
     "experimental"
   ],
-  "author": "MikaAK",
+  "author": "Mika Kalathil <me@mikakalathil.ca>",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^6.2.3",

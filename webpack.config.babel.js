@@ -42,7 +42,7 @@ var createPath = function(nPath) {
   return path.resolve(CONTEXT, nPath)
 }
 
-const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET} = process.env,
+const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
       BUILD_PATH = createPath('build')
 
 var env = {
@@ -73,13 +73,13 @@ var loaders = {
   globalCss: {
     test: /\.s?css/,
     loader: `style!css?sourceMap!${sassLoader}`,
-    include: [createPath('app/style/global')]
+    include: [createPath('app/style')]
   },
 
   componentCss: {
     test: /\.s?css/,
     loader: `raw!${sassLoader}`,
-    include: [createPath('app/components')]
+    include: [createPath('app/components'), createPath('app/directives')]
   },
 
   json: {
@@ -137,7 +137,7 @@ var config = {
   plugins: [
     new webpack.DefinePlugin(env),
     new HtmlWebpackPlugin({
-      templateContent: IndexBuilder(CONTEXT),
+      templateContent: IndexBuilder(CONTEXT, {TRELLO_KEY}),
       favicon: path.resolve(__dirname, 'favicon.ico')
     })
   ],

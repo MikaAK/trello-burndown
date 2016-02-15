@@ -1,10 +1,16 @@
 button {
+  transition: all map-get($animation-duration, short) map-get($animation-easing, neutral);
   background: none;
-  border: 0;
+  border: 1px solid $blue;
   cursor: pointer;
   padding: $button-padding;
 
   &:focus {
     outline: none;
+  }
+
+  &:hover {
+    background: $blue;
+    color: $lightest-grey;
   }
 }
