@@ -1,0 +1,5 @@
+@each $type in $svg-types {
+  .svg-#{$type} {
+    width: map-get($svg-sizes, $type);
+  }
+}

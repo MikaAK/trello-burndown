@@ -11,7 +11,8 @@ import S3Plugin from 'webpack-s3-plugin'
 
 const CONTEXT = path.resolve(__dirname),
       DEV_SERVER_PORT = 4000,
-      APP_ROOT = path.resolve(CONTEXT, 'app')
+      APP_ROOT = path.resolve(CONTEXT, 'app'),
+      PUBLIC_PATH = path.resolve(CONTEXT, 'public')
 
 var devtool,
     CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
@@ -55,7 +56,6 @@ var env = {
 const IS_BUILD = env.__STAGING__ || env.__PROD__
 
 var sassLoader = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
-
 var loaders = {
   javascript: {
     test: /\.ts/,
@@ -85,6 +85,18 @@ var loaders = {
   json: {
     test: /\.json/,
     loader: 'json'
+  },
+
+  file: {
+    test: /\.(png|gif|jpg|jpeg)$/,
+    loader: `file${IS_BUILD ? '?name=[hash].[ext]' : ''}!image-webpack?bypassOnDebug`,
+    include: [createPath('public/img')]
+  },
+
+  svg: {
+    test: /\.svg/,
+    loader: 'image-webpack?bypassOnDebug!svg-inline',
+    include: [createPath('public/svg')]
   }
 }
 
@@ -114,7 +126,7 @@ var config = {
 
   resolve: {
     extensions: ['', '.ts', '.js', '.json'],
-    root: APP_ROOT
+    root: [APP_ROOT, PUBLIC_PATH]
   },
 
   module: {
