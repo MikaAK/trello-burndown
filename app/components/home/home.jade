@@ -8,4 +8,7 @@ nav
 button.btn-default((click)='modal.toggle()') Add Sprint
 
 modal([config]='modal' title='New Sprint')
-  new-sprint
+  new-sprint(
+    '(onSave)'='modal.toggle()'
+    '(onCancel)'='modal.toggle()'
+  )

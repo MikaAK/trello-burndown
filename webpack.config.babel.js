@@ -49,7 +49,8 @@ var env = {
   __DEV__: NODE_ENV === 'development',
   __PROD__: NODE_ENV === 'production',
   __TEST__: NODE_ENV === 'test',
-  __STAGING__: NODE_ENV === 'staging'
+  __STAGING__: NODE_ENV === 'staging',
+  __TRELLO_KEY__: TRELLO_KEY
 }
 
 

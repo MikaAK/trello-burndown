@@ -8,5 +8,7 @@
       label(for='holidays') Holidays
       input(type='text' name='holidays' placeholder='Enter holiday dates sperated by ,')
 
-    form-save.pull-right
-
+    form-save.pull-right(
+      '(onSave)'='save()'
+      '(onCancel)'='cancel()'
+    )

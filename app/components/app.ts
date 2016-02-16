@@ -2,6 +2,8 @@ import {Component} from 'angular2/core'
 import {RouteConfig, RouterOutlet} from 'angular2/router'
 
 import {HomeComponent} from './home'
+import {LoginComponent} from './login'
+
 import {load} from 'webfontloader'
 
 @Component({
@@ -12,6 +14,7 @@ import {load} from 'webfontloader'
 })
 @RouteConfig([
   { path: '/', component: HomeComponent, name: 'Index' },
+  { path: '/login', component: LoginComponent, name: 'Index' },
   { path: '/**', redirectTo: ['Index'] }
 ])
 export class AppComponent {

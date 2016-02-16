@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core'
+import {Component, Output, EventEmitter} from 'angular2/core'
 import {FormSave} from 'directives/formSave'
 
 @Component({
@@ -8,5 +8,14 @@ import {FormSave} from 'directives/formSave'
   directives: [FormSave]
 })
 export class NewSprintComponent {
+  @Output() public onSave: EventEmitter<any> = new EventEmitter()
+  @Output() public onCancel: EventEmitter<any> = new EventEmitter()
 
+  public save() {
+    this.onSave.emit('event')
+  }
+
+  public cancel() {
+    this.onCancel.emit('event')
+  }
 }
