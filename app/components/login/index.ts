@@ -1,6 +1,9 @@
 import {Component} from 'angular2/core'
 import {TrelloApi} from 'api/trello'
 
+//@CanActivate(function() {
+  //debugger
+//})
 @Component({
   selector: 'login',
   template: require('./login.jade')(),

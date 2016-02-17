@@ -20,6 +20,8 @@ var devtool,
 var vendor = [
   'json3',
   'es5-shim',
+  'es6-shim',
+  'babel-polyfill',
   'reflect-metadata',
   'angular2/bundles/angular2-polyfills',
   'angular2/platform/browser',
