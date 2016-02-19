@@ -81,3 +81,5 @@ Session.vim
 .env
 bin/.compiled
 build
+typings/browser
+typings/browser/
