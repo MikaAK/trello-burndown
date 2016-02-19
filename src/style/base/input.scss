@@ -1,0 +1,18 @@
+input {
+  transition: border map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
+  height: 30px;
+  border-radius: 3px;
+  box-shadow: 0;
+  border: 1px solid $grey;
+  padding: 0px 5px;
+  width: 100%;
+
+  &:active, &:focus {
+    outline: 0;
+    border: 1px solid $blue;
+  }
+}
+
+input[type=text] {
+
+}
