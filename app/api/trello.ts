@@ -3,6 +3,7 @@ declare var __TRELLO_KEY__: string
 import {Observable} from 'rxjs'
 import {Injectable} from 'angular2/core'
 import {Http, Response} from 'angular2/http'
+import {Locker} from 'angular2-locker'
 
 import {objToQueryParams} from './helpers'
 
@@ -22,23 +23,36 @@ const TRELLO_BASE_CONFIG = {
 }
 
 const TRELLO_AUTH_SECRET_URL = `${TRELLO_BASE}authorize?${objToQueryParams(TRELLO_BASE_CONFIG)}`
+const TRELLO_KEY = 'trelloKey'
+
+export {TRELLO_KEY}
 
 @Injectable()
 export class TrelloApi {
-  constructor(private http: Http) {} 
+  constructor(private http: Http, private locker: Locker) {} 
+
+  public isAuthorized() {
+    return <boolean>this.locker.get(TRELLO_KEY)
+  }
 
   public getAuthorization() {
     var authWindow = window.open(TRELLO_AUTH_SECRET_URL)
 
-    return Observable.create(function(observer) {
-      // TODO: check for auth key in localstorage
+    return Observable.create(observer => {
+      if (this.isAuthorized()) {
+        console.log('Have Trello Key: ', this.locker.get(TRELLO_KEY))
+        observer.next(this.locker.get(TRELLO_KEY))
+        observer.complete()
 
-      var onComplete = function(event) {
+        return
+      }
+
+      var onComplete = event => {
         if (event.source !== authWindow)
           return
 
-        // TODO: Set key into localstorage
-        
+        this.locker.set(TRELLO_KEY, event.data)
+
         observer.next(event.data)
         observer.complete()
       }
