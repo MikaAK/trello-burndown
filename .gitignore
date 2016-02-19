@@ -83,3 +83,4 @@ bin/.compiled
 build
 typings/browser
 typings/browser/
+typings/browser.d.ts
