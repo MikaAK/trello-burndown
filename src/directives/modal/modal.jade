@@ -5,7 +5,7 @@
   .modal_container
     .modal_header
       h3 {{ title }}
-      .diagonal.svg--medium((click)='config.toggle()')
+      .icon-close.svg--medium((click)='config.toggle()')
         != require('svg/plus.svg')
 
     ng-content
