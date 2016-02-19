@@ -1,0 +1,12 @@
+.btn-cancel:hover {
+  color: $blue;
+}
+
+.btn-default {
+  border: 1px solid $blue;
+
+  &:hover {
+    background: $blue;
+    color: $lightest-grey;
+  }
+}

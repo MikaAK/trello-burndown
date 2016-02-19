@@ -1,0 +1,46 @@
+@import '~style/utility';
+
+.modal_backdrop {
+  @include full-window; 
+  display: flex;
+  justify-content: center;
+  background: transparentize($light-black, .5);
+  padding: 30px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.modal_header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  
+  .svg_medium {
+    cursor: pointer;
+
+    .cross {
+      transform-origin: 50% 50%;
+      transition: transform map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
+    }
+
+    .cross line {
+      transition: stroke map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
+    }
+
+    &:hover .cross line {
+      stroke: $red;
+    }
+
+    &:hover .cross {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.modal_container {
+  background: $lightest-grey;
+  border-radius: 10px;
+  padding: 30px;
+  overflow: auto;
+}
