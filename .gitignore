@@ -81,4 +81,3 @@ Session.vim
 .env
 bin/.compiled
 build
-typings/

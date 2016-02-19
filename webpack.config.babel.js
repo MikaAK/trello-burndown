@@ -11,7 +11,7 @@ import S3Plugin from 'webpack-s3-plugin'
 
 const CONTEXT = path.resolve(__dirname),
       DEV_SERVER_PORT = 4000,
-      APP_ROOT = path.resolve(CONTEXT, 'app'),
+      APP_ROOT = path.resolve(CONTEXT, 'src'),
       PUBLIC_PATH = path.resolve(CONTEXT, 'public')
 
 var devtool,
@@ -60,26 +60,26 @@ var loaders = {
   javascript: {
     test: /\.ts/,
     loader: `babel!ts?${tsIngores.map(num => `ignoreDiagnostics[]=${num}`).join('&')}!tslint`,
-    exclude: [/\.(spec|e2e)\.ts/, /node_modules\/(?!(ng2-.+))/],
-    include: [createPath('app')]
+    exclude: [createPath('node_modules')],
+    include: [createPath('src')]
   },
 
   html: {
     test: /\.jade/,
     loader: 'jade',
-    include: [createPath('app')]
+    include: [createPath('src')]
   },
 
   globalCss: {
     test: /\.s?css/,
     loader: `style!css?sourceMap!${sassLoader}`,
-    include: [createPath('app/style/global')]
+    include: [createPath('src/style/global')]
   },
 
   componentCss: {
     test: /\.s?css/,
     loader: `raw!${sassLoader}`,
-    include: [createPath('app/components')]
+    include: [createPath('src/components')]
   },
 
   json: {
@@ -114,7 +114,7 @@ var config = {
 
   entry: {
     vendor,
-    app: './app/boot.ts'
+    app: './src/boot.ts'
   },
 
   output: {
@@ -137,7 +137,7 @@ var config = {
   plugins: [
     new webpack.DefinePlugin(env),
     new HtmlWebpackPlugin({
-      templateContent: IndexBuilder(CONTEXT),
+      templateContent: IndexBuilder(APP_ROOT),
       favicon: path.resolve(__dirname, 'favicon.ico')
     })
   ],

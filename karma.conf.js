@@ -1,47 +1,39 @@
 // Karma configuration
-// Generated on Sun Jan 10 2016 02:44:09 GMT-0800 (PST)
+// Generated on Wed Feb 17 2016 22:26:46 GMT-0800 (PST)
 require('babel-register')
-var _ = require('lodash'),
-    path = require('path'),
-    webpackConfig = require('./webpack.config.babel.js')
+var preprocessors = {}
+var testEntry = './karma-shim.js'
+var webpackConfig = require('./webpack.config.babel')
 
-delete webpackConfig.entry
-
-var paths = {
-  boot: path.resolve(__dirname, 'spec.bundle.js'),
-  test: path.resolve(__dirname, 'app/**/*.spec.ts')
-}
-
-var preprocessors = {},
-    preprocessor = ['webpack', 'sourcemap']
-
-preprocessors[paths.boot] = preprocessor
-preprocessors[paths.test] = preprocessor
+preprocessors[testEntry] = ['webpack', 'sourcemap']
 
 module.exports = function(config) {
   config.set({
-    webpack: webpackConfig,
+
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: './',
 
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['phantomjs-shim', 'jasmine'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
-    files: _(paths).values().flatten().value(),
-
-
-    // list of files to exclude
-    exclude: [
+    files: [
+      {pattern: testEntry, watched: false},
+      {pattern: './src/**/*.spec.ts', watched: true, included: false}
     ],
 
+    webpack: webpackConfig,
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: preprocessors,
+
+    webpackServer: {
+      noInfo: true // please don't spam the console when running in karma!
+    },
 
 
     // test results reporter to use
@@ -64,17 +56,17 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJS2'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser should be started simultaneous

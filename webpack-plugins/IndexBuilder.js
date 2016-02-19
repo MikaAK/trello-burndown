@@ -16,7 +16,7 @@ var makeTag = function(file) {
 }
 
 export default function(context, locals = {}) {
-  const JADE_PATH = path.resolve(context, 'app/index.jade')
+  const JADE_PATH = path.resolve(context, 'index.jade')
 
   return function(config) {
     var files = config.htmlWebpackPlugin.files
