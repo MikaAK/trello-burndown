@@ -81,4 +81,6 @@ Session.vim
 .env
 bin/.compiled
 build
-typings/
+typings/browser
+typings/browser/
+typings/browser.d.ts
