@@ -76,13 +76,13 @@ var loaders = {
   globalCss: {
     test: /\.s?css/,
     loader: `style!css?sourceMap!${sassLoader}`,
-    include: [createPath('app/style')]
+    include: [createPath('src/style')]
   },
 
   componentCss: {
     test: /\.s?css/,
     loader: `raw!${sassLoader}`,
-    include: [createPath('app/components'), createPath('app/directives')]
+    include: [createPath('src/components'), createPath('src/directives')]
   },
 
   json: {
