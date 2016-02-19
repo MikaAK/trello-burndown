@@ -1,0 +1,11 @@
+.modal_backdrop(
+  '[style.opacity]'='config.isOpen ? 1 : 0'
+  '[style.pointer-events]'='config.isOpen ? "auto" : "none"'
+)
+  .modal_container
+    .modal_header
+      h3 {{ title }}
+      .diagonal.svg--medium((click)='config.toggle()')
+        != require('svg/plus.svg')
+
+    ng-content
