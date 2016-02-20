@@ -2,7 +2,7 @@ declare var __TRELLO_KEY__: string
 
 import {Observable} from 'rxjs'
 import {Injectable} from 'angular2/core'
-import {Http, Response} from 'angular2/http'
+import {Http} from 'angular2/http'
 import {Locker} from 'angular2-locker'
 
 import {objToQueryParams} from './helpers'
@@ -29,7 +29,7 @@ export {TRELLO_KEY}
 
 @Injectable()
 export class TrelloApi {
-  constructor(private http: Http, private locker: Locker) {} 
+  constructor(private http: Http, private locker: Locker) {}
 
   public isAuthorized() {
     return <boolean>this.locker.get(TRELLO_KEY)
@@ -51,9 +51,12 @@ export class TrelloApi {
         if (event.source !== authWindow)
           return
 
-        this.locker.set(TRELLO_KEY, event.data)
+        if (event.data) {
+          this.locker.set(TRELLO_KEY, event.data)
+          observer.next(event.data)
+        } else
+          observer.error(event.data)
 
-        observer.next(event.data)
         observer.complete()
       }
 

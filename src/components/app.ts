@@ -13,9 +13,9 @@ import {load} from 'webfontloader'
   directives: [RouterOutlet]
 })
 @RouteConfig([
-  { path: '/', component: HomeComponent, name: 'Index' },
-  { path: '/login', component: LoginComponent, name: 'Index' },
-  { path: '/**', redirectTo: ['Index'] }
+  { path: '/', component: HomeComponent, name: 'Home' },
+  { path: '/login', component: LoginComponent, name: 'Login' },
+  { path: '/**', redirectTo: ['Home'] }
 ])
 export class AppComponent {
   public ngOnInit() {
