@@ -31,11 +31,11 @@ export {TRELLO_KEY}
 export class TrelloApi {
   constructor(private http: Http, private locker: Locker) {}
 
-  public isAuthorized() {
+  public isAuthorized(): boolean {
     return <boolean>this.locker.get(TRELLO_KEY)
   }
 
-  public getAuthorization() {
+  public getAuthorization(): Observable<any> {
     var authWindow = window.open(TRELLO_AUTH_SECRET_URL)
 
     return new Observable(observer => {
@@ -69,5 +69,18 @@ export class TrelloApi {
 
       return exitWindow
     })
+  }
+
+  public getBoard(boardId: string): Observable<any> {
+    return this.http.get(this.createTrelloUrl(`boards/${boardId}`))
+      .map(data => data.json())
+  }
+
+  private createTrelloUrl(url: string): string {
+    var secret = this.locker.get(TRELLO_KEY),
+        params = `token=${secret}&key=${__TRELLO_KEY__}`,
+        base = /\?/.test(url) ? url + params : `${url}?${params}`
+
+    return TRELLO_BASE + base
   }
 }

@@ -1,15 +1,36 @@
 button.btn--default((click)='modal.toggle()') Add Sprint
 
-modal([config]='modal' title='New Sprint')
+modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='getTeams()')
   .new-sprint
-    form.flex-form(novalidate)
+    form.flex-form
       .input-group
-        label(for='sprintId') Sprint ID
-        input(type='text' name='sprintId' placeholder='Enter sprint Trello board id')
+        label(for='boardId') Sprint ID
+        input(
+          type='text'
+          name='boardId'
+          placeholder='Enter sprint Trello board id'
+          '[(ngModel)]'='newSprint.boardId'
+          required
+        )
 
       .input-group
         label(for='holidays') Holidays
-        input(type='text' name='holidays' placeholder='Enter holiday dates sperated by ,')
+        input(
+          type='text'
+          name='holidays'
+          placeholder='Enter holiday dates sperated by ,'
+          '[(ngModel)]'='newSprint.holidays'
+        )
+
+      .input-group
+        label(for='team') Team
+        select(
+          name='team'
+          '[(ngModel)]'='newSprint.team'
+          required
+        )
+          option(selected disabled) Select a team
+          option('*ngFor'='#team of teams' '[value]'='team') {{ team.name }}
 
       form-save.pull-right(
         '(onSave)'='save()'

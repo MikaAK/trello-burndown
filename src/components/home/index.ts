@@ -10,10 +10,7 @@ import {TrelloApi} from 'api/trello'
   directives: [NewSprintComponent, RouterLink]
 })
 export class HomeComponent {
-  public greeting: string
-
   constructor(private router: Router, private trello: TrelloApi) {
-    this.greeting = 'webpack-ng2-seed'
   }
 
   public ngOnInit() {

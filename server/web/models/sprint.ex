@@ -11,8 +11,8 @@ defmodule TrelloBurndown.Sprint do
     timestamps
   end
 
-  @required_fields ~w(board_id sprint_name point_total)
-  @optional_fields ~w(holidays)
+  @required_fields ~w(board_id sprint_name)
+  @optional_fields ~w(holidays point_total)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
