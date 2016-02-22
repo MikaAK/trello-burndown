@@ -10,8 +10,8 @@ import {SprintApi} from 'api/sprint'
   directives: [BackButton]
 })
 export class SprintsComponent {
-  sprints: any[]
-  fetchSprints: Observable<any>
+  public sprints: any[]
+  private fetchSprints: Observable<any>
 
   constructor(public sprint: SprintApi) {
     this.fetchSprints = this.sprint.findAll()
