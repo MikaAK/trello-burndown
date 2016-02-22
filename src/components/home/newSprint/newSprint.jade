@@ -30,7 +30,7 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='g
           required
         )
           option(selected disabled) Select a team
-          option('*ngFor'='#team of teams' '[value]'='team') {{ team.name }}
+          option('*ngFor'='#team of teams') {{ team.name }}
 
       form-save.pull-right(
         '(onSave)'='save()'

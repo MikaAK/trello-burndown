@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import {Component, Output, EventEmitter} from 'angular2/core'
 import {Modal, ModalConfig} from 'directives/modal'
 import {FormSave} from 'directives/formSave'
@@ -48,14 +49,14 @@ export class NewSprintComponent {
       .split(',')
       .map(str => str.trim())
 
-    this.newSprint.teamId = this.newSprint.team.id
+    var params = {
+      holidays,
+      teamId: _.find(this.teams, {name: this.newSprint.team}).id,
+      boardId: this.newSprint.boardId
+    }
 
-    debugger
-    this.sprint.create(Object.assign({}, this.newSprint, {holidays, team: null}))
-      .subscribe(newSprint => {
-        debugger
-        this.onSave.emit('event')
-      })
+    this.sprint.create(params)
+      .subscribe(newSprint => this.onSave.emit('event'))
   }
 
   public cancel() {
