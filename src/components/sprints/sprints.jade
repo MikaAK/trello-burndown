@@ -1,0 +1,10 @@
+back-button
+
+h1 Sprints
+
+button.btn--default((click)='getSprints()') Refresh
+
+ul
+  li.card('*ngFor'='#sprint of sprints')
+    h5 {{ sprint.sprintName }}
+    span('*ngIf'='sprint.pointTotal') Points in sprint: {{ sprint.pointTotal }}

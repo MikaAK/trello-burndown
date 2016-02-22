@@ -7,7 +7,7 @@ const convertKeys = function(convertFn): any|any[] {
   var convert = function(params) {
     if (Array.isArray(params))
       return _.map(params, convert)
-    else if (typeof params === 'object') {
+    else if (params && typeof params === 'object') {
       return _.reduce(params, function(res, value, key) {
           var nValue
 
