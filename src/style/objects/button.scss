@@ -1,0 +1,21 @@
+.btn--cancel:hover {
+  color: $blue;
+}
+
+.btn--delete {
+  color: $lightest-grey;
+  background: $red;
+
+  &:hover {
+    background: darken($red, 10);
+  }
+}
+
+.btn--default {
+  border: 1px solid $blue;
+
+  &:hover {
+    background: $blue;
+    color: $lightest-grey;
+  }
+}

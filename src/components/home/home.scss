@@ -1,0 +1,33 @@
+@import '~style/utility';
+
+:host,
+nav,
+h1 {
+  width: 100%;
+}
+
+h1,
+nav {
+  margin-top: 20px
+}
+
+h1 {
+  text-align: center;
+}
+
+.home_nav {
+  display: flex;
+  justify-content: space-between;
+  width: 75%;
+  margin: 0 auto;
+  background: $lightest-grey;
+
+  li {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  li:hover {
+    background: $light-grey;
+  }
+}

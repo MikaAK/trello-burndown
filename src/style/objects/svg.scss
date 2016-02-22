@@ -1,0 +1,7 @@
+@each $type in $svg-types {
+  .svg--#{$type} {
+    transform-origin: 50% 50%;
+    width: map-get($svg-sizes, $type);
+  }
+}
+

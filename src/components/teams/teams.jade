@@ -1,0 +1,11 @@
+back-button
+
+new-team('(onClose)'='fetchTeams()')
+
+h4 Teams
+
+ul
+  li('*ngFor'='#team of teams')
+    span {{ team.name }}
+    ul('*ngFor'='#member of team.members')
+      li {{ member }}

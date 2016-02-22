@@ -1,0 +1,11 @@
+button {
+  transition: all map-get($animation-duration, short) map-get($animation-easing, neutral);
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: $button-padding;
+
+  &:focus {
+    outline: none;
+  }
+}
