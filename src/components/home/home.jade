@@ -1,14 +1,12 @@
 h1 Trello Burndowns
 
 nav
-  ul
+  ul.home_nav
     li Current Sprints
     li Past Sprints
+    li('[routerLink]'='["Teams"]') Manage Teams
 
-button.btn-default((click)='modal.toggle()') Add Sprint
-
-modal([config]='modal' title='New Sprint')
-  new-sprint(
-    '(onSave)'='modal.toggle()'
-    '(onCancel)'='modal.toggle()'
-  )
+new-sprint(
+  '(onSave)'='modal.toggle()'
+  '(onCancel)'='modal.toggle()'
+)

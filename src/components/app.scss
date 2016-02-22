@@ -1,4 +1,9 @@
 @import '~style/utility';
 
-* {
+:host {
+  width: 100%;
+}
+
+main {
+  width: 100%;
 }

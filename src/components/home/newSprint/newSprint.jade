@@ -1,14 +1,17 @@
-.new-sprint
-  form.flex-form(novalidate)
-    .input-group
-      label(for='sprintId') Sprint ID
-      input(type='text' name='sprintId' placeholder='Enter sprint Trello board id')
+button.btn--default((click)='modal.toggle()') Add Sprint
 
-    .input-group
-      label(for='holidays') Holidays
-      input(type='text' name='holidays' placeholder='Enter holiday dates sperated by ,')
+modal([config]='modal' title='New Sprint')
+  .new-sprint
+    form.flex-form(novalidate)
+      .input-group
+        label(for='sprintId') Sprint ID
+        input(type='text' name='sprintId' placeholder='Enter sprint Trello board id')
 
-    form-save.pull-right(
-      '(onSave)'='save()'
-      '(onCancel)'='cancel()'
-    )
+      .input-group
+        label(for='holidays') Holidays
+        input(type='text' name='holidays' placeholder='Enter holiday dates sperated by ,')
+
+      form-save.pull-right(
+        '(onSave)'='save()'
+        '(onCancel)'='cancel()'
+      )

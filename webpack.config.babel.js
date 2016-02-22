@@ -28,8 +28,7 @@ var vendor = [
   'angular2/platform/common_dom',
   'angular2/core',
   'angular2/router',
-  'angular2/http',
-  'rxjs'
+  'angular2/http'
 ]
 
 var tsIngores = [
@@ -156,11 +155,11 @@ var config = {
 
   devServer: {
     port: DEV_SERVER_PORT,
-    // Sample Proxy Config
-    //proxy: [{
-      //path: '/api/*',
-      //target: 'http://localhost:4000'
-    //}],
+
+    proxy: [{
+      path: '/api/*',
+      target: 'http://localhost:3000'
+    }],
 
     historyApiFallback: {
       // If you have multiple entrypoints add them here

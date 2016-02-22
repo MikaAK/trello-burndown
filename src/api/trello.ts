@@ -1,11 +1,11 @@
 declare var __TRELLO_KEY__: string
 
-import {Observable} from 'rxjs'
+import {Observable} from 'rxjs/Observable'
 import {Injectable} from 'angular2/core'
 import {Http} from 'angular2/http'
 import {Locker} from 'angular2-locker'
 
-import {objToQueryParams} from './helpers'
+import {objToQueryParams} from './lib/helpers'
 
 const TRELLO_BASE = 'https://trello.com/1/'
 
@@ -38,7 +38,7 @@ export class TrelloApi {
   public getAuthorization() {
     var authWindow = window.open(TRELLO_AUTH_SECRET_URL)
 
-    return Observable.create(observer => {
+    return new Observable(observer => {
       if (this.isAuthorized()) {
         console.log('Have Trello Key: ', this.locker.get(TRELLO_KEY))
         observer.next(this.locker.get(TRELLO_KEY))

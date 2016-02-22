@@ -38,7 +38,7 @@ var CLI = {
     if (!command)
       program.showHelp()
     else
-      command()
+      command(program)
   }
 }
 

@@ -4,8 +4,7 @@ import {TrelloApi} from 'api/trello'
 
 @Component({
   selector: 'login',
-  template: require('./login.jade')(),
-  providers: [TrelloApi]
+  template: require('./login.jade')()
 })
 export class LoginComponent {
   constructor(private trello: TrelloApi, private router: Router) {}
