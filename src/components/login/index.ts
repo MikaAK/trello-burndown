@@ -7,10 +7,10 @@ import {TrelloApi} from 'api/trello'
   template: require('./login.jade')()
 })
 export class LoginComponent {
-  constructor(private trello: TrelloApi, private router: Router) {}
+  constructor(private _trello: TrelloApi, private _router: Router) {}
 
   public ngOnInit() {
-    if (this.trello.isAuthorized()) {
+    if (this._trello.isAuthorized()) {
       this.navigateHome()
 
       return false
@@ -18,11 +18,11 @@ export class LoginComponent {
   }
 
   public authorize() {
-    this.trello.getAuthorization()
+    this._trello.getAuthorization()
       .subscribe(() => this.navigateHome())
   }
 
   private navigateHome() {
-      this.router.navigate(['Home'])
+      this._router.navigate(['Home'])
   }
 }

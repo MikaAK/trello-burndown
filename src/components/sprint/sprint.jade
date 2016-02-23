@@ -1,0 +1,23 @@
+back-button
+h1 {{ sprint.sprintName }}
+h5 Team: {{ sprint.teamName || 'No Team Assigned' }}
+h5 Total Points: {{ sprint.totalPoints }}
+a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
+
+button.btn--default('*ngIf'='sprint.team') Refresh
+
+.card.trello-cards
+  .trello-cards_column
+    h3 Uncompleted ({{ sprint.uncompletedCards?.length }})
+    span.subtext Points: {{sprint.uncompletedPoints}}
+    sprint-card-list('[cards]'='sprint.uncompletedCards')
+
+  .trello-cards_column
+    h3 Complete ({{ sprint.completedCards?.length }})
+    span.subtext Points: {{sprint.completedPoints}}
+    sprint-card-list('[cards]'='sprint.completedCards')
+
+  .trello-cards_column
+    h3 Dev Complete ({{ sprint.devCompletedCards?.length }})
+    span.subtext Points: {{sprint.devCompletedPoints}}
+    sprint-card-list('[cards]'='sprint.devCompletedCards')

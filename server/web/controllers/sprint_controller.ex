@@ -4,7 +4,8 @@ defmodule TrelloBurndown.SprintController do
   alias TrelloBurndown.Sprint
 
   def index(conn, _params) do
-    sprints = Repo.all(Sprint)
+    sprints = Repo.all(from s in Sprint, preload: [:team])
+
     render(conn, "index.json", sprints: sprints)
   end
 
@@ -25,13 +26,16 @@ defmodule TrelloBurndown.SprintController do
   end
 
   def show(conn, %{"id" => id}) do
-    sprint = Repo.get!(Sprint, id)
+    sprint = from(s in Sprint, preload: [:team])
+      |> Repo.get!(id)
+
     render(conn, "show.json", sprint: sprint)
   end
 
   def update(conn, sprint_params) do
-    sprint = Repo.get!(Sprint, sprint_params.id)
-    changeset = Sprint.changeset(sprint, sprint_params)
+    changeset = from(s in Sprint, preload: [:team])
+      |> Repo.get!(sprint_params.id)
+      |> Sprint.changeset(sprint_params)
 
     case Repo.update(changeset) do
       {:ok, sprint} ->

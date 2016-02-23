@@ -2,11 +2,7 @@ h1 Trello Burndowns
 
 nav
   ul.home_nav
-    li Current Sprints
-    li Past Sprints
+    li('[routerLink]'='["Sprints"]') Sprints
     li('[routerLink]'='["Teams"]') Manage Teams
 
-new-sprint(
-  '(onSave)'='modal.toggle()'
-  '(onCancel)'='modal.toggle()'
-)
+new-sprint

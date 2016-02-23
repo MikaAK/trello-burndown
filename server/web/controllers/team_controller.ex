@@ -4,7 +4,7 @@ defmodule TrelloBurndown.TeamController do
   alias TrelloBurndown.Team
 
   def index(conn, _params) do
-    teams = Repo.all(Team)
+    teams = Repo.all(from p in Team, preload: [:team_members])
     render(conn, "index.json", teams: teams)
   end
 

@@ -18,8 +18,6 @@ export default function({input}) {
       '--hot', '--progress',
       '--history-api-fallback'
     ], {stdio, cwd: context, env: process.env})
-  else if (type === 'server')
-    return spawnSync('mix', ['phoenix.server'], {stdio, cwd: SERVER_PATH, env: process.env})
   else
-    throw new Error('Must provide valid type [server/client]')
+    return spawnSync('mix', ['phoenix.server'], {stdio, cwd: SERVER_PATH, env: process.env})
 }

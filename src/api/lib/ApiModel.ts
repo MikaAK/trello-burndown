@@ -27,7 +27,7 @@ export class ApiModel {
       .map(item => item.json())
       .map(getDatas)
       .map(items => deserializeKeys(items))
-      .map(items => items.map(item => this.deserialize(item)))
+      .map(items => Array.isArray(items) ? items.map(item => this.deserialize(item)) : this.deserialize(items))
   }
 
   public POST(url: string, data?: Object, params?: Object) {

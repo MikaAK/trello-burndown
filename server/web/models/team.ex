@@ -3,7 +3,7 @@ defmodule TrelloBurndown.Team do
 
   schema "teams" do
     field :name, :string
-    has_many :team_members, TeamMember
+    has_many :team_members, TrelloBurndown.TeamMember
 
     timestamps
   end
@@ -19,6 +19,7 @@ defmodule TrelloBurndown.Team do
   """
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+      |> cast(params, @required_fields, @optional_fields)
+      |> cast_assoc(:team_members, required: true)
   end
 end
