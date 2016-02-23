@@ -10,6 +10,13 @@ import {objToQueryParams} from './lib/helpers'
 
 const TRELLO_BASE = 'https://trello.com/1/'
 
+const LABEL_MAP = {
+  small: 1,
+  medium: 2,
+  large: 4,
+  extraLarge: 8
+}
+
 const TRELLO_BASE_CONFIG = {
   key: __TRELLO_KEY__,
   name: 'Edvisor',
@@ -106,6 +113,11 @@ export class TrelloApi {
       return this.getLabels(boardId)
         .map((labels: any[]) => cards.map(card => {
           card.labels = card.idLabels.map(id => find(labels, {id}))
+          card.points = _(card.labels)
+            .map(label => _.camelCase(label.name))
+            .map(labelName => LABEL_MAP[labelName])
+            .compact()
+            .sum()
 
           return card
         }))

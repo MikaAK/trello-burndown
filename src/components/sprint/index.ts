@@ -7,13 +7,20 @@ import {SprintApi} from 'api/sprint'
 import {TrelloApi} from 'api/trello'
 import {SprintCardList} from './sprintCardList'
 
-var getCards = function(lists: any[]): any[] {
+
+const getCards = function(lists: any[]): any[] {
   return _(lists)
     .map('cards')
     .flatten()
     .compact()
-    .filter(card => _.some(card.labels))
+    .filter(card => card.points)
     .value()
+}
+
+const calculatePoints = function(cards: any[]): number {
+  return _(cards)
+    .map('points')
+    .sum()
 }
 
 @Component({
@@ -60,8 +67,15 @@ export class SprintComponent {
       .filter(list => !/defered/i.test(list.name))
 
     sprint.completedCards = getCards(completedLists)
+    sprint.completedPoints = calculatePoints(sprint.completedCards)
+
     sprint.uncompletedCards = getCards(uncompletedLists)
+    sprint.uncompletedPoints = calculatePoints(sprint.uncompletedCards)
+
     sprint.devCompletedCards = getCards(devCompletedLists)
+    sprint.devCompletedPoints = calculatePoints(sprint.devCompletedCards)
+
+    sprint.totalPoints = sprint.devCompletedPoints + sprint.uncompletedPoints + sprint.completedPoints
 
     return sprint
   }

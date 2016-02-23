@@ -1,12 +1,12 @@
 {
   "ambientDependencies": {
+    "core-js": "github:DefinitelyTyped/DefinitelyTyped/core-js/core-js.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
     "es6-shim": "github:DefinitelyTyped/DefinitelyTyped/es6-shim/es6-shim.d.ts#6697d6f7dadbf5773cb40ecda35a76027e0783b2",
     "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#c8630523ef2ee3fb42fe65cc17af5b1b56e611bc",
     "require": "github:DefinitelyTyped/DefinitelyTyped/requirejs/require.d.ts#853544cb7068af64bdb10ef1ae0c54d3aa3a80f6",
     "webfontloader": "github:DefinitelyTyped/DefinitelyTyped/webfontloader/webfontloader.d.ts#95dbe2dd1a9e9d1a8dfaa9ba495b2e21d981d75a"
   },
   "ambientDevDependencies": {
-    "core-js": "github:DefinitelyTyped/DefinitelyTyped/core-js/core-js.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
     "jasmine": "github:DefinitelyTyped/DefinitelyTyped/jasmine/jasmine.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4"
   }
 }
