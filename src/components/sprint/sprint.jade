@@ -1,5 +1,19 @@
 back-button
-h1 {{ sprint && sprint.sprintName }}
-h5 Team: {{ sprint && sprint.teamName || 'No Team Assigned' }}
+h1 {{ sprint.sprintName }}
+h5 Team: {{ sprint.teamName || 'No Team Assigned' }}
+a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
 
-button.btn--default('*ngIf'='sprint && sprint.team') Calculate Points
+button.btn--default('*ngIf'='sprint.team') Calculate Points
+
+.card.trello-cards
+  .trello-cards_completed
+    h3 Uncompleted
+    sprint-card-list('[cards]'='sprint.uncompletedCards')
+
+  .trello-cards_uncompleted
+    h3 Complete
+    sprint-card-list('[cards]'='sprint.completedCards')
+
+  .trello-cards_dev-complete
+    h3 Dev Complete
+    sprint-card-list('[cards]'='sprint.devCompletedCards')
