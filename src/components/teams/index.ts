@@ -17,15 +17,15 @@ export class TeamsComponent {
   public teams: any
   private teamFetch: Observable<any>
 
-  constructor(private router: Router, private trello: TrelloApi, private team: TeamApi) {
-    this.teamFetch = this.team.findAll()
+  constructor(private _router: Router, private _trello: TrelloApi, private _team: TeamApi) {
+    this.teamFetch = this._team.findAll()
 
     this.fetchTeams()
   }
 
   public ngOnInit() {
-    if (!this.trello.isAuthorized())
-      this.router.navigate(['Login'])
+    if (!this._trello.isAuthorized())
+      this._router.navigate(['Login'])
   }
 
   public fetchTeams() {

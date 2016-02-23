@@ -6,7 +6,7 @@ defmodule TrelloBurndown.Sprint do
     field :sprint_name, :string
     field :point_total, :integer
     field :holidays, {:array, :integer}
-    belongs_to :team, Team
+    belongs_to :team, TrelloBurndown.Team
 
     timestamps
   end

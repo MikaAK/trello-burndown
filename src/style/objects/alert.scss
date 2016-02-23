@@ -1,0 +1,16 @@
+%alert {
+  padding: 10px 20px;
+  text-align: center;
+  border: 1px solid $black;
+}
+
+.alert {
+  @extend %alert;
+}
+
+.alert--warning {
+  @extend %alert;
+
+  background: $red;
+  border-color: $red;
+}

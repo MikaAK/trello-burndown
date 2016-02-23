@@ -1,4 +1,5 @@
 defmodule TrelloBurndown.SprintView do
+  import IEx
   use TrelloBurndown.Web, :view
 
   def render("index.json", %{sprints: sprints}) do
@@ -10,11 +11,20 @@ defmodule TrelloBurndown.SprintView do
   end
 
   def render("sprint.json", %{sprint: sprint}) do
-    %{id: sprint.id,
+    params = %{id: sprint.id,
       board_id: sprint.board_id,
       sprint_name: sprint.sprint_name,
       point_total: sprint.point_total,
       team_id: sprint.team_id,
-      holidays: sprint.holidays}
+      holidays: sprint.holidays
+    }
+
+    if Map.get(sprint, :team_id) do
+      json = TrelloBurndown.TeamView.render("team.json", %{team: Map.get(sprint, :team)})
+
+      Map.put(params, :team, json)
+    else
+      params
+    end
   end
 end

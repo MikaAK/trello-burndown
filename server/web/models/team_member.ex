@@ -5,7 +5,7 @@ defmodule TrelloBurndown.TeamMember do
     field :velocity, :float
     field :trello_id, :string
     field :admin, :boolean
-    belongs_to :team, Team
+    belongs_to :team, TrelloBurndown.Team
 
     timestamps
   end

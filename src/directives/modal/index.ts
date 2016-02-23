@@ -6,6 +6,14 @@ export class ModalConfig {
   public toggle(): void {
     this.isOpen = !this.isOpen
   }
+
+  public close(): void {
+    this.isOpen = false
+  }
+
+  public open(): void {
+    this.isOpen = true
+  }
 }
 
 @Component({

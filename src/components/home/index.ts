@@ -10,11 +10,11 @@ import {TrelloApi} from 'api/trello'
   directives: [NewSprintComponent, RouterLink]
 })
 export class HomeComponent {
-  constructor(private router: Router, private trello: TrelloApi) {
+  constructor(private _router: Router, private _trello: TrelloApi) {
   }
 
   public ngOnInit() {
-    if (!this.trello.isAuthorized())
-      this.router.navigate(['Login'])
+    if (!this._trello.isAuthorized())
+      this._router.navigate(['Login'])
   }
 }

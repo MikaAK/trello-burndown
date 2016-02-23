@@ -1,0 +1,5 @@
+back-button
+h1 {{ sprint && sprint.sprintName }}
+h5 Team: {{ sprint && sprint.teamName || 'No Team Assigned' }}
+
+button.btn--default('*ngIf'='sprint && sprint.team') Calculate Points

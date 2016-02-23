@@ -33,11 +33,13 @@ export class NewSprintComponent {
   public newSprint: ISprint
   public teams: any[]
   public fetchTeams: Observable<any>
+  public error: string
 
-  constructor(public team: TeamApi, public sprint: SprintApi) {
+  constructor(_team: TeamApi, private _sprint: SprintApi) {
     this.modal = new ModalConfig()
     this.newSprint = DEFAULT_SPRINT
-    this.fetchTeams = team.findAll()
+    this.fetchTeams = _team.findAll()
+    this.error = ''
   }
 
   public getTeams() {
@@ -55,8 +57,14 @@ export class NewSprintComponent {
       boardId: this.newSprint.boardId
     }
 
-    this.sprint.create(params)
-      .subscribe(newSprint => this.onSave.emit('event'))
+    this._sprint.create(params)
+      .subscribe({
+        complete: () => {
+          this.modal.close()
+          this.onSave.emit('event')
+        },
+        error: error => this.error = error.text()
+      })
   }
 
   public cancel() {

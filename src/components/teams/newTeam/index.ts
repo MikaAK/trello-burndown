@@ -34,7 +34,7 @@ export class NewTeam {
   public modal: ModalConfig
   public newTeam: INewTeam = DEFAULT_TEAM
 
-  constructor(private team: TeamApi) {
+  constructor(private _team: TeamApi) {
     this.modal = new ModalConfig()
   }
 
@@ -51,7 +51,7 @@ export class NewTeam {
   }
 
   public save() {
-    return this.team.create(this.newTeam)
+    return this._team.create(this.newTeam)
       .subscribe(() => this.cancel())
   }
 

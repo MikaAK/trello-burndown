@@ -2,6 +2,8 @@ button.btn--default((click)='modal.toggle()') Add Sprint
 
 modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='getTeams()')
   .new-sprint
+    .alert--error('*ngIf'='error') {{ error }}
+
     form.flex-form
       .input-group
         label(for='boardId') Sprint ID
@@ -34,5 +36,5 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='g
 
       form-save.pull-right(
         '(onSave)'='save()'
-        '(onCancel)'='cancel()'
+        '(onCancel)'='modal.toggle()'
       )
