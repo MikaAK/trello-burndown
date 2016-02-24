@@ -10,9 +10,9 @@ config :trello_burndown, TrelloBurndown.Endpoint,
   http: [port: 3000],
   debug_errors: true,
   code_reloader: true,
-  check_origin: false,
-  watchers: [node: ["../bin/.compiled/webpack-ng2-seed.js", "start", "client"]]
+  check_origin: false
 # Add when fixed
+# watchers: [node: ["../bin/.compiled/webpack-ng2-seed.js", "start", "client"]]
 
 # Watch static and templates for browser reloading.
 config :trello_burndown, TrelloBurndown.Endpoint,

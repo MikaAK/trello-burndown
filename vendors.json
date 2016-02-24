@@ -11,6 +11,8 @@
     "angular2/core",
     "angular2/router",
     "angular2/http",
-    "rxjs/add/operator/map"
+    "rxjs/add/operator/map",
+    "rxjs/add/operator/mergeMap",
+    "rxjs/add/observable/forkJoin"
   ]
 }
