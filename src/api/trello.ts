@@ -79,40 +79,47 @@ export class TrelloApi {
     })
   }
 
-  public getCards(boardId: string|number): Observable<any> {
+  public getBoardCards(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/cards`))
       .map(data => data.json())
   }
 
-  public getBoard(boardId: string|number): Observable<any> {
+  public getBoard(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}`))
       .map(data => data.json())
   }
 
-  public getLists(boardId: string|number): Observable<any> {
+  public getBoardLists(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/lists`))
       .map(data => data.json())
   }
 
-  public getLabels(boardId: string|number): Observable<any> {
+  public getBoardLabels(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/labels`))
       .map(data => data.json())
   }
 
-  public getFullBoard(boardId: string|number): Observable<any> {
-    var attachLists = (board) => {
-      return this.getLists(boardId)
-      .map(function(lists) {
+  public getFullBoard(boardId: string): Observable<any> {
+    return this.getBoard(boardId)
+      .mergeMap(board => this._attachListsToBoard(board))
+      .mergeMap(board => this._attachCardsToBoard(board))
+  }
+
+  private _attachListsToBoard(board): Observable<any> {
+    return this.getBoardLists(board.id)
+      .map((lists: any[]) => {
         board.lists = lists
 
         return board
       })
-    }
+  }
 
-    var attachLabels = (cards: any[]) => {
-      return this.getLabels(boardId)
-        .map((labels: any[]) => cards.map(card => {
+  private _attachLabelsToCards(boardId: string, cards: any[]): Observable<any> {
+    return this.getBoardLabels(boardId)
+      .map((labels: any[]) => {
+        cards.map((card) => {
           card.labels = card.idLabels.map(id => find(labels, {id}))
+
           card.points = _(card.labels)
             .map(label => _.camelCase(label.name))
             .map(labelName => LABEL_MAP[labelName])
@@ -120,12 +127,15 @@ export class TrelloApi {
             .sum()
 
           return card
-        }))
-    }
+        })
 
-    var attachCards = (board) => {
-      return this.getCards(boardId)
-        .mergeMap(attachLabels)
+        return cards
+      }))
+  }
+
+  private _attachCardsToBoard(board): Observable<any> {
+      return this.getBoardCards(board.id)
+        .mergeMap(cards => this._attachLabelsToCards(board.id, cards))
         .map(function(cards: any[]) {
           var listIds = groupBy(cards, 'idList')
           var listItems: any[] = Object.entries(listIds)
@@ -139,11 +149,6 @@ export class TrelloApi {
           return board
         })
     }
-
-    return this.getBoard(boardId)
-      .mergeMap(attachLists)
-      .mergeMap(attachCards)
-  }
 
   private createTrelloUrl(url: string): string {
     var secret = this.locker.get(TRELLO_KEY),
