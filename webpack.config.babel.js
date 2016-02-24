@@ -23,6 +23,7 @@ var vendor = [
   'es6-shim',
   'babel-polyfill',
   'reflect-metadata',
+  'babel-polyfill',
   'angular2/bundles/angular2-polyfills',
   'angular2/platform/browser',
   'angular2/platform/common_dom',
@@ -78,9 +79,10 @@ var loaders = {
     include: [createPath('src/style')]
   },
 
+  // For to-string removes the ability to cache css so we use raw in development
   componentCss: {
     test: /\.s?css/,
-    loader: `to-string!${sassLoader}`,
+    loader: `${IS_BUILD ? 'to-string' : 'raw'}!${sassLoader}`,
     include: [createPath('src/components'), createPath('src/directives')]
   },
 
