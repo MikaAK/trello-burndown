@@ -8,30 +8,19 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import IndexBuilder from './webpack-plugins/IndexBuilder'
 import S3Plugin from 'webpack-s3-plugin'
+import {vendor} from './vendors.json'
 
 const CONTEXT = path.resolve(__dirname),
       DEV_SERVER_PORT = 4000,
       APP_ROOT = path.resolve(CONTEXT, 'src'),
       PUBLIC_PATH = path.resolve(CONTEXT, 'public')
 
-var devtool,
-    CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
+var devtool
+var createPath = function(nPath) {
+  return path.resolve(CONTEXT, nPath)
+}
 
-var vendor = [
-  'json3',
-  'es5-shim',
-  'es6-shim',
-  'babel-polyfill',
-  'reflect-metadata',
-  'angular2/bundles/angular2-polyfills',
-  'angular2/platform/browser',
-  'angular2/platform/common_dom',
-  'angular2/core',
-  'angular2/router',
-  'angular2/http'
-]
-
-var tsIngores = [
+const TS_INGORES = [
   2403,
   2300,
   2374,
@@ -39,14 +28,12 @@ var tsIngores = [
   1005
 ]
 
-var createPath = function(nPath) {
-  return path.resolve(CONTEXT, nPath)
-}
-
 const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
-      BUILD_PATH = createPath('server/priv/static')
+      BUILD_PATH = createPath('server/priv/static'),
+      CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin,
+      SASS_LOADER = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
 
-var env = {
+const ENV = {
   __DEV__: NODE_ENV === 'development',
   __PROD__: NODE_ENV === 'production',
   __TEST__: NODE_ENV === 'test',
@@ -54,14 +41,12 @@ var env = {
   __TRELLO_KEY__: TRELLO_KEY
 }
 
+const IS_BUILD = ENV.__STAGING__ || ENV.__PROD__
 
-const IS_BUILD = env.__STAGING__ || env.__PROD__
-
-var sassLoader = `css?sourceMap!${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
 var loaders = {
   javascript: {
     test: /\.ts/,
-    loader: `babel!ts?${tsIngores.map(num => `ignoreDiagnostics[]=${num}`).join('&')}!tslint`,
+    loader: `babel!ts?${TS_INGORES.map(num => `ignoreDiagnostics[]=${num}`).join('&')}!tslint`,
     exclude: [createPath('node_modules')],
     include: [createPath('src')]
   },
@@ -74,13 +59,14 @@ var loaders = {
 
   globalCss: {
     test: /\.s?css/,
-    loader: `style!${sassLoader}`,
+    loader: `style!css?sourceMap!${SASS_LOADER}`,
     include: [createPath('src/style')]
   },
 
+  // For to-string removes the ability to cache css so we use raw in development
   componentCss: {
     test: /\.s?css/,
-    loader: `to-string!${sassLoader}`,
+    loader: `${IS_BUILD ? 'to-string' : 'raw'}!${SASS_LOADER}`,
     include: [createPath('src/components'), createPath('src/directives')]
   },
 
@@ -102,17 +88,17 @@ var loaders = {
   }
 }
 
-if (env.__PROD__)
+if (ENV.__PROD__)
   devtool = false
-else if (env.__DEV__)
+else if (ENV.__DEV__)
   devtool = 'source-map'
-else if (env.__STAGING__ || env.__TEST__)
+else if (ENV.__STAGING__ || ENV.__TEST__)
   devtool = 'inline-source-map'
 
 var config = {
   context: CONTEXT,
   devtool,
-  debug: !env.__PROD__ && !env.__STAGING__,
+  debug: !ENV.__PROD__ && !ENV.__STAGING__,
 
   entry: {
     vendor,
@@ -128,7 +114,10 @@ var config = {
 
   resolve: {
     extensions: ['', '.ts', '.js', '.json'],
-    root: [APP_ROOT, PUBLIC_PATH]
+    root: [APP_ROOT, PUBLIC_PATH],
+    alias: {
+      vendor: createPath('vendor')
+    }
   },
 
   module: {
@@ -137,7 +126,7 @@ var config = {
   },
 
   plugins: [
-    new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin(ENV),
     new HtmlWebpackPlugin({
       templateContent: IndexBuilder(APP_ROOT, {TRELLO_KEY}),
       favicon: path.resolve(__dirname, 'favicon.ico')
@@ -175,7 +164,7 @@ var config = {
   }
 }
 
-if (!env.__TEST__)
+if (!ENV.__TEST__)
   config.plugins.push(
     new CommonsChunkPlugin({
       name: 'vendor',
@@ -190,7 +179,7 @@ if (!env.__TEST__)
     })
   )
 
-if (env.__DEV__) {
+if (ENV.__DEV__) {
   var WebpackNotifierPlugin = require('webpack-notifier')
 
   config.plugins.push(new WebpackNotifierPlugin({
@@ -207,7 +196,7 @@ if (env.__DEV__) {
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10000}),
     new webpack.optimize.UglifyJsPlugin()
   )
-} else if (env.__TEST__) {
+} else if (ENV.__TEST__) {
   config.resolve.cache = false
   config.stats = {
     colors: true,
@@ -230,7 +219,7 @@ if (env.__DEV__) {
   ]
 }
 
-if (!env.__PROD__)
+if (!ENV.__PROD__)
   vendor.push('zone.js/dist/long-stack-trace-zone')
 else
   config.plugins.push(
