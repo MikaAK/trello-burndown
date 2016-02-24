@@ -8,6 +8,10 @@ const WEBPACK_DEV_SERVER = path.resolve(context, 'node_modules/.bin/webpack-dev-
       CONFIG_PATH = path.resolve(context, 'webpack.config.babel.js'),
       stdio = 'inherit'
 
+var cleanup = function() {
+  process.exit()
+}
+
 export default function({input}) {
   var [, type] = input
 
@@ -20,4 +24,9 @@ export default function({input}) {
     ], {stdio, cwd: context, env: process.env})
   else
     return spawnSync('mix', ['phoenix.server'], {stdio, cwd: SERVER_PATH, env: process.env})
+
+  process.on('exit', cleanup)
+  process.on('SIGINT', cleanup)
+  process.on('uncaughtException', cleanup)
+  process.on('EOF', cleanup)
 }

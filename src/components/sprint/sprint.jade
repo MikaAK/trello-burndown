@@ -4,20 +4,24 @@ h5 Team: {{ sprint.teamName || 'No Team Assigned' }}
 h5 Total Points: {{ sprint.totalPoints }}
 a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
 
-button.btn--default('*ngIf'='sprint.team') Refresh
+// button.btn--default('*ngIf'='sprint.team') Refresh
 
 .card.trello-cards
   .trello-cards_column
-    h3 Uncompleted ({{ sprint.uncompletedCards?.length }})
-    span.subtext Points: {{sprint.uncompletedPoints}}
+    h3 Uncompleted ({{ sprint.uncompletedCards?.length || 0 }})
+    span.subtext Points: {{ sprint.uncompletedPoints || 0}}
     sprint-card-list('[cards]'='sprint.uncompletedCards')
 
   .trello-cards_column
-    h3 Complete ({{ sprint.completedCards?.length }})
-    span.subtext Points: {{sprint.completedPoints}}
+    h3 Complete ({{ sprint.completedCards?.length || 0 }})
+    span.subtext Points: {{ sprint.completedPoints || 0 }}
     sprint-card-list('[cards]'='sprint.completedCards')
 
   .trello-cards_column
-    h3 Dev Complete ({{ sprint.devCompletedCards?.length }})
-    span.subtext Points: {{sprint.devCompletedPoints}}
+    h3 Dev Complete ({{ sprint.devCompletedCards?.length || 0 }})
+    span.subtext Points: {{ sprint.devCompletedPoints || 0 }}
     sprint-card-list('[cards]'='sprint.devCompletedCards')
+
+  .trello-cards_column
+    h3 Bugs ({{ sprint.bugCards?.length || 0 }})
+    sprint-card-list('[cards]'='sprint.bugCards')

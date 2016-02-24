@@ -44,7 +44,7 @@ var createPath = function(nPath) {
 }
 
 const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
-      BUILD_PATH = createPath('build')
+      BUILD_PATH = createPath('server/priv/static')
 
 var env = {
   __DEV__: NODE_ENV === 'development',
@@ -57,7 +57,7 @@ var env = {
 
 const IS_BUILD = env.__STAGING__ || env.__PROD__
 
-var sassLoader = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
+var sassLoader = `css?sourceMap!${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
 var loaders = {
   javascript: {
     test: /\.ts/,
@@ -74,13 +74,13 @@ var loaders = {
 
   globalCss: {
     test: /\.s?css/,
-    loader: `style!css?sourceMap!${sassLoader}`,
+    loader: `style!${sassLoader}`,
     include: [createPath('src/style')]
   },
 
   componentCss: {
     test: /\.s?css/,
-    loader: `raw!${sassLoader}`,
+    loader: `to-string!${sassLoader}`,
     include: [createPath('src/components'), createPath('src/directives')]
   },
 

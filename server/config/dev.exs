@@ -12,6 +12,7 @@ config :trello_burndown, TrelloBurndown.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [node: ["../bin/.compiled/webpack-ng2-seed.js", "start", "client"]]
+# Add when fixed
 
 # Watch static and templates for browser reloading.
 config :trello_burndown, TrelloBurndown.Endpoint,
