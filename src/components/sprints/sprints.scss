@@ -1,0 +1,44 @@
+@import '~style/utility';
+
+.sprints_back {
+  position: absolute;
+  width: 30px;
+  top: 0;
+  margin: 15px;
+}
+
+.sprints {
+  position: relative;
+  padding-left: 25px;
+  padding-right: 25px;
+
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .btn--default {
+    float: right;
+    margin-top: -40px;
+  }
+}
+
+.sprints_list {
+  padding: 20px;
+  width: 80%;
+  margin: 0 auto 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.sprints_list li {
+  background: $off-green;
+  width: 150px;
+  text-align: left;
+  height: 100px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 10px;
+  color: $light-grey;
+  padding: 10px;
+}

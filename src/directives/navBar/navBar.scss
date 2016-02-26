@@ -1,0 +1,39 @@
+@import '~style/utility';
+
+:host {
+  flex: 0 0 200px;
+  background: #C7BAB2;
+}
+
+.nav {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.nav li {
+  color: $brown;
+  padding: 10px 20px;
+  margin: 0 10px;
+  transition: all map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
+  width: 200px;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &:nth-child(1) {
+    text-align: right;
+  }
+
+  &:nth-child(2) {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-top: 50px solid $orange;
+    padding: 0;
+    cursor: crosshair;
+  }
+}
+

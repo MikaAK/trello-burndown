@@ -1,11 +1,12 @@
-back-button
+back-button.teams_back
 
-new-team('(onClose)'='fetchTeams()')
+section.teams
+  h1 Teams
 
-h4 Teams
+  ul.teams_list
+    li('*ngFor'='#team of teams')
+      span {{ team.name }}
+      ul('*ngFor'='#member of team.members')
+        li {{ member }}
 
-ul
-  li('*ngFor'='#team of teams')
-    span {{ team.name }}
-    ul('*ngFor'='#member of team.members')
-      li {{ member }}
+  new-team('(onClose)'='fetchTeams()')

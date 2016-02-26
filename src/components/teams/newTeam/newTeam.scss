@@ -1,0 +1,15 @@
+@import '~style/utility';
+.new-team {
+  .flex-form .flex-form{
+    position: relative;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $off-grey;
+    padding-bottom: 20px;
+  }
+
+  .btn--delete-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

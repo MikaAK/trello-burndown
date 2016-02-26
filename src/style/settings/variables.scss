@@ -1,9 +1,16 @@
+// Font sizes
 $base-font-size: 16px;
+$font-size-base: 20px;
+$font-size-lg: 24px;
+$font-size-sm: 16px;
+$font-weight-base: 200;
+$font-weight-mid: 300;
+$font-weight-bold: 500;
 
 // SVG
 $svg-types: 'small', 'medium', 'large';
 $svg-sizes: (
-  small: 15px,
-  medium: 20px,
-  large: 25px
+  small: 20px,
+  medium: 25px,
+  large: 30px
 );

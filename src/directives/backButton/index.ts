@@ -3,7 +3,8 @@ import {Router} from 'angular2/router'
 
 @Component({
   selector: 'back-button',
-  template: require('./backButton.jade')()
+  template: require('./backButton.jade')(),
+  styles: [require('./backButton.scss')]
 })
 export class BackButton {
   constructor(private router: Router) {}

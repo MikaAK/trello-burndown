@@ -1,0 +1,35 @@
+@import '~style/utility';
+
+:host {
+  display: block;
+  height: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.login_cta {
+  $diameter: 250px;
+  color: $forest;
+  position: relative;
+  top: 50%;
+  margin-top: -$diameter/2;
+  width: $diameter;
+  text-align: center;
+  border: 3px solid $off-grey;
+  border-radius: 50%;
+  height: $diameter;  
+  background: transparent;
+  font-size: $font-size-lg;
+  color: #fff;
+  font-weight: $font-weight-bold;
+  letter-spacing: 3px;
+  transition: all .5s map-get($animation-easing, elastic);
+
+  &:hover {
+    background: $orange;
+    box-shadow: 0px 0px 0px 12px rgba(255,255,255,.2);
+    border: 5px solid $poo;
+    text-shadow: 1px 1px rgba(0,0,0,0.2);
+    animation: pop .3s map-get($animation-easing, elastic);
+  }
+}

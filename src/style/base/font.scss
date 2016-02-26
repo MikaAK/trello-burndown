@@ -1,10 +1,15 @@
 body {
   font-family: 'Lato';
+  text-rendering: geometricPrecision;
+  font-size: $font-size-base;
+  font-weight: $font-weight-base;
+  letter-spacing: 1px;
 }
 
 h1, h2, h3,
 h4, h5, h6 {
-  font-family: 'Droid Serif';
+  font-family: 'Montserrat';
+  color: $off-grey;
 }
 
 a {

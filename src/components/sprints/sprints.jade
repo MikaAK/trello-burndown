@@ -1,15 +1,16 @@
-back-button
+back-button.sprints_back
 
-h1 Sprints
+section.sprints
+  h1 Sprints
 
-button.btn--default((click)='getSprints()') Refresh
+  button.btn--default((click)='getSprints()') Refresh
 
-ul
-  li.card.clickable('*ngFor'='#sprint of sprints' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
-    h5 {{ sprint.sprintName }}
+  ul.sprints_list
+    li.clickable('*ngFor'='#sprint of sprints' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
+      h5 {{ sprint.sprintName }}
 
-    span('*ngIf'='sprint.team') Team: {{ sprint.team.name }}
-    span('*ngIf'='sprint.pointTotal') Points in sprint: {{ sprint.pointTotal }}
+      span('*ngIf'='sprint.team') Team: {{ sprint.team.name }}
+      span('*ngIf'='sprint.pointTotal') Points in sprint: {{ sprint.pointTotal }}
 
-div
-  h5 Stats
+  div
+    h5 Stats

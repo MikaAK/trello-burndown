@@ -1,5 +1,5 @@
 .btn--cancel:hover {
-  color: $blue;
+  color: $red;
 }
 
 .btn--delete {
@@ -11,11 +11,20 @@
   }
 }
 
+.btn--delete-icon {
+  svg {
+    fill: $red;
+  }
+}
+
 .btn--default {
-  border: 1px solid $blue;
+  border: 1px solid $orange;
+  background: $orange;
+  color: #fff;
 
   &:hover {
-    background: $blue;
+    background: $light-orange;
+    border-color: $light-orange;
     color: $lightest-grey;
   }
 }

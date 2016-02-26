@@ -1,3 +1,33 @@
+@import '~style/utility';
+
 .trello-cards {
   display: flex;
 }
+
+.trello-cards_column {
+  background: $off-grey;
+  color: $orange;
+  padding: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.sprints_back {
+  position: absolute;
+  width: 30px;
+  top: 0;
+  margin: 15px;
+}
+
+.sprints_header {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+
+  > * {
+    margin-right: 25px;
+  }
+}
+

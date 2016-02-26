@@ -1,9 +1,13 @@
 button {
   transition: all map-get($animation-duration, short) map-get($animation-easing, neutral);
   border: 0;
+  border-radius: 4px;
   background: none;
   cursor: pointer;
-  padding: $button-padding;
+  padding: 8px 15px;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-base;
+  letter-spacing: 1px;
 
   &:focus {
     outline: none;

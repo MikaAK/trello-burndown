@@ -7,18 +7,30 @@ $light-grey  : #E7E7E7;
 $lightest-grey: #F7F7F7;
 $grey        : #DBDBDB;
 $dark-grey   : darken($grey, 10);
+$off-grey    : #E4E0DC;
 
 // Red
-$red         : #A93C41;
+$red         : #ed6047;
 $light-red   : lighten($red, 10);
 $dark-red    : darken($red, 10);
 
-// Green
+// Blue
 $blue        : #4B97D1;
 $light-blue  : lighten($blue, 10);
 $dark-blue   : darken($blue, 10);
+$off-blue    : #416077;
 
-// Blue
+// Green
 $green       : #48B268;
 $light-green : lighten($green, 10);
 $dark-green  : darken($green, 10);
+$off-green   : #417677;
+$forest      : #4C6146;
+$mint        : #80cbc4;
+
+// Orange
+$orange      : #FFA24B;
+$light-orange: lighten($orange, 10);
+$tan         : #e7c68d;
+$poo         : #7b674b;
+$brown       : #4c4439;

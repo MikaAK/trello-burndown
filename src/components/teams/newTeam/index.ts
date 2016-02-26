@@ -27,6 +27,7 @@ const DEFAULT_TEAM_MEMBER: ITeamMember = {
   selector: 'new-team',
   template: require('./newTeam.jade')(),
   directives: [Modal, FormSave],
+  styles: [require('./newTeam.scss')],
   providers: [TeamApi]
 })
 export class NewTeam {

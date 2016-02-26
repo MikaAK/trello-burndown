@@ -9,13 +9,15 @@ import {TeamsComponent} from './teams'
 import {SprintsComponent} from './sprints'
 import {SprintComponent} from './sprint'
 
+import {NavBar} from '../directives/navBar'
+
 import {load} from 'webfontloader'
 
 @Component({
   selector: 'app',
   template: require('./app.jade')(),
   styles: [require('./app.scss')],
-  directives: [RouterOutlet],
+  directives: [RouterOutlet, NavBar],
   providers: API_PROVIDERS
 })
 @RouteConfig([
@@ -31,7 +33,7 @@ export class AppComponent {
     return new Promise(function(resolve, reject) {
       load({
         google: {
-          families: ['Lato', 'Droid Serif']
+          families: ['Lato', 'Montserrat']
         },
         active() {
           resolve()

@@ -1,9 +1,10 @@
 $animation-easing: (
-  neutral: ease-in-out
+  neutral: ease-in-out,
+  elastic: cubic-bezier(1,.33,.36,1.32)
 );
 
 $animation-duration: (
-  short: .2s,
+  short: .3s,
   medium: .5s,
   long: 2s
 );
