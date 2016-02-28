@@ -1,7 +1,7 @@
 import {Component, Output, EventEmitter} from 'angular2/core'
-import {TeamApi} from 'api/team'
-import {Modal, ModalConfig} from 'shared/directives/modal'
-import {FormSave} from 'shared/directives/formSave'
+import {TeamApi} from 'api/Team'
+import {Modal, ModalConfig} from 'shared/directives/Modal'
+import {FormSave} from 'shared/directives/FormSave'
 
 interface INewTeam {
   name: string

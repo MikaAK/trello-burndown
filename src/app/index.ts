@@ -1,9 +1,10 @@
 import {Component} from 'angular2/core'
-import {RouteConfig, RouterOutlet} from 'angular2/router'
+import {RouteConfig, RouterOutlet, Router} from 'angular2/router'
 import {Observable} from 'rxjs/Observable'
 import {load} from 'webfontloader'
 
 import {API_PROVIDERS} from 'api'
+import {TrelloApi} from 'api/Trello'
 
 import {HomeComponent} from './home'
 import {LoginComponent} from './login'
@@ -19,7 +20,7 @@ import {SprintComponent} from './sprint'
   providers: API_PROVIDERS
 })
 @RouteConfig([
-  { path: '/', component: HomeComponent, name: 'Home' },
+  { path: '/', component: HomeComponent, name: 'Home', useAsDefault: true },
   { path: '/login', component: LoginComponent, name: 'Login' },
   { path: '/teams', component: TeamsComponent, name: 'Teams' },
   { path: '/sprints', component: SprintsComponent, name: 'Sprints' },
@@ -27,20 +28,25 @@ import {SprintComponent} from './sprint'
   { path: '/**', redirectTo: ['Home'] }
 ])
 export class AppComponent {
+  constructor(private _trelloApi: TrelloApi, private _router: Router) {}
+
   public ngOnInit() {
-    return new Observable(function(observer) {
+    this._router.subscribe(route => {
+      var isAuthorized = this._trelloApi.isAuthorized()
+
+      if (route !== 'login' && !isAuthorized)
+        this._router.navigate(['Login'])
+      else if (route === 'login' && isAuthorized)
+        this._router.navigate(['Home'])
+    })
+
+    return new Promise(function(resolve, reject) {
       load({
         google: {
           families: ['Lato', 'Montserrat']
         },
-        active() {
-          observer.next()
-          observer.complete()
-        },
-        inactive() {
-          observer.error()
-          observer.complete()
-        }
+        active: resolve,
+        inactive: reject
       })
     })
   }

@@ -40,7 +40,7 @@ export class TrelloApi {
   constructor(private http: Http, private locker: Locker) {}
 
   public isAuthorized(): boolean {
-    return <boolean>this.locker.get(TRELLO_KEY)
+    return !!this.locker.get(TRELLO_KEY)
   }
 
   public getAuthorization(): Observable<any> {

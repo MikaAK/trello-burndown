@@ -1,6 +1,6 @@
 import {Router} from 'angular2/router'
 import {Component} from 'angular2/core'
-import {TrelloApi} from 'api/trello'
+import {TrelloApi} from 'api/Trello'
 
 @Component({
   selector: 'login',

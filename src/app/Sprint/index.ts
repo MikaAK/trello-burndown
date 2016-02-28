@@ -13,7 +13,7 @@ const getCards = function(lists: any[], onlyPointed = true): any[] {
     .map('cards')
     .flatten()
     .compact()
-    .filter(card => !onlyPointed || card.points)
+    .filter(card: Object => !onlyPointed || card.points)
     .value()
 }
 

@@ -1,8 +1,8 @@
 import {Component} from 'angular2/core'
 import {Observable} from 'rxjs/Observable'
-import {SprintApi} from 'api/sprint'
+import {SprintApi} from 'api/Sprint'
 import {RouterLink, Router} from 'angular2/router'
-import {BackButton} from 'shared/directives/backButton'
+import {BackButton} from 'shared/directives/BackButton'
 
 @Component({
   selector: 'sprints',

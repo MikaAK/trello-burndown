@@ -6,7 +6,12 @@ section.teams
   ul.teams_list
     li('*ngFor'='#team of teams')
       span {{ team.name }}
-      ul('*ngFor'='#member of team.members')
-        li {{ member }}
+
+      div Members:
+      .teams_list_members('*ngIf'='team?.teamMembers?.length' '*ngFor'='#member of team.teamMembers')
+        ul
+          li
+            div Trello ID: {{ member?.trelloId }}
+            div Velocity: {{ member?.velocity }}
 
   new-team('(onClose)'='fetchTeams()')
