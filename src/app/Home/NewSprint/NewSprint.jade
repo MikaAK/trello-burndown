@@ -4,7 +4,7 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='g
   .new-sprint
     .alert--error('*ngIf'='error') {{ error }}
 
-    form.flex-form
+    form.flex-form('(onSubmit)'='save()')
       .input-group
         label(for='boardId') Sprint ID
         input(
@@ -31,10 +31,7 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='g
           '[(ngModel)]'='newSprint.team'
           required
         )
-          option(selected disabled) Select a team
+          option(disabled selected='selected') Select a team
           option('*ngFor'='#team of teams') {{ team.name }}
 
-      form-save.pull-right(
-        '(onSave)'='save()'
-        '(onCancel)'='modal.toggle()'
-      )
+      form-save.pull-right('(onCancel)'='modal.toggle()')

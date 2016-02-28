@@ -43,7 +43,9 @@ export class NewSprintComponent {
   }
 
   public getTeams() {
-    this.fetchTeams.subscribe(teams => this.teams = teams)
+    this.fetchTeams.subscribe((teams) => {
+      this.teams = teams
+    })
   }
 
   public save() {
