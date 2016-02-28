@@ -1,11 +1,12 @@
 import {Injectable} from 'angular2/core'
-import {Http} from 'angular2/http'
-import {RestApi} from './lib/RestApi'
+import {ApiService, ApiResource} from 'angular2-api'
 
 @Injectable()
-export class TeamMemberApi extends RestApi {
+export class TeamMemberApi implements ApiResource {
   public endpoint: string = 'team-members'
 
-  constructor(public http: Http) {super(http)}
+  constructor(private _api: ApiService) {
+    _api.initialize(this)
+  }
 }
 

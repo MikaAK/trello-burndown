@@ -6,7 +6,7 @@ import {Injectable} from 'angular2/core'
 import {Http} from 'angular2/http'
 import {Locker} from 'angular2-locker'
 
-import {objToQueryParams} from './lib/helpers'
+import {objToQueryParams} from './helpers'
 
 const TRELLO_BASE = 'https://trello.com/1/'
 
@@ -130,7 +130,7 @@ export class TrelloApi {
         })
 
         return cards
-      }))
+      })
   }
 
   private _attachCardsToBoard(board): Observable<any> {

@@ -1,17 +1,18 @@
 import {Injectable} from 'angular2/core'
-import {Http} from 'angular2/http'
-import {RestApi} from './lib/RestApi'
 import {Observable} from 'rxjs/Observable'
-import {TeamMemberApi} from './teamMember'
+import {TeamMemberApi} from './TeamMember'
+import {ApiService, ApiResource} from 'angular2-api'
 
 @Injectable()
-export class TeamApi extends RestApi {
+export class TeamApi implements ApiResource {
   public endpoint: string = 'team'
 
-  constructor(public http: Http, public teamMember: TeamMemberApi) {super(http)}
+  constructor(private _api: ApiService, public teamMember: TeamMemberApi) {
+    _api.initialize(this)
+  }
 
   public create(data: any, params?: Object): Observable<any> {
-    return super.create({name: data.name})
+    return this._api.create(this, {name: data.name})
       .mergeMap(team => {
         var teamMembers = data.teamMembers
           .map(function(teamMember) {
