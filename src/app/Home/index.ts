@@ -1,12 +1,11 @@
 import {Component} from 'angular2/core'
-import {NewSprintComponent} from './NewSprint'
-import {NavBar} from 'shared/directives/NavBar'
+import {NewSprint} from 'shared/directives/NewSprint'
 
 @Component({
   selector: 'home',
   template: require('./Home.jade')(),
   styles: [require('./Home.scss')],
-  directives: [NewSprintComponent, NavBar]
+  directives: [NewSprint]
 })
 export class HomeComponent {
 }

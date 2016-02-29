@@ -44,9 +44,9 @@ export class TrelloApi {
   }
 
   public getAuthorization(): Observable<any> {
-    var authWindow = window.open(TRELLO_AUTH_SECRET_URL)
-
     return new Observable(observer => {
+      const authWindow = window.open(TRELLO_AUTH_SECRET_URL)
+
       if (this.isAuthorized()) {
         console.log('Have Trello Key: ', this.locker.get(TRELLO_KEY))
         observer.next(this.locker.get(TRELLO_KEY))
@@ -55,7 +55,7 @@ export class TrelloApi {
         return
       }
 
-      var onComplete = event => {
+      const onComplete = event => {
         if (event.source !== authWindow)
           return
 
@@ -68,7 +68,7 @@ export class TrelloApi {
         observer.complete()
       }
 
-      var exitWindow = function() {
+      const exitWindow = function() {
         authWindow.close()
         window.removeEventListener('message', onComplete)
       }

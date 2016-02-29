@@ -1,10 +1,12 @@
 import {Component} from 'angular2/core'
-import {RouteConfig, RouterOutlet, Router} from 'angular2/router'
+import {RouteConfig, RouterOutlet, Router, Location} from 'angular2/router'
 import {Observable} from 'rxjs/Observable'
+import {Store} from '@ngrx/store'
 import {load} from 'webfontloader'
 
-import {API_PROVIDERS} from 'api'
 import {TrelloApi} from 'api/Trello'
+import {NavBar} from 'shared/directives/NavBar'
+import {Auth} from 'shared/services/Auth'
 
 import {HomeComponent} from './home'
 import {LoginComponent} from './login'
@@ -16,8 +18,8 @@ import {SprintComponent} from './sprint'
   selector: 'app',
   template: require('./app.jade')(),
   styles: [require('./app.scss')],
-  directives: [RouterOutlet],
-  providers: API_PROVIDERS
+  directives: [RouterOutlet, NavBar],
+  providers: [Auth]
 })
 @RouteConfig([
   { path: '/', component: HomeComponent, name: 'Home', useAsDefault: true },
@@ -28,17 +30,21 @@ import {SprintComponent} from './sprint'
   { path: '/**', redirectTo: ['Home'] }
 ])
 export class AppComponent {
-  constructor(private _trelloApi: TrelloApi, private _router: Router) {}
+  constructor(private _router: Router, private _location: Location, public auth: Auth) {}
 
   public ngOnInit() {
-    this._router.subscribe(route => {
-      var isAuthorized = this._trelloApi.isAuthorized()
+    //this._router
+      //.subscribe(() => this.auth.checkAuth())
 
-      if (route !== 'login' && !isAuthorized)
-        this._router.navigate(['Login'])
-      else if (route === 'login' && isAuthorized)
-        this._router.navigate(['Home'])
-    })
+    this.auth.isAuthorized
+      .subscribe((isAuthorized: boolean) => {
+        const isLogin = /login/.test(this._router.lastNavigationAttempt)
+
+        if (isLogin && isAuthorized)
+          this._router.navigate(['Home'])
+        else if (!isLogin && !isAuthorized)
+          this._router.navigate(['Login'])
+      })
 
     return new Promise(function(resolve, reject) {
       load({

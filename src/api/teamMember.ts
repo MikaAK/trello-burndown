@@ -6,7 +6,6 @@ export class TeamMemberApi implements ApiResource {
   public endpoint: string = 'team-members'
 
   constructor(private _api: ApiService) {
-    _api.initialize(this)
   }
 }
 

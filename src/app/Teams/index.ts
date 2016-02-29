@@ -3,7 +3,7 @@ import {Router} from 'angular2/router'
 import {TrelloApi} from 'api/Trello'
 import {TeamApi} from 'api/Team'
 import {BackButton} from 'shared/directives/BackButton'
-import {NewTeam} from './NewTeam'
+import {NewTeam} from './components/NewTeam'
 import {Observable} from 'rxjs/Observable'
 
 @Component({
@@ -14,21 +14,21 @@ import {Observable} from 'rxjs/Observable'
   providers: [TrelloApi, TeamApi]
 })
 export class TeamsComponent {
-  public teams: any
-  private teamFetch: Observable<any>
-
-  constructor(private _router: Router, private _trello: TrelloApi, private _team: TeamApi) {
-    this.teamFetch = this._team.findAll()
-
-    this.fetchTeams()
-  }
-
-  public ngOnInit() {
-    if (!this._trello.isAuthorized())
-      this._router.navigate(['Login'])
-  }
-
-  public fetchTeams() {
-    this.teamFetch.subscribe(teams => this.teams = teams)
-  }
 }
+  //public teams: any
+  //private teamFetch: Observable<any>
+
+  //constructor(private _router: Router, private _trello: TrelloApi, private _team: TeamApi) {
+    //this.teamFetch = this._team.findAll()
+
+    //this.fetchTeams()
+  //}
+
+  //public ngOnInit() {
+    //if (!this._trello.isAuthorized())
+      //this._router.navigate(['Login'])
+  //}
+
+  //public fetchTeams() {
+    //this.teamFetch.subscribe(teams => this.teams = teams)
+  //}

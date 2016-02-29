@@ -7,9 +7,7 @@ import {ApiService, ApiResource} from 'angular2-api'
 export class TeamApi implements ApiResource {
   public endpoint: string = 'team'
 
-  constructor(private _api: ApiService, public teamMember: TeamMemberApi) {
-    _api.initialize(this)
-  }
+  constructor(private _api: ApiService, public teamMemberApi: TeamMemberApi) {}
 
   public create(data: any, params?: Object): Observable<any> {
     return this._api.create(this, {name: data.name})
@@ -21,7 +19,7 @@ export class TeamApi implements ApiResource {
 
             return teamMember
           })
-          .map(teamMember => this.teamMember.create(teamMember))
+          .map(teamMember => this._api.create(this.teamMemberApi, teamMember))
 
         return Observable.forkJoin(teamMembers)
       })

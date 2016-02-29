@@ -1,2 +1,6 @@
-button.btn--default.login_cta((click)='authorize()')
+div('*ngIf'='auth.isGettingAuth | async')
+  h1 FETCHING AUTH
+  h2 Please use your Trello Window
+
+button.btn--default.login_cta((click)='auth.getAuth()')
   span Authorize Trello

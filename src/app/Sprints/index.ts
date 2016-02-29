@@ -15,12 +15,12 @@ export class SprintsComponent {
   private fetchSprints: Observable<any>
 
   constructor(private _sprint: SprintApi, public router: Router) {
-    this.fetchSprints = this._sprint.findAll()
+    //this.fetchSprints = this._sprint.findAll()
 
-    this.getSprints()
+    //this.getSprints()
   }
 
   public getSprints() {
-    this.fetchSprints.subscribe(sprints => this.sprints = sprints)
+    //this.fetchSprints.subscribe(sprints => this.sprints = sprints)
   }
 }

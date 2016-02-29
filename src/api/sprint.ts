@@ -7,9 +7,7 @@ import {Observable} from 'rxjs/Observable'
 export class SprintApi implements ApiResource {
   public endpoint: string = 'sprints'
 
-  constructor(private _api: ApiService, private _trello: TrelloApi) {
-    _api.initialize(this)
-  }
+  constructor(private _api: ApiService, private _trello: TrelloApi) {}
 
   public create(data: any, params?: Object): Observable<any> {
     return this._trello.getBoard(data.boardId)

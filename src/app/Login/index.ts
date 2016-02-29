@@ -1,6 +1,5 @@
-import {Router} from 'angular2/router'
 import {Component} from 'angular2/core'
-import {TrelloApi} from 'api/Trello'
+import {Auth} from 'shared/services/Auth'
 
 @Component({
   selector: 'login',
@@ -8,22 +7,5 @@ import {TrelloApi} from 'api/Trello'
   styles: [require('./Login.scss')],
 })
 export class LoginComponent {
-  constructor(private _trello: TrelloApi, private _router: Router) {}
-
-  public ngOnInit() {
-    if (this._trello.isAuthorized()) {
-      this.navigateHome()
-
-      return false
-    }
-  }
-
-  public authorize() {
-    this._trello.getAuthorization()
-      .subscribe(() => this.navigateHome())
-  }
-
-  private navigateHome() {
-      this._router.navigate(['Home'])
-  }
+  constructor(public auth: Auth) {}
 }
