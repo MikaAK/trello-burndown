@@ -19,6 +19,7 @@
     "rxjs/add/operator/catch",
     "rxjs/add/observable/of",
     "rxjs/add/observable/merge",
+    "rxjs/add/observable/interval",
     "rxjs/add/observable/forkJoin"
   ]
 }

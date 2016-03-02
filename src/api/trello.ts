@@ -48,7 +48,6 @@ export class TrelloApi {
       const authWindow = window.open(TRELLO_AUTH_SECRET_URL)
 
       if (this.isAuthorized()) {
-        console.log('Have Trello Key: ', this.locker.get(TRELLO_KEY))
         observer.next(this.locker.get(TRELLO_KEY))
         observer.complete()
 
@@ -68,10 +67,21 @@ export class TrelloApi {
         observer.complete()
       }
 
-      const exitWindow = function() {
-        authWindow.close()
+      const exitWindow = function(): void {
+        if (!authWindow.closed)
+          authWindow.close()
+
         window.removeEventListener('message', onComplete)
       }
+
+      const timer = Observable.interval(1000)
+        .subscribe(() => {
+          if (authWindow.closed) {
+            timer.unsubscribe()
+            observer.error()
+            observer.complete()
+          }
+        })
 
       window.addEventListener('message', onComplete)
 

@@ -28,19 +28,11 @@ export const auth: Reducer<IAuth> = (state = initialAuthState, {type, payload}: 
     },
 
     [AUTHORIZED]() {
-      return createState(state, {
-        isCheckingAuthorization: false,
-        isGettingAuth: false,
-        isAuthorized: true
-      })
+      return createState(state, {isAuthorized: true})
     },
 
     [UNAUTHORIZED]() {
-      return createState(state, {
-        isCheckingAuthorization: false,
-        isGettingAuth: false,
-        isAuthorized: false
-      })
+      return createState(state, {isAuthorized: false})
     },
 
     [GETTING_AUTH]() {

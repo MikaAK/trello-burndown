@@ -39,6 +39,7 @@ export class AppComponent {
     this.auth.isAuthorized
       .subscribe((isAuthorized: boolean) => {
         const isLogin = /login/.test(this._router.lastNavigationAttempt)
+        console.log('Is isAuthorized changed: ', isAuthorized, isLogin)
 
         if (isLogin && isAuthorized)
           this._router.navigate(['Home'])

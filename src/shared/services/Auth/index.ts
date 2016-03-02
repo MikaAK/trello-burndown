@@ -44,12 +44,13 @@ export class Auth {
       .do(() => _store.dispatch({type: GETTING_AUTH}))
       .mergeMap(() => this._getTrelloAuth())
       .do(() => _store.dispatch({type: GOT_AUTH}))
+      .do()
       .map(key => key && !/invalid/.test(<string>key))
 
     Observable.merge(checkAuth, getAuth)
       .map(isAuthorized => ({type: isAuthorized ? AUTHORIZED : UNAUTHORIZED}))
       .subscribe({
-        next: action => (console.log(action),_store.dispatch(action)),
+        next: action => _store.dispatch(action),
         error: () => _store.dispatch({type: UNAUTHORIZED})
       })
   }
@@ -65,7 +66,7 @@ export class Auth {
 
   private _getTrelloAuth() {
     return this._trelloApi.getAuthorization()
-      .catch(() => Observable.of({type: UNAUTHORIZED}))
+      .catch(() => Observable.of(false))
   }
 
   private _isAuthorized() {
