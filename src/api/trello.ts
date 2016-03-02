@@ -7,6 +7,7 @@ import {Http} from 'angular2/http'
 import {Locker} from 'angular2-locker'
 
 import {objToQueryParams} from './helpers'
+import {openWindow} from 'shared/helpers/openWindow'
 
 const TRELLO_BASE = 'https://trello.com/1/'
 
@@ -45,47 +46,22 @@ export class TrelloApi {
 
   public getAuthorization(): Observable<any> {
     return new Observable(observer => {
-      const authWindow = window.open(TRELLO_AUTH_SECRET_URL)
 
       if (this.isAuthorized()) {
         observer.next(this.locker.get(TRELLO_KEY))
         observer.complete()
-
-        return
       }
 
-      const onComplete = event => {
-        if (event.source !== authWindow)
-          return
-
-        if (event.data) {
+      return openWindow(TRELLO_AUTH_SECRET_URL, (win, event) => {
+        if (!event || !event.data) {
+          observer.error()
+        } else if (event.data) {
           this.locker.set(TRELLO_KEY, event.data)
           observer.next(event.data)
-        } else
-          observer.error(event.data)
+        }
 
         observer.complete()
-      }
-
-      const exitWindow = function(): void {
-        if (!authWindow.closed)
-          authWindow.close()
-
-        window.removeEventListener('message', onComplete)
-      }
-
-      const timer = Observable.interval(1000)
-        .subscribe(() => {
-          if (authWindow.closed) {
-            timer.unsubscribe()
-            observer.error()
-            observer.complete()
-          }
-        })
-
-      window.addEventListener('message', onComplete)
-
-      return exitWindow
+      })
     })
   }
 
