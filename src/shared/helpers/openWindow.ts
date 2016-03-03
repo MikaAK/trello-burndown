@@ -1,9 +1,18 @@
 import {Observable} from 'rxjs/Observable'
 
-export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|void)) => {
+export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|void)): (() => void) => {
   const newWin = window.open(url)
+
+  const timer = Observable.interval(1000)
+    .subscribe(() => {
+      if (newWin.closed) {
+        exitWindow()
+        onComplete(newWin)
+      }
+    })
+
   const onMessage = (event) => {
-    if (event && event.source !== newWin) 
+    if (event && event.source !== newWin)
       return
     else {
       exitWindow()
@@ -19,13 +28,6 @@ export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|v
     window.removeEventListener('message', onMessage)
   }
 
-  const timer = Observable.interval(1000)
-    .subscribe(() => {
-      if (newWin.closed) {
-        exitWindow()
-        onComplete(newWin)
-      }
-    })
 
   window.addEventListener('message', onMessage)
 

@@ -30,20 +30,28 @@ import {SprintComponent} from './sprint'
   { path: '/**', redirectTo: ['Home'] }
 ])
 export class AppComponent {
-  constructor(private _router: Router, private _location: Location, public auth: Auth) {}
+  constructor(private _router: Router, private _location: Location, public auth: Auth) {
+    setTimeout(() => auth.checkAuth(), 1000)
+  }
+    
 
   public ngOnInit() {
-    //this._router
-      //.subscribe(() => this.auth.checkAuth())
+    var isFirst = true
 
     this.auth.isAuthorized
       .subscribe((isAuthorized: boolean) => {
-        const isLogin = /login/.test(this._router.lastNavigationAttempt)
+        if (isFirst)
+          return isFirst = false
+
+        const isLogin = /login/.test(this._location.path())
         console.log('Is isAuthorized changed: ', isAuthorized, isLogin)
+
+        if (isAuthorized && !isLogin)
+          return
 
         if (isLogin && isAuthorized)
           this._router.navigate(['Home'])
-        else if (!isLogin && !isAuthorized)
+        else
           this._router.navigate(['Login'])
       })
 

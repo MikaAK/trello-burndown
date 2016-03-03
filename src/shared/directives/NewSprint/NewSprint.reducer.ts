@@ -1,5 +1,6 @@
 import {Reducer, Action} from '@ngrx/store'
-import {FETCHED_TEAMS, ERROR} from './NewSprintModel'
+import {FETCHED_TEAMS, ERRORS, CREATING_SPRINT} from './NewSprintModel'
+import {cloneState} from 'shared/helpers/cloneState'
 
 export interface INewSprint {
   teams: any[],
@@ -10,21 +11,22 @@ export const newSprintInitialState: INewSprint = {
   errors: ''
 }
 
-export const newSprint: Reducer<any> = (state = newSprintInitialState, {type, payload}: Action) => {
-  const actionMap = {
-    [FETCHED_TEAMS]() {
-      return Object.assign({}, state, {
-        teams: payload
-      })
-    },
+export const newSprint: Reducer<INewSprint> = (state = newSprintInitialState, {type, payload}: Action): INewSprint => {
+  switch(type) {
+    case FETCHED_TEAMS:
+      return cloneState(state, {teams: payload})
 
-    [ERROR]() {
-      return Object.assign({}, state, {
-        errors: payload
+    case ERRORS:
+      debugger
+      return cloneState(state, {
+        errors: 'message' in payload ? payload.message : payload
       })
-    }
+
+    case CREATING_SPRINT:
+      return cloneState(state, {errors: ''})
+
+    default:
+      return state
   }
-
-  return actionMap[type] ? actionMap[type]() : state
 }
 

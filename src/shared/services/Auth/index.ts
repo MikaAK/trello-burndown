@@ -44,7 +44,6 @@ export class Auth {
       .do(() => _store.dispatch({type: GETTING_AUTH}))
       .mergeMap(() => this._getTrelloAuth())
       .do(() => _store.dispatch({type: GOT_AUTH}))
-      .do()
       .map(key => key && !/invalid/.test(<string>key))
 
     Observable.merge(checkAuth, getAuth)
@@ -60,7 +59,6 @@ export class Auth {
   }
 
   public getAuth() {
-    console.log('next')
     this._actions.next({type: GET_AUTH})
   }
 

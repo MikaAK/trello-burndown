@@ -2,9 +2,10 @@ button.btn--default((click)='modal.toggle()') Add Sprint
 
 modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='newSprint.fetchTeams()')
   .new-sprint
-    // .alert--error('*ngIf'='store.error | async') {{ store.error | async }}
+    .alert--error('*ngIf'='newSprint.errors | async')
+      | {{ newSprint.errors | async }}
 
-    form.flex-form('(onSubmit)'='save()')
+    form.flex-form('(ngSubmit)'='save()')
       .input-group
         label(for='boardId') Sprint ID
         input(
@@ -32,6 +33,6 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='n
           required
         )
           option(disabled value selected='selected') Select a team
-          option('*ngFor'='#team of newSprint.teams') {{ team.name }}
+          option('*ngFor'='#team of newSprint.teams | async') {{ team.name }}
 
       form-save.pull-right('(onCancel)'='cancel()')

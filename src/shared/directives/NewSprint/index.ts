@@ -35,24 +35,22 @@ export class NewSprint {
   public sprint: ISprint
 
   constructor(public newSprint: NewSprintModel) {
-    debugger
     this.modal = new ModalConfig()
     this.sprint = DEFAULT_SPRINT
   }
 
   public save() {
-    //debugger
-    //var holidays = this.sprint.holidays
-      //.split(',')
-      //.map(str => str.trim())
+    var holidays = this.sprint.holidays
+      .split(',')
+      .map(str => str.trim())
 
-    //var params = {
-      //holidays,
-      //teamId: _.find(this.newSprint.teams., {name: this.sprint.team}).id,
-      //boardId: this.newSprint.boardId
-    //}
+    var params = {
+      holidays,
+      teamId: this.sprint.teamId,
+      boardId: this.sprint.boardId
+    }
 
-    //this.home.createSprint(this.sprint)
+    this.newSprint.createSprint(this.sprint)
   }
 
   public cancel() {

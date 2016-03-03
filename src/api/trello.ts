@@ -50,6 +50,8 @@ export class TrelloApi {
       if (this.isAuthorized()) {
         observer.next(this.locker.get(TRELLO_KEY))
         observer.complete()
+
+        return
       }
 
       return openWindow(TRELLO_AUTH_SECRET_URL, (win, event) => {
@@ -58,9 +60,8 @@ export class TrelloApi {
         } else if (event.data) {
           this.locker.set(TRELLO_KEY, event.data)
           observer.next(event.data)
+          observer.complete()
         }
-
-        observer.complete()
       })
     })
   }

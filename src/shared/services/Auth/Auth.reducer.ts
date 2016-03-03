@@ -1,5 +1,6 @@
 import {Reducer, Action} from '@ngrx/store'
 import {CHECKING_AUTH, CHECKED_AUTH, AUTHORIZED, UNAUTHORIZED, GETTING_AUTH, GOT_AUTH} from '.'
+import {cloneState} from 'shared/helpers/cloneState'
 
 export interface IAuth {
   isAuthorized: boolean
@@ -13,39 +14,27 @@ export const initialAuthState: IAuth = {
   isCheckingAuthorization: false
 }
 
-const createState = (state, changes) => {
-  return Object.assign({}, state, changes)
-}
-
 export const auth: Reducer<IAuth> = (state = initialAuthState, {type, payload}: Action): IAuth => {
-  const actionMap = {
-    [CHECKING_AUTH]() {
-      return createState(state, {isCheckingAuthorization: true})
-    },
+  switch(type) {
+    case CHECKING_AUTH:
+      return cloneState(state, {isCheckingAuthorization: true})
 
-    [CHECKED_AUTH]() {
-      return createState(state, {isCheckingAuthorization: false})
-    },
+    case CHECKED_AUTH:
+      return cloneState(state, {isCheckingAuthorization: false})
 
-    [AUTHORIZED]() {
-      return createState(state, {isAuthorized: true})
-    },
+    case AUTHORIZED:
+      return cloneState(state, {isAuthorized: true})
 
-    [UNAUTHORIZED]() {
-      return createState(state, {isAuthorized: false})
-    },
+    case UNAUTHORIZED:
+      return cloneState(state, {isAuthorized: false})
 
-    [GETTING_AUTH]() {
-      return createState(state, {isGettingAuth: true})
-    },
+    case GETTING_AUTH:
+      return cloneState(state, {isGettingAuth: true})
 
-    [GOT_AUTH]() {
-      return createState(state, {isGettingAuth: false})
-    }
+    case GOT_AUTH:
+      return cloneState(state, {isGettingAuth: false})
+
+    default:
+      return state
   }
-
-  if (actionMap[type])
-    return actionMap[type]()
-
-  return state
 }
