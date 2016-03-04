@@ -17,11 +17,11 @@ export const ERRORS = 'NEW_SPRINT:ERRORS'
 
 @Injectable()
 export class NewSprintModel {
-  public errors: Observable<string>
+  public errors: Observable<any[]>
   public teams: Observable<any[]>
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
-  constructor(_store: Store<any>, _sprintApi: SprintApi, _teamApi: TeamApi, _api: ApiService) {
+  constructor(private _api: ApiService, private _sprintApi: SprintApi, private _teamApi: TeamApi, _store: Store<any>) {
     var store = _store.select<INewSprint>('newSprint')
 
     this.errors = store
@@ -33,25 +33,51 @@ export class NewSprintModel {
     let fetchUsers = this._actions
       .filter(({type}: Action) => type === FETCH_TEAMS)
       .do(() => _store.dispatch({type: FETCHING_TEAMS}))
-      .mergeMap(() => _api.findAll(_teamApi))
-      .map(teamMembers => ({type: FETCHED_TEAMS, payload: teamMembers}))
+      .mergeMap(() => this._findAllTeams())
 
     let createSprint = this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)
       .do(() => _store.dispatch({type: CREATING_SPRINT}))
-      .mergeMap(({payload}: Action) => _sprintApi.create(payload))
-      .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
+      .do(() => console.log('Creating Sprint'))
+      .mergeMap(({payload}: Action) => this._createSprint(payload))
+      .do(() => console.log('Created Sprint'))
 
     Observable.merge(fetchUsers, createSprint)
-      .catch(error => Observable.of({type: ERRORS, payload: error}))
       .subscribe((action: Action) => _store.dispatch(action))
   }
 
-  public fetchTeams() {
+  public fetchTeams(): void {
     this._actions.next({type: FETCH_TEAMS})
   }
 
-  public createSprint(sprint) {
+  public createSprint(sprint): void {
     this._actions.next({type: CREATE_SPRINT, payload: sprint})
+  }
+
+  private _findAllTeams(): Observable<any> {
+    return this._api.findAll(this._teamApi)
+      .map(teamMembers => ({type: FETCHED_TEAMS, payload: teamMembers}))
+      .catch(error => Observable.of({type: ERRORS, payload: error}))
+  }
+
+  private _createSprint(sprint): Observable<Action> {
+    let params = {
+      teamId: '',
+      boardId: sprint.boardId,
+      holidays: sprint.holidays
+        .split(',')
+        .map(str => str.trim())
+    }
+
+    return this.teams
+      .map(teams => {
+        if (sprint.team)
+          params.teamId = _.find(teams, {name: sprint.team}).id
+
+        return params
+      })
+      .mergeMap((sParams) => this._sprintApi.create(sParams))
+      .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
+      .catch(error => Observable.of({type: ERRORS, payload: error}))
   }
 }

@@ -18,6 +18,7 @@
     "rxjs/add/operator/do",
     "rxjs/add/operator/catch",
     "rxjs/add/observable/of",
+    "rxjs/add/observable/throw",
     "rxjs/add/observable/merge",
     "rxjs/add/observable/interval",
     "rxjs/add/observable/forkJoin"

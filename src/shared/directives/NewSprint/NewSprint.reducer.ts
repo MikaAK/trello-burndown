@@ -4,11 +4,11 @@ import {cloneState} from 'shared/helpers/cloneState'
 
 export interface INewSprint {
   teams: any[],
-  errors: string
+  errors: any[]
 }
 export const newSprintInitialState: INewSprint = {
   teams: [],
-  errors: ''
+  errors: []
 }
 
 export const newSprint: Reducer<INewSprint> = (state = newSprintInitialState, {type, payload}: Action): INewSprint => {
@@ -17,10 +17,14 @@ export const newSprint: Reducer<INewSprint> = (state = newSprintInitialState, {t
       return cloneState(state, {teams: payload})
 
     case ERRORS:
-      debugger
-      return cloneState(state, {
-        errors: 'message' in payload ? payload.message : payload
-      })
+      let errors
+
+      if (typeof payload === 'string')
+        errors = [payload]
+      else
+        errors = payload
+
+      return cloneState(state, {errors})
 
     case CREATING_SPRINT:
       return cloneState(state, {errors: ''})

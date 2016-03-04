@@ -2,37 +2,28 @@ button.btn--default((click)='modal.toggle()') Add Sprint
 
 modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='newSprint.fetchTeams()')
   .new-sprint
-    .alert--error('*ngIf'='newSprint.errors | async')
-      | {{ newSprint.errors | async }}
-
-    form.flex-form('(ngSubmit)'='save()')
+    error-display('[errors]'='newSprint.errors | async')
+    form.flex-form('(ngSubmit)'='save()' '[ngFormModel]'='newSprintForm')
       .input-group
-        label(for='boardId') Sprint ID
+        label(for='boardId') Sprint Board ID
         input(
           type='text'
-          name='boardId'
+          ngControl='boardId'
           placeholder='Enter sprint Trello board id'
-          '[(ngModel)]'='sprint.boardId'
-          required
         )
 
       .input-group
         label(for='holidays') Holidays
         input(
           type='text'
-          name='holidays'
+          ngControl='holidays'
           placeholder='Enter holiday dates sperated by ,'
-          '[(ngModel)]'='sprint.holidays'
         )
 
       .input-group
         label(for='team') Team
-        select(
-          name='team'
-          '[(ngModel)]'='sprint.team'
-          required
-        )
-          option(disabled value selected='selected') Select a team
+        select(ngControl='team')
+          option(disabled value selected) Select a team
           option('*ngFor'='#team of newSprint.teams | async') {{ team.name }}
 
       form-save.pull-right('(onCancel)'='cancel()')
