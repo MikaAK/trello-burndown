@@ -1,15 +1,16 @@
-button.btn--default((click)='modal.toggle()') Add Sprint
+button.btn--default((click)='modalService.open()') Add Sprint
 
-modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='newSprint.fetchTeams()')
+modal(title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='teamService.findAll()')
   .new-sprint
-    error-display('[errors]'='newSprint.errors | async')
-    form.flex-form('(ngSubmit)'='save()' '[ngFormModel]'='newSprintForm')
+    error-display('[errors]'='sprintService.errors | async')
+    form.flex-form('(ngSubmit)'='createSprint()' '[ngFormModel]'='newSprintForm')
       .input-group
         label(for='boardId') Sprint Board ID
         input(
           type='text'
           ngControl='boardId'
           placeholder='Enter sprint Trello board id'
+          required
         )
 
       .input-group
@@ -22,8 +23,8 @@ modal('[config]'='modal' title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='n
 
       .input-group
         label(for='team') Team
-        select(ngControl='team')
+        select(ngControl='teamName' required)
           option(disabled value selected) Select a team
-          option('*ngFor'='#team of newSprint.teams | async') {{ team.name }}
+          option('*ngFor'='#team of teamService.teams | async') {{ team.name }}
 
       form-save.pull-right('(onCancel)'='cancel()')

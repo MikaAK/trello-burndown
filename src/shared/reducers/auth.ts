@@ -1,20 +1,20 @@
 import {Reducer, Action} from '@ngrx/store'
-import {CHECKING_AUTH, CHECKED_AUTH, AUTHORIZED, UNAUTHORIZED, GETTING_AUTH, GOT_AUTH} from '.'
 import {cloneState} from 'shared/helpers/cloneState'
+import {CHECKING_AUTH, CHECKED_AUTH, AUTHORIZED, UNAUTHORIZED, GETTING_AUTH, GOT_AUTH} from '../actions/auth'
 
-export interface IAuth {
+export interface IAuthStore {
   isAuthorized: boolean
   isGettingAuth: boolean
   isCheckingAuthorization: boolean
 }
 
-export const initialAuthState: IAuth = {
+const initialState: IAuthStore = {
   isAuthorized: false,
   isGettingAuth: false,
   isCheckingAuthorization: false
 }
 
-export const auth: Reducer<IAuth> = (state = initialAuthState, {type, payload}: Action): IAuth => {
+export const auth: Reducer<IAuthStore> = (state = initialState, {type, payload}: Action): IAuthStore => {
   switch(type) {
     case CHECKING_AUTH:
       return cloneState(state, {isCheckingAuthorization: true})

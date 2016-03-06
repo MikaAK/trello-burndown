@@ -1,5 +1,5 @@
 import {Component} from 'angular2/core'
-import {Auth} from 'shared/services/Auth'
+import {AuthService} from 'shared/services/Auth'
 
 @Component({
   selector: 'login',
@@ -7,5 +7,5 @@ import {Auth} from 'shared/services/Auth'
   styles: [require('./Login.scss')],
 })
 export class LoginComponent {
-  constructor(public auth: Auth) {}
+  constructor(public auth: AuthService) {}
 }

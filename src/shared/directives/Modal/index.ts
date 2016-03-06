@@ -1,10 +1,14 @@
-import {Component, Input, Output, EventEmitter} from 'angular2/core';
+import {Component, Input, Output, EventEmitter, HostBinding, Injectable} from 'angular2/core'
 
-export class ModalConfig {
+@Injectable()
+export class ModalService {
   public isOpen: boolean = false
 
   public toggle(): void {
-    this.isOpen = !this.isOpen
+    if (this.isOpen)
+      this.close()
+    else
+      this.open()
   }
 
   public close(): void {
@@ -22,23 +26,25 @@ export class ModalConfig {
   styles: [require('./Modal.scss')]
 })
 export class Modal {
-  @Input() public config: ModalConfig
   @Input() public title: string
   @Output() public onClose: EventEmitter<boolean> = new EventEmitter()
   @Output() public onOpen: EventEmitter<boolean> = new EventEmitter()
-  private _isOpenLast: boolean = false
+  public _isOpenLast: boolean = false
+
+  constructor(public modalService: ModalService) {}
+
+  @HostBinding('hidden') public get _isHidden() {
+    return !this.modalService.isOpen
+  }
 
   public ngDoCheck() {
-    if (!this.config)
-      return
-
-    if (this._isOpenLast !== this.config.isOpen) {
-      if (this.config.isOpen)
+    if (this._isOpenLast !== this.modalService.isOpen) {
+      if (this.modalService.isOpen)
         this.onOpen.emit(true)
       else
         this.onClose.emit(true)
 
-      this._isOpenLast = this.config.isOpen
+      this._isOpenLast = this.modalService.isOpen
     }
   }
 }

@@ -1,49 +1,76 @@
 import * as _ from 'lodash'
 import {Component, Output, EventEmitter} from 'angular2/core'
 import {FormBuilder, Validators, ControlGroup, NgForm} from 'angular2/common'
-import {Modal, ModalConfig} from 'shared/directives/Modal'
+import {Observable} from 'rxjs/Observable'
+import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
+import {Action} from '@ngrx/store'
+
+import {Modal, ModalService} from 'shared/directives/Modal'
 import {FormSave} from 'shared/directives/FormSave'
 import {TeamApi} from 'api/Team'
 import {SprintApi} from 'api/Sprint'
-import {Observable} from 'rxjs/Observable'
-import {NewSprintModel} from './NewSprintModel'
+import {SprintService} from 'shared/services/Sprint'
+import {TeamService} from 'shared/services/Team'
 import {ErrorDisplay} from '../ErrorDisplay'
 
-interface ISprint {
-  team: any,
-  boardId: string,
-  holidays: string,
-  teamId?: number
-}
+const CREATE_SPRINT = 'CREATE_SPRINT'
 
 @Component({
   selector: 'new-sprint',
   template: require('./NewSprint.jade')(),
   styles: [require('./NewSprint.scss')],
   directives: [FormSave, Modal, NgForm, ErrorDisplay],
-  providers: [NewSprintModel]
+  providers: [TeamService, SprintService, ModalService]
 })
 export class NewSprint {
   @Output() public onSave: EventEmitter<any> = new EventEmitter()
   @Output() public onCancel: EventEmitter<any> = new EventEmitter()
 
-  public modal: ModalConfig
   public newSprintForm: ControlGroup 
+  private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
-  constructor(public newSprint: NewSprintModel, fb: FormBuilder) {
-    this.modal = new ModalConfig()
+  constructor(
+    public modalService: ModalService,
+    public sprintService: SprintService,
+    public teamService: TeamService,
+    fb: FormBuilder
+  ) {
     this.newSprintForm = fb.group({
       boardId: ['', Validators.required],
       holidays: [''],
-      team: ['', Validators.required]
+      teamName: ['', Validators.required]
     })
+
+    this._actions
+      .filter(({type}: Action) => type === CREATE_SPRINT)
+      .mergeMap(sprint => this._serialize(this.newSprintForm.value))
+      .subscribe(sprint => this.sprintService.create(sprint))
   }
 
-  public save() {
-    this.newSprint.createSprint(this.newSprintForm.value)
+  public createSprint() {
+    this._actions.next({type: CREATE_SPRINT})
   }
 
   public cancel() {
     this.onCancel.emit('event')
+  }
+
+  private _serialize(data): Observable<any> {
+    let params = {
+      boardId: data.boardId,
+      teamId: null,
+      holidays: data.holidays
+        .split(',')
+        .map(str => str.trim())
+    }
+
+    return this.teamService.teams
+      .map(teams => _.find(teams, {name: data.teamName}))
+      .map(team => {
+        if (team)
+          params.teamId = team.id
+
+        return params
+      })
   }
 }

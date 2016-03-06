@@ -1,11 +1,8 @@
-.modal_backdrop(
-  '[style.opacity]'='config.isOpen ? 1 : 0'
-  '[style.pointer-events]'='config.isOpen ? "auto" : "none"'
-)
+.modal_backdrop
   .modal_container
     .modal_header
       h3 {{ title }}
-      .icon-close.svg--medium((click)='config.toggle()')
-        != require('svg/plus.svg')
+      .icon-close.svg--medium((click)='modalService.close()')
+        != require('svg/close.svg')
 
     ng-content

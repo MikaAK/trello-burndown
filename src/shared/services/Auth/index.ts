@@ -3,26 +3,27 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Store, Action} from '@ngrx/store'
 import {TrelloApi} from 'api/Trello'
-import {IAuth} from './Auth.reducer'
-
-export const CHECK_AUTH = 'AUTH:CHECK_AUTH'
-export const CHECKING_AUTH = 'AUTH:CHECKING_AUTH'
-export const CHECKED_AUTH = 'AUTH:CHECKED_AUTH'
-export const AUTHORIZED = 'AUTH:AUTHORIZED'
-export const UNAUTHORIZED = 'AUTH:UNAUTHORIZED'
-export const GET_AUTH = 'AUTH:GET_AUTH'
-export const GETTING_AUTH = 'AUTH:GETTING_AUTH'
-export const GOT_AUTH = 'AUTH:GOT_AUTH'
+import {IAuthStore} from 'shared/reducers/auth'
+import {
+  CHECK_AUTH,
+  CHECKING_AUTH,
+  CHECKED_AUTH,
+  AUTHORIZED,
+  UNAUTHORIZED,
+  GET_AUTH,
+  GETTING_AUTH,
+  GOT_AUTH
+} from 'shared/actions/auth'
 
 @Injectable()
-export class Auth {
+export class AuthService {
   public isAuthorized: Observable<boolean>
   public isCheckingAuthorization: Observable<boolean>
   public isGettingAuth: Observable<boolean>
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _store: Store<any>, private _trelloApi: TrelloApi) {
-    const store = _store.select<IAuth>('auth')
+    const store = _store.select<IAuthStore>('auth')
 
     this.isAuthorized = store
       .map(auth => auth.isAuthorized)

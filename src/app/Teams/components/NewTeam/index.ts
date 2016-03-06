@@ -1,6 +1,6 @@
-import {Component, Output, EventEmitter} from 'angular2/core'
+import {Component, Output, EventEmitter, ViewChild} from 'angular2/core'
 import {TeamApi} from 'api/Team'
-import {Modal, ModalConfig} from 'shared/directives/Modal'
+import {Modal, ModalService} from 'shared/directives/Modal'
 import {FormSave} from 'shared/directives/FormSave'
 
 interface INewTeam {
@@ -28,15 +28,13 @@ const DEFAULT_TEAM_MEMBER: ITeamMember = {
   template: require('./NewTeam.jade')(),
   styles: [require('./NewTeam.scss')],
   directives: [Modal, FormSave],
-  providers: [TeamApi]
+  providers: [TeamApi, ModalService]
 })
 export class NewTeam {
   @Output() public onClose: EventEmitter<any> = new EventEmitter()
-  public modal: ModalConfig
   public newTeam: INewTeam = DEFAULT_TEAM
 
-  constructor(private _team: TeamApi) {
-    this.modal = new ModalConfig()
+  constructor(public modalService: ModalService, private _team: TeamApi) {
   }
 
   public addTeamMember() {
@@ -58,7 +56,7 @@ export class NewTeam {
 
   public cancel() {
     this.resetTeam()
-    this.modal.toggle()
+    this.modalService.toggle()
     this.onClose.emit('emit')
   }
 }

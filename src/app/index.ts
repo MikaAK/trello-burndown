@@ -6,7 +6,7 @@ import {load} from 'webfontloader'
 
 import {TrelloApi} from 'api/Trello'
 import {NavBar} from 'shared/directives/NavBar'
-import {Auth} from 'shared/services/Auth'
+import {AuthService} from 'shared/services/Auth'
 
 import {HomeComponent} from './home'
 import {LoginComponent} from './login'
@@ -19,7 +19,7 @@ import {SprintComponent} from './sprint'
   template: require('./app.jade')(),
   styles: [require('./app.scss')],
   directives: [RouterOutlet, NavBar],
-  providers: [Auth]
+  providers: [AuthService]
 })
 @RouteConfig([
   { path: '/', component: HomeComponent, name: 'Home', useAsDefault: true },
@@ -30,7 +30,7 @@ import {SprintComponent} from './sprint'
   { path: '/**', redirectTo: ['Home'] }
 ])
 export class AppComponent {
-  constructor(private _router: Router, private _location: Location, public auth: Auth) {
+  constructor(private _router: Router, private _location: Location, public auth: AuthService) {
     setTimeout(() => auth.checkAuth(), 1000)
   }
     

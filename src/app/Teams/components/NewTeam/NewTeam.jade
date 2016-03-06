@@ -1,8 +1,7 @@
-button.btn--default((click)='modal.toggle()') Add Team Member
+button.btn--default((click)='modalService.toggle()') Add Team Member
 
 modal.new-team(
   title='New Team'
-  '[config]'='modal'
   '(onOpen)'='resetTeam()'
 )
   form.flex-form
