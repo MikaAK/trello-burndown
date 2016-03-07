@@ -3,13 +3,13 @@ import {cloneState} from 'shared/helpers/cloneState'
 import {CHECKING_AUTH, CHECKED_AUTH, AUTHORIZED, UNAUTHORIZED, GETTING_AUTH, GOT_AUTH} from '../actions/auth'
 
 export interface IAuthStore {
-  isAuthorized: boolean
+  isAuthorized?: boolean
   isGettingAuth: boolean
   isCheckingAuthorization: boolean
 }
 
 const initialState: IAuthStore = {
-  isAuthorized: false,
+  isAuthorized: null, 
   isGettingAuth: false,
   isCheckingAuthorization: false
 }

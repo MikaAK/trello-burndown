@@ -56,12 +56,15 @@ export class NewSprint {
   }
 
   private _serialize(data): Observable<any> {
+    let holidays = _(data.holidays.split(',')) 
+      .map(_.trim)
+      .compact()
+      .value()
+
     let params = {
+      holidays,
       boardId: data.boardId,
-      teamId: null,
-      holidays: data.holidays
-        .split(',')
-        .map(str => str.trim())
+      teamId: null
     }
 
     return this.teamService.teams

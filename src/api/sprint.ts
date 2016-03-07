@@ -1,4 +1,4 @@
-import {first} from 'lodash'
+import {last} from 'lodash'
 import {ApiResource, ApiService} from 'angular2-api'
 import {Injectable} from 'angular2/core'
 import {TrelloApi} from './Trello'
@@ -14,7 +14,8 @@ export class SprintApi implements ApiResource {
     return this._trello.getBoard(data.boardId)
       .catch(error => Observable.throw(error.text ? error.text() : error))
       .map(board => {
-        data.sprintName = first(board.name.match(/Sprint +\W +(.*)/)) || board.name
+        debugger
+        data.sprintName = last(board.name.match(/Sprint +\W +(.*)/)) || board.name
 
         return data
       })
