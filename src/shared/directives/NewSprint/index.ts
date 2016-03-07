@@ -3,14 +3,15 @@ import {Component, Output, EventEmitter} from 'angular2/core'
 import {FormBuilder, Validators, ControlGroup, NgForm} from 'angular2/common'
 import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {Action} from '@ngrx/store'
+import {Action, Dispatcher} from '@ngrx/store'
 
-import {Modal, ModalService} from 'shared/directives/Modal'
-import {FormSave} from 'shared/directives/FormSave'
 import {TeamApi} from 'api/Team'
 import {SprintApi} from 'api/Sprint'
+import {Modal, ModalService} from 'shared/directives/Modal'
+import {FormSave} from 'shared/directives/FormSave'
 import {SprintService} from 'shared/services/Sprint'
 import {TeamService} from 'shared/services/Team'
+import {CREATED_SPRINT} from 'shared/actions/sprint'
 import {ErrorDisplay} from '../ErrorDisplay'
 
 const CREATE_SPRINT = 'CREATE_SPRINT'
@@ -33,13 +34,18 @@ export class NewSprint {
     public modalService: ModalService,
     public sprintService: SprintService,
     public teamService: TeamService,
-    fb: FormBuilder
+    fb: FormBuilder,
+    dispatcher: Dispatcher<any>
   ) {
     this.newSprintForm = fb.group({
       boardId: ['', Validators.required],
       holidays: [''],
       teamName: ['', Validators.required]
     })
+
+    dispatcher
+      .filter(({type}: Action) => type === CREATED_SPRINT)
+      .subscribe(() => this.modalService.close())
 
     this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)

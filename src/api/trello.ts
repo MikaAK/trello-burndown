@@ -76,7 +76,7 @@ export class TrelloApi {
       return Observable.throw('No board Id Given')
 
     return this.http.get(this.createTrelloUrl(`boards/${boardId}`))
-      .map(data => (console.log(data.json()), data.json()))
+      .map(data => data.json())
   }
 
   public getBoardLists(boardId: string): Observable<any> {

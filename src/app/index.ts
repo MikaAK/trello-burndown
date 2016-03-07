@@ -44,7 +44,6 @@ export class AppComponent {
           return isFirst = false
 
         const isLogin = /login/.test(this._location.path())
-        console.log('Is isAuthorized changed: ', isAuthorized, isLogin)
 
         if (isAuthorized && !isLogin)
           return
