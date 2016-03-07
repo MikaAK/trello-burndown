@@ -16,7 +16,7 @@ import {
 } from 'shared/actions/auth'
 
 @Injectable()
-export class AuthService {
+export class Auth {
   public isAuthorized: Observable<boolean>
   public isCheckingAuthorization: Observable<boolean>
   public isGettingAuth: Observable<boolean>

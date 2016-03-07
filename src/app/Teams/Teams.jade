@@ -4,14 +4,14 @@ section.teams
   h1 Teams
 
   ul.teams_list
-    li('*ngFor'='#team of teams')
+    li('*ngFor'='#team of teams.items | async')
       span {{ team.name }}
 
       div Members:
-      .teams_list_members('*ngIf'='team?.teamMembers?.length' '*ngFor'='#member of team.teamMembers')
+      .teams_list_members('*ngIf'='team.teamMembers.length' '*ngFor'='#member of team.teamMembers')
         ul
           li
-            div Trello ID: {{ member?.trelloId }}
-            div Velocity: {{ member?.velocity }}
+            div Trello ID: {{ member.trelloId }}
+            div Velocity: {{ member.velocity }}
 
   new-team('(onClose)'='fetchTeams()')

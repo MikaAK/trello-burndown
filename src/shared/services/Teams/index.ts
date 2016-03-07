@@ -17,16 +17,16 @@ import {
 } from 'shared/actions/team'
 
 @Injectable()
-export class TeamService {
+export class Teams {
   public errors: Observable<any[]>
-  public teams: Observable<any[]>
+  public items: Observable<any[]>
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _api: ApiService, private _teamApi: TeamApi, _store: Store<any>) {
     var store = _store.select<ITeamStore>('team')
 
     this.errors = store.map(({createErrors}: ITeamStore) => createErrors)
-    this.teams = store.map(({teams}: ITeamStore) => teams)
+    this.items = store.map(({teams}: ITeamStore) => teams)
 
     let createTeam = this._actions
       .filter(({type}: Action) => type === CREATE_TEAM)

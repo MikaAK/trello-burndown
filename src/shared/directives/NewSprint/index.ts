@@ -9,8 +9,8 @@ import {TeamApi} from 'api/Team'
 import {SprintApi} from 'api/Sprint'
 import {Modal, ModalService} from 'shared/directives/Modal'
 import {FormSave} from 'shared/directives/FormSave'
-import {SprintService} from 'shared/services/Sprint'
-import {TeamService} from 'shared/services/Team'
+import {Sprints} from 'shared/services/Sprints'
+import {Teams} from 'shared/services/Teams'
 import {CREATED_SPRINT} from 'shared/actions/sprint'
 import {ErrorDisplay} from '../ErrorDisplay'
 
@@ -21,7 +21,7 @@ const CREATE_SPRINT = 'CREATE_SPRINT'
   template: require('./NewSprint.jade')(),
   styles: [require('./NewSprint.scss')],
   directives: [FormSave, Modal, NgForm, ErrorDisplay],
-  providers: [TeamService, SprintService, ModalService]
+  providers: [Teams, Sprints, ModalService]
 })
 export class NewSprint {
   @Output() public onSave: EventEmitter<any> = new EventEmitter()
@@ -32,8 +32,8 @@ export class NewSprint {
 
   constructor(
     public modalService: ModalService,
-    public sprintService: SprintService,
-    public teamService: TeamService,
+    public sprints: Sprints,
+    public teams: Teams,
     fb: FormBuilder,
     dispatcher: Dispatcher<any>
   ) {
@@ -50,7 +50,7 @@ export class NewSprint {
     this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)
       .mergeMap(sprint => this._serialize(this.newSprintForm.value))
-      .subscribe(sprint => this.sprintService.create(sprint))
+      .subscribe(sprint => this.sprints.create(sprint))
   }
 
   public createSprint() {
@@ -73,7 +73,7 @@ export class NewSprint {
       teamId: null
     }
 
-    return this.teamService.teams
+    return this.teams.items
       .map(teams => _.find(teams, {name: data.teamName}))
       .map(team => {
         if (team)

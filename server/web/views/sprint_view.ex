@@ -14,7 +14,6 @@ defmodule TrelloBurndown.SprintView do
     params = %{id: sprint.id,
       board_id: sprint.board_id,
       sprint_name: sprint.sprint_name,
-      point_total: sprint.point_total,
       team_id: sprint.team_id,
       holidays: sprint.holidays
     }

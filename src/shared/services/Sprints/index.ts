@@ -17,15 +17,15 @@ import {
 } from 'shared/actions/sprint'
 
 @Injectable()
-export class SprintService {
+export class Sprints {
   public errors: Observable<any[]>
-  public sprints: Observable<any[]>
+  public items: Observable<any[]>
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _api: ApiService, private _sprintApi: SprintApi, _store: Store<any>) {
     var store = _store.select<ISprintStore>('sprint')
 
-    this.sprints = store.map(({sprints}: ISprintStore) => sprints)
+    this.items = store.map(({sprints}: ISprintStore) => sprints)
     this.errors = store.map(({createErrors}: ISprintStore) => createErrors)
 
     let createSprint = this._actions

@@ -6,7 +6,7 @@ section.sprints
   button.btn--default((click)='getSprints()') Refresh
 
   ul.sprints_list
-    li.clickable('*ngFor'='#sprint of sprints' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
+    li.clickable('*ngFor'='#sprint of sprints.items | async' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
       h5 {{ sprint.sprintName }}
 
       span('*ngIf'='sprint.team') Team: {{ sprint.team.name }}
