@@ -4,10 +4,10 @@ modal.new-team(
   title='New Team'
   '(onOpen)'='resetTeam()'
 )
-  form.flex-form
+  form.flex-form('[ngForm]'='newTeamForm')
     .input-group
       label(for='name') Team Name
-      input(name='name' '[(ngModel)]'='newTeam.name' required)
+      input(name='name' ngControl='name' required)
 
     .input-group
       label(for='members') Team Members (Seperate by commas)

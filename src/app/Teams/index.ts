@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable'
 import {Teams} from 'shared/services/Teams'
 import {TrelloApi} from 'api/Trello'
 import {BackButton} from 'shared/directives/BackButton'
-import {NewTeam} from './components/NewTeam'
+import {NewTeam} from 'shared/directives/NewTeam'
 
 @Component({
   selector: 'teams',

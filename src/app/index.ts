@@ -8,11 +8,11 @@ import {TrelloApi} from 'api/Trello'
 import {NavBar} from 'shared/directives/NavBar'
 import {Auth} from 'shared/services/Auth'
 
-import {HomeComponent} from './home'
-import {LoginComponent} from './login'
-import {TeamsComponent} from './teams'
-import {SprintsComponent} from './sprints'
-import {SprintComponent} from './sprint'
+import {HomeComponent} from './Home'
+import {LoginComponent} from './Login'
+import {TeamsComponent} from './Teams'
+import {SprintsComponent} from './Sprints'
+import {SprintComponent} from './Sprint'
 
 @Component({
   selector: 'app',
@@ -34,7 +34,6 @@ export class AppComponent {
     setTimeout(() => auth.checkAuth(), 1000)
   }
     
-
   public ngOnInit() {
     var isFirst = true
 

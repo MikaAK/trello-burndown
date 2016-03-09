@@ -26,8 +26,8 @@ import {SprintCardList} from './components/SprintCardList'
 
 @Component({
   selector: 'sprint',
-  template: require('./sprint.jade')(),
-  styles: [require('./sprint.scss')],
+  template: require('./Sprint.jade')(),
+  styles: [require('./Sprint.scss')],
   directives: [BackButton, SprintCardList]
 })
 export class SprintComponent {

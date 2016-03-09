@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable'
 export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|void)): (() => void) => {
   const newWin = window.open(url)
 
-  const timer = Observable.interval(1000)
+  const timer = Observable.interval(200)
     .subscribe(() => {
       if (newWin.closed) {
         exitWindow()
@@ -27,7 +27,6 @@ export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|v
     timer.unsubscribe()
     window.removeEventListener('message', onMessage)
   }
-
 
   window.addEventListener('message', onMessage)
 
