@@ -1,0 +1,8 @@
+.modal_backdrop
+  .modal_container
+    .modal_header
+      h3 {{ title }}
+      .icon-close.svg--medium((click)='modalService.close()')
+        != require('svg/close.svg')
+
+    ng-content

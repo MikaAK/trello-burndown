@@ -1,0 +1,34 @@
+button.btn--default((click)='modalService.open()') Add Sprint
+
+modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
+  .new-sprint
+    error-display('[errors]'='sprints.errors | async')
+    form.flex-form('(ngSubmit)'='createSprint()' '[ngFormModel]'='newSprintForm')
+      .input-group
+        label(for='boardId') Sprint Board ID
+        input(
+          type='text'
+          ngControl='boardId'
+          '[(ngModel)]'='newSprint.boardId'
+          placeholder='Enter sprint Trello board id'
+          required
+        )
+
+      .input-group
+        label(for='holidays') Holidays
+        input(
+          type='text'
+          ngControl='holidays'
+          '[(ngModel)]'='newSprint.holidays'
+          placeholder='Enter holiday dates sperated by ,'
+        )
+
+      .input-group
+        label(for='team') Team
+        select(ngControl='teamName' '[(ngModel)]'='newSprint.teamName' required)
+          option(disabled value selected) Select a team
+          option('*ngFor'='#team of teams.items | async') {{ team.name }}
+
+      .form-save.pull-right
+        button.btn--default('[disabled]'='sprints.isCreating | async') Create
+        button.btn--cancel('(click)'='cancel()' type='button') Cancel

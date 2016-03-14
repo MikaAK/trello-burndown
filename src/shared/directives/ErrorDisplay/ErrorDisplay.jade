@@ -1,0 +1,3 @@
+.alert--error('*ngIf'='displayErrors?.length')
+  div('*ngFor'='#error of displayErrors')
+    | {{ error }}

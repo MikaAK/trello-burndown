@@ -15,6 +15,9 @@ select {
   border-right: 0;
   border-bottom: 2px solid $light-grey;
 
+  &.ng-invalid {
+    border-color: $red;
+  }
 
   &:active, &:focus {
     outline: 0;

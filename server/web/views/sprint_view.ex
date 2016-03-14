@@ -14,13 +14,12 @@ defmodule TrelloBurndown.SprintView do
     params = %{id: sprint.id,
       board_id: sprint.board_id,
       sprint_name: sprint.sprint_name,
-      point_total: sprint.point_total,
       team_id: sprint.team_id,
       holidays: sprint.holidays
     }
 
-    if Map.get(sprint, :team_id) do
-      json = TrelloBurndown.TeamView.render("team.json", %{team: Map.get(sprint, :team)})
+    if Ecto.assoc_loaded? sprint.team do
+      json = TrelloBurndown.TeamView.render "team.json", %{team: Map.get(sprint, :team)}
 
       Map.put(params, :team, json)
     else

@@ -1,7 +1,7 @@
-import {TeamMemberApi} from './teamMember'
-import {TeamApi} from './team'
-import {TrelloApi} from './trello'
-import {SprintApi} from './sprint'
+import {TeamMemberApi} from './TeamMember'
+import {TeamApi} from './Team'
+import {TrelloApi} from './Trello'
+import {SprintApi} from './Sprint'
 
 const API_PROVIDERS = [TeamApi, TeamMemberApi, TrelloApi, SprintApi]
 

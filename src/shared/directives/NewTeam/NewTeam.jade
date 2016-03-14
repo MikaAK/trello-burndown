@@ -1,0 +1,33 @@
+button.btn--default((click)='modalService.toggle()') Add Team Member
+
+modal.new-team(
+  title='New Team'
+  '(onClose)'='reset()'
+)
+  form.flex-form('[ngFormModel]'='newTeamForm' '(ngSubmit)'='teams.create(newTeam)')
+    .input-group
+      label(for='name') Team Name
+      input(name='name' '[(ngModel)]'='newTeam.name' required)
+
+    .input-group
+      label(for='members') Team Members (Seperate by commas)
+
+      div.flex-form('*ngFor'='#member of newTeam.teamMembers')
+        label Trello ID
+        input(
+          '[(ngModel)]'='member.trelloId'
+          required
+        )
+
+        label Velocity
+        input(
+          '[(ngModel)]'='member.velocity'
+          required
+        )
+        button.btn--delete-icon(type='button' '(click)'='removeTeamMember()')
+          .svg--small
+            != require('svg/trash.svg')
+
+      button.btn--default(type='button' '(click)'='addTeamMember()') Add Team Member
+
+    form-save.pull-right('(onCancel)'='close()')

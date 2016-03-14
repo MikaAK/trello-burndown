@@ -1,5 +1,4 @@
 .icon-close {
-  transform: rotate(45deg);
   cursor: pointer;
   stroke: $poo;
   transition: all map-get($animation-duration, 'short') map-get($animation-easing, 'elastic');

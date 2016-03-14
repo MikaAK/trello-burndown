@@ -4,7 +4,6 @@ defmodule TrelloBurndown.Sprint do
   schema "sprints" do
     field :board_id, :string
     field :sprint_name, :string
-    field :point_total, :integer
     field :holidays, {:array, :integer}
     belongs_to :team, TrelloBurndown.Team
 
@@ -12,7 +11,7 @@ defmodule TrelloBurndown.Sprint do
   end
 
   @required_fields ~w(board_id sprint_name team_id)
-  @optional_fields ~w(holidays point_total)
+  @optional_fields ~w(holidays)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
