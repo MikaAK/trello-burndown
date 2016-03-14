@@ -45,11 +45,6 @@ config :logger, level: :info
 
 # ## Using releases
 #
-# If you are doing OTP releases, you need to instruct Phoenix
-# to start the server for all endpoints:
-#
-#     config :phoenix, :serve_endpoints, true
-#
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
 #
@@ -62,4 +57,15 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
+config :trello_burndown, TrelloBurndown.Endpoint,
+  secret_key_base: {:system, "SECRET"}
+
+config :phoenix, :serve_endpoints, true
+
+config :trello_burndown, TrelloBurndown.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: {:system, "DB_USERNAME"},
+  password: {:system, "DB_PASSWORD"},
+  database: "trello_burndown",
+  hostname: "localhost",
+  pool_size: 10
