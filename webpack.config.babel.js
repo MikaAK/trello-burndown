@@ -28,7 +28,8 @@ const TS_INGORES = [
   1005
 ]
 
-const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
+
+const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
       BUILD_PATH = createPath('server/priv/static'),
       CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin,
       SASS_LOADER = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
@@ -66,7 +67,7 @@ var loaders = {
   // For to-string removes the ability to cache css so we use raw in development
   componentCss: {
     test: /\.s?css/,
-    loader: `${IS_BUILD ? 'to-string' : 'raw'}!${SASS_LOADER}`,
+    loader: `${IS_BUILD ? 'to-string!css' : 'raw'}!${SASS_LOADER}`,
     exclude: [createPath('src/style')]
   },
 
@@ -201,7 +202,7 @@ if (ENV.__DEV__) {
     new ExtractTextPlugin('[name]-[chunkhash].css'),
     new webpack.optimize.LimitChunkCountPlugin({maxChunks: 15}),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10000}),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({mangle: false})
   )
 } else if (ENV.__TEST__) {
   config.resolve.cache = false
@@ -234,21 +235,7 @@ else
       exclude: /.*\.html$/,
       s3Options: {
         accessKeyId: AWS_ACCESS_KEY,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY
-      },
-      s3UploadOptions: {
-        Bucket: AWS_BUCKET,
-        CacheControl: 'max-age=315360000, no-transform, public'
-      },
-      cdnizerOptions: {
-        defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
-      }
-    }),
-    new S3Plugin({
-      directory: path.resolve(PUBLIC_PATH, 'img'),
-      s3Options: {
-        accessKeyId: AWS_ACCESS_KEY,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY
+        secretAccessKey: AWS_SECRET_KEY
       },
       s3UploadOptions: {
         Bucket: AWS_BUCKET,
@@ -258,6 +245,22 @@ else
         defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
       }
     })
+    // new S3Plugin({
+      // directory: PUBLIC_PATH,
+      // basePath: 'public/',
+      // exclude: /\.svg$/,
+      // s3Options: {
+        // accessKeyId: AWS_ACCESS_KEY,
+        // secretAccessKey: AWS_SECRET_KEY
+      // },
+      // s3UploadOptions: {
+        // Bucket: AWS_BUCKET,
+        // CacheControl: 'max-age=315360000, no-transform, public'
+      // },
+      // cdnizerOptions: {
+        // defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
+      // }
+    // })
   )
 
 module.exports = config

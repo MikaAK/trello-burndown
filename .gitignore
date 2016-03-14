@@ -84,3 +84,5 @@ build
 typings/browser
 typings/browser/
 typings/browser.d.ts
+server/priv/static
+rel

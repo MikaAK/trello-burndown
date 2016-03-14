@@ -1,35 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Hello TrelloBurndown!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <title>Webpack NG2 Seed</title>
+    <base href="/">
+    <link rel="icon" type="image/png" href="favicon.ico">
+<link rel='stylesheet' href='https://s3-us-west-2.amazonaws.com/trello-burndown/app-f94bbf3c6b4f61053a9f.css'>
   </head>
-
   <body>
-    <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
-      </header>
-
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
-    </div> <!-- /container -->
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <app>
+      <h1>Loading Application</h1>
+    </app>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/common-3156c5ea2b55140340a2.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/vendor-88a936a16d1fb310cb3b.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/app-3156c5ea2b55140340a2.js'></script>
   </body>
 </html>

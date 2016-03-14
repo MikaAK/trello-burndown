@@ -15,6 +15,20 @@ var makeTag = function(file) {
     return `\n<script src='${file}'></script>`
 }
 
+var getIndexFromRegex = function(files, regex) {
+  return files.reduce((match, file, i) => regex.test(file) ? i : match, null)
+}
+
+var sortJS = function(files) {
+  var vendor = files.splice(getIndexFromRegex(files, /vendor/), 1),
+      common = files.splice(getIndexFromRegex(files, /common/), 1)
+
+  files.unshift(vendor)
+  files.unshift(common)
+
+  return files
+}
+
 export default function(context, locals = {}) {
   const JADE_PATH = path.resolve(context, 'index.jade')
 
@@ -26,10 +40,11 @@ export default function(context, locals = {}) {
       doctype: 'html'
     })
 
+    console.log(sortJS(files.js).map(makeTag))
     return compiler(_.merge(locals, {
       scripts: {
         head: files.css.map(makeTag),
-        body: files.js.map(makeTag)
+        body: sortJS(files.js).map(makeTag)
       }
     }))
   }
