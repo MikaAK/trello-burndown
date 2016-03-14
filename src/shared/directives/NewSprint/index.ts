@@ -15,6 +15,8 @@ import {CREATED_SPRINT} from 'shared/actions/sprint'
 import {ErrorDisplay} from '../ErrorDisplay'
 
 const CREATE_SPRINT = 'NEW_SPRINT:CREATE_SPRINT'
+const CLOSE = 'NEW_SPRINT:CLOSE'
+const RESET = 'NEW_SPRINT:RESET'
 
 @Component({
   selector: 'new-sprint',
@@ -51,14 +53,28 @@ export class NewSprint {
       .filter(({type}: Action) => type === CREATE_SPRINT)
       .mergeMap(sprint => this._serialize(this.newSprintForm.value))
       .subscribe(sprint => this.sprints.create(sprint))
+
+    this._actions
+      .filter(({type}: Action) => type === CLOSE)
+      .subscribe(() => this.modalService.close())
+
+    this._actions
+      .filter(({type}: Action) => type === RESET)
+      .subscribe(() => {
+        // Implement form reset when possible
+      })
   }
 
   public createSprint() {
     this._actions.next({type: CREATE_SPRINT})
   }
 
-  public cancel() {
-    this.onCancel.emit('event')
+  public close() {
+    this._actions.next({type: CLOSE})
+  }
+
+  public reset() {
+    this._actions.next({type: RESET})
   }
 
   private _serialize(data): Observable<any> {

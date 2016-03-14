@@ -1,6 +1,6 @@
 button.btn--default((click)='modalService.open()') Add Sprint
 
-modal(title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='teams.findAll()')
+modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
   .new-sprint
     error-display('[errors]'='sprints.errors | async')
     form.flex-form('(ngSubmit)'='createSprint()' '[ngFormModel]'='newSprintForm')
@@ -27,4 +27,4 @@ modal(title='New Sprint' '(onClose)'='cancel()' '(onOpen)'='teams.findAll()')
           option(disabled value selected) Select a team
           option('*ngFor'='#team of teams.items | async') {{ team.name }}
 
-      form-save.pull-right('(onCancel)'='cancel()')
+      form-save.pull-right('(onCancel)'='close()')

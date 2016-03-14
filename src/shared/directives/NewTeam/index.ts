@@ -57,10 +57,11 @@ export class NewTeam {
 
     this._actions
       .filter(({type}: Action) => type === RESET_TEAM)
-      .subscribe(() => this.newTeam = Object.assign({}, DEFAULT_TEAM))
+      .subscribe(() => Object.assign(this.newTeam, DEFAULT_TEAM))
 
     this._actions
       .filter(({type}: Action) => type === CLOSE_NEW_TEAM)
+      .do(() => this._actions.next({type: RESET_TEAM}))
       .subscribe(() => modalService.close())
 
     this.newTeamForm = fb.group({
