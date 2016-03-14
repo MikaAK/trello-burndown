@@ -3,10 +3,8 @@ import {Component} from 'angular2/core'
 import {RouteParams} from 'angular2/router'
 import {BackButton} from 'shared/directives/BackButton'
 import {Observable} from 'rxjs/Observable'
-import {ApiService} from 'angular2-api'
-import {SprintApi} from 'api/Sprint'
-import {TrelloApi} from 'api/Trello'
 import {SprintCardList} from './components/SprintCardList'
+import {Sprints} from 'shared/services/Sprints'
 
 
 //const getCards = function(lists: any[], onlyPointed = true): any[] {
@@ -28,24 +26,23 @@ import {SprintCardList} from './components/SprintCardList'
   selector: 'sprint',
   template: require('./Sprint.jade')(),
   styles: [require('./Sprint.scss')],
-  directives: [BackButton, SprintCardList]
+  directives: [BackButton, SprintCardList],
+  providers: [Sprints]
 })
 export class SprintComponent {
   public sprint: any = {}
-  private fetchSprint: Observable<any>
 
-  constructor() {
+  constructor(public sprints: Sprints, params: RouteParams) {
     //this.fetchSprint = this._sprint.find(+routeParams.get('id'))
       //.mergeMap(sprint => this._getTrelloBoard(sprint))
       //.map(sprint => this._splitCards(sprint))
+    sprints.items
+      .map(_.first)
+      .filter(sprint => sprint && sprint.id === +params.get('id'))
+      .subscribe(sprint => this.sprint = sprint)
 
-    //this.getSprint()
+    this.sprints.find(params.get('id'))
   }
-
-  //public getSprint(): void {
-    //this.fetchSprint
-      //.subscribe(sprint => this.sprint = sprint)
-  //}
 
   //private _getTrelloBoard(sprint): Observable<any> {
     //return this._trello.getFullBoard(sprint.boardId)

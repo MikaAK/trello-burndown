@@ -14,7 +14,7 @@ import {Teams} from 'shared/services/Teams'
 import {CREATED_SPRINT} from 'shared/actions/sprint'
 import {ErrorDisplay} from '../ErrorDisplay'
 
-const CREATE_SPRINT = 'CREATE_SPRINT'
+const CREATE_SPRINT = 'NEW_SPRINT:CREATE_SPRINT'
 
 @Component({
   selector: 'new-sprint',
@@ -35,7 +35,7 @@ export class NewSprint {
     public sprints: Sprints,
     public teams: Teams,
     fb: FormBuilder,
-    dispatcher: Dispatcher<any>
+    dispatcher: Dispatcher<Action>
   ) {
     this.newSprintForm = fb.group({
       boardId: ['', Validators.required],

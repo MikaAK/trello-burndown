@@ -1,14 +1,14 @@
 back-button.sprints_back
 
 section.sprints
-
   .sprints_header
     h1 {{ sprint.sprintName }}
-    h5 Team: {{ sprint.teamName || 'No Team Assigned' }}
+    h5 Team: {{ sprint.teamName }}
     h5 Total Points: {{ sprint.totalPoints }}
     a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
 
     // button.btn--default('*ngIf'='sprint.team') Refresh
+
 
   .trello-cards
     .trello-cards_column

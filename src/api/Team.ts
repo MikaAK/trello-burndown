@@ -21,7 +21,8 @@ export class TeamApi implements ApiResource {
           })
           .map(teamMember => this._api.create(this.teamMemberApi, teamMember))
 
-        return Observable.forkJoin(teamMembers)
+        return Observable.forkJoin([Observable.of(team)].concat(teamMembers))
       })
+      .map(([team, ...teamMembers]: any[]) => Object.assign({}, team, {teamMembers}))
   }
 }
