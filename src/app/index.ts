@@ -1,10 +1,7 @@
 import {Component} from 'angular2/core'
 import {RouteConfig, RouterOutlet, Router, Location} from 'angular2/router'
-import {Observable} from 'rxjs/Observable'
-import {Store} from '@ngrx/store'
 import {load} from 'webfontloader'
 
-import {TrelloApi} from 'api/Trello'
 import {NavBar} from 'shared/directives/NavBar'
 import {Auth} from 'shared/services/Auth'
 
@@ -33,7 +30,7 @@ export class AppComponent {
   constructor(private _router: Router, private _location: Location, public auth: Auth) {
     setTimeout(() => auth.checkAuth(), 1000)
   }
-    
+
   public ngOnInit() {
     var isFirst = true
 

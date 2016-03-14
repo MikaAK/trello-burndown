@@ -23,7 +23,7 @@ const initialState: ISprintStore = {
 }
 
 export const sprint: Reducer<ISprintStore> = (state = initialState, {type, payload}: Action): ISprintStore => {
-  switch(type) {
+  switch (type) {
     case CREATE_SPRINT_ERROR:
       return cloneState(state, {createErrors: payload})
 

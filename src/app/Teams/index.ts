@@ -1,6 +1,4 @@
 import {Component} from 'angular2/core'
-import {Router} from 'angular2/router'
-import {Observable} from 'rxjs/Observable'
 
 import {Teams} from 'shared/services/Teams'
 import {TrelloApi} from 'api/Trello'

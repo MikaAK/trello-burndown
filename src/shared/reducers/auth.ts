@@ -9,13 +9,13 @@ export interface IAuthStore {
 }
 
 const initialState: IAuthStore = {
-  isAuthorized: null, 
+  isAuthorized: null,
   isGettingAuth: false,
   isCheckingAuthorization: false
 }
 
-export const auth: Reducer<IAuthStore> = (state = initialState, {type, payload}: Action): IAuthStore => {
-  switch(type) {
+export const auth: Reducer<IAuthStore> = (state = initialState, {type}: Action): IAuthStore => {
+  switch (type) {
     case CHECKING_AUTH:
       return cloneState(state, {isCheckingAuthorization: true})
 

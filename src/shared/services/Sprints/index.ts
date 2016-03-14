@@ -69,6 +69,9 @@ const splitCards = (sprint: any): any => {
 export class Sprints {
   public errors: Observable<any[]>
   public items: Observable<any[]>
+  public isFetching: Observable<boolean>
+  public isCreating: Observable<boolean>
+
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _api: ApiService, private _trelloApi: TrelloApi, private _sprintApi: SprintApi, _store: Store<any>) {
@@ -76,6 +79,8 @@ export class Sprints {
 
     this.items = store.map(({sprints}: ISprintStore) => sprints)
     this.errors = store.map(({createErrors}: ISprintStore) => createErrors)
+    this.isFetching = store.map(({isFetching}: ISprintStore) => isFetching)
+    this.isCreating = store.map(({isCreating}: ISprintStore) => isCreating)
 
     let createSprint = this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)

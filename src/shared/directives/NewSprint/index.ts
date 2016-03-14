@@ -5,8 +5,6 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Action, Dispatcher} from '@ngrx/store'
 
-import {TeamApi} from 'api/Team'
-import {SprintApi} from 'api/Sprint'
 import {Modal, ModalService} from 'shared/directives/Modal'
 import {FormSave} from 'shared/directives/FormSave'
 import {Sprints} from 'shared/services/Sprints'
@@ -14,9 +12,21 @@ import {Teams} from 'shared/services/Teams'
 import {CREATED_SPRINT} from 'shared/actions/sprint'
 import {ErrorDisplay} from '../ErrorDisplay'
 
+interface INewSprint {
+  boardId: string
+  holidays: string
+  team: any
+}
+
 const CREATE_SPRINT = 'NEW_SPRINT:CREATE_SPRINT'
 const CLOSE = 'NEW_SPRINT:CLOSE'
 const RESET = 'NEW_SPRINT:RESET'
+
+const DEFAULT_SPRINT: INewSprint = {
+  boardId: '',
+  holidays: '',
+  team: null
+}
 
 @Component({
   selector: 'new-sprint',
@@ -29,7 +39,8 @@ export class NewSprint {
   @Output() public onSave: EventEmitter<any> = new EventEmitter()
   @Output() public onCancel: EventEmitter<any> = new EventEmitter()
 
-  public newSprintForm: ControlGroup 
+  public newSprintForm: ControlGroup
+  public newSprint: INewSprint = DEFAULT_SPRINT
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(
@@ -51,7 +62,9 @@ export class NewSprint {
 
     this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)
-      .mergeMap(sprint => this._serialize(this.newSprintForm.value))
+      .do((args) => console.log('CREATING_SPRINT_HIT', args))
+      .mergeMap(sprint => this._serialize(this.newSprint))
+      .do(() => console.log('CREATING_SPRINT_HEHAHAH'))
       .subscribe(sprint => this.sprints.create(sprint))
 
     this._actions
@@ -78,7 +91,7 @@ export class NewSprint {
   }
 
   private _serialize(data): Observable<any> {
-    let holidays = _(data.holidays.split(',')) 
+    let holidays = _(data.holidays.split(','))
       .map(_.trim)
       .compact()
       .value()

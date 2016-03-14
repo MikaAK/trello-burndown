@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, ViewChild} from 'angular2/core'
+import {Component, Output, EventEmitter} from 'angular2/core'
 import {ControlGroup, FormBuilder, Validators, NgForm} from 'angular2/common'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Action, Dispatcher} from '@ngrx/store'

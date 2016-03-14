@@ -3,6 +3,7 @@ import {Observable} from 'rxjs/Observable'
 export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|void)): (() => void) => {
   const newWin = window.open(url)
 
+  /* tslint:disable */
   const timer = Observable.interval(200)
     .subscribe(() => {
       if (newWin.closed) {
@@ -27,6 +28,7 @@ export const openWindow = (url, onComplete: ((win: Window, event?: any) => any|v
     timer.unsubscribe()
     window.removeEventListener('message', onMessage)
   }
+  /* tslint:enable */
 
   window.addEventListener('message', onMessage)
 

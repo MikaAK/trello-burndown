@@ -18,7 +18,7 @@ export class ErrorDisplay {
 
   public ngDoCheck() {
     if (_.some(this.errors))
-      this.displayErrors = this._convertErrorsForDisplay(this.errors) 
+      this.displayErrors = this._convertErrorsForDisplay(this.errors)
   }
 
   private _convertErrorsForDisplay(errors) {
@@ -27,7 +27,7 @@ export class ErrorDisplay {
 
     else if (typeof errors === 'object')
       return _(Object.entries('errors' in errors ? errors.errors : errors))
-        .map(([key, oErrors]) => oErrors.map(error => `${_(key).words().map(_.capitalize).join(' ')} - ${error}`)) 
+        .map(([key, oErrors]) => oErrors.map(error => `${_(key).words().map(_.capitalize).join(' ')} - ${error}`))
         .flatten()
         .value()
 

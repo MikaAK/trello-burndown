@@ -24,7 +24,7 @@ const initialState =  {
 }
 
 export const team: Reducer<ITeamStore> = (state = initialState, {type, payload}: Action): ITeamStore => {
-  switch(type) {
+  switch (type) {
     case FETCHING_TEAMS:
       return cloneState(state, {
         isFetchingTeam: true
@@ -51,7 +51,7 @@ export const team: Reducer<ITeamStore> = (state = initialState, {type, payload}:
         isCreatingTeam: false,
         createErrors: payload
       })
-    
+
     default:
       return state
   }

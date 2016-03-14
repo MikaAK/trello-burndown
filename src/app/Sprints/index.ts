@@ -1,6 +1,5 @@
 import {Component} from 'angular2/core'
 import {RouterLink, Router} from 'angular2/router'
-import {Observable} from 'rxjs/Observable'
 
 import {BackButton} from 'shared/directives/BackButton'
 import {Sprints} from 'shared/services/Sprints'

@@ -13,7 +13,9 @@ const actionLog: Middleware = action => {
 const stateLog: Middleware = state => {
   return state.do(val => {
     if (__DEV__)
+      /* tslint:disable */
       console.info('NEW STATE: ', val)
+      /* tslint:enable */
   })
 }
 
