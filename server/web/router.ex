@@ -13,17 +13,18 @@ defmodule TrelloBurndown.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", TrelloBurndown do
-    pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
-  end
-
   scope "/api", TrelloBurndown do
     pipe_through :api
 
     resources "/sprints", SprintController, except: [:new, :edit]
     resources "/team-members", TeamMemberController, except: [:new, :edit]
     resources "/team", TeamController, except: [:new, :edit]
+  end
+
+  scope "/", TrelloBurndown do
+    pipe_through :browser # Use the default browser stack
+
+    # get "/", PageController, :index
+    get "*path", PageController, :index
   end
 end
