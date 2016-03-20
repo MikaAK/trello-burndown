@@ -20,7 +20,7 @@ export default function({input}) {
   if (type === 'server')
     return buildClient()
       .then(() => spawnPromise('mv', [htmlBuildPath, htmlDestPath]))
-      .then(() => spawnPromise('rm', [jsBuildFiles]))
+      .then(() => spawnPromise('rm', ['-rf', `"${jsBuildFiles}"`]))
       .then(() => spawnPromise('mix', ['do', 'compile,', 'release'], path.resolve(context, 'server')))
   else
     return buildClient()

@@ -172,8 +172,6 @@ var config = {
   }
 }
 
-console.log(config.resolve.alias)
-
 if (!ENV.__TEST__)
   config.plugins.push(
     new CommonsChunkPlugin({
