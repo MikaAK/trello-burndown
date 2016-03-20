@@ -11,7 +11,8 @@ const buildClient = () => spawnPromise(WEBPACK, [
 ], context)
 
 const htmlBuildPath = path.resolve(context, 'server/priv/static/index.html'),
-      htmlDestPath = path.resolve(context, 'server/web/templates/layout/app.html.eex')
+      htmlDestPath = path.resolve(context, 'server/web/templates/layout/app.html.eex'),
+      jsBuildFiles = path.resolve(context, 'server/priv/static/*.js')
 
 export default function({input}) {
   var [, type] = input
@@ -19,6 +20,7 @@ export default function({input}) {
   if (type === 'server')
     return buildClient()
       .then(() => spawnPromise('mv', [htmlBuildPath, htmlDestPath]))
+      .then(() => spawnPromise('rm', [jsBuildFiles]))
       .then(() => spawnPromise('mix', ['do', 'compile,', 'release'], path.resolve(context, 'server')))
   else
     return buildClient()

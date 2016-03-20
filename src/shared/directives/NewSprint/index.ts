@@ -103,6 +103,7 @@ export class NewSprint {
     }
 
     return this.teams.items
+      .take(1)
       .map(teams => _.find(teams, {name: data.teamName}))
       .map(team => {
         if (team)

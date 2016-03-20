@@ -49,7 +49,7 @@ var loaders = {
     test: /\.ts/,
     loader: `babel!ts?${TS_INGORES.map(num => `ignoreDiagnostics[]=${num}`).join('&')}`,
     exclude: [createPath('node_modules')],
-    include: [createPath('src')]
+    include: [createPath('src'), createPath('vendor/es6/')]
   },
 
   html: {
@@ -171,6 +171,8 @@ var config = {
     }
   }
 }
+
+console.log(config.resolve.alias)
 
 if (!ENV.__TEST__)
   config.plugins.push(

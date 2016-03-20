@@ -13,6 +13,7 @@
     "angular2/http",
     "rxjs/add/operator/map",
     "rxjs/add/operator/mergeMap",
+    "rxjs/add/operator/take",
     "rxjs/add/operator/filter",
     "rxjs/add/operator/distinctUntilChanged",
     "rxjs/add/operator/do",
