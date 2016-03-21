@@ -53,6 +53,7 @@ export class NewSprint {
     this.newSprintForm = fb.group({
       boardId: ['', Validators.required],
       holidays: [''],
+      startDate: ['', Validators.required],
       teamName: ['', Validators.required]
     })
 
@@ -62,9 +63,7 @@ export class NewSprint {
 
     this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)
-      .do((args) => console.log('CREATING_SPRINT_HIT', args))
       .mergeMap(sprint => this._serialize(this.newSprint))
-      .do(() => console.log('CREATING_SPRINT_HEHAHAH'))
       .subscribe(sprint => this.sprints.create(sprint))
 
     this._actions
@@ -99,6 +98,7 @@ export class NewSprint {
     let params = {
       holidays,
       boardId: data.boardId,
+      startDate: data.startDate,
       teamId: null
     }
 

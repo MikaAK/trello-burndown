@@ -24,6 +24,14 @@ modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
         )
 
       .input-group
+        label(for='startDate') Start Date
+        input(
+          type='date'
+          ngControl='startDate'
+          '[(ngModel)]'='newSprint.startDate'
+        )
+
+      .input-group
         label(for='team') Team
         select(ngControl='teamName' '[(ngModel)]'='newSprint.teamName' required)
           option(disabled value selected) Select a team

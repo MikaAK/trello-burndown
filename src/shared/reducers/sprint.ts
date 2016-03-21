@@ -1,3 +1,4 @@
+import {indexOf} from 'lodash'
 import {Reducer, Action} from '@ngrx/store'
 import {cloneState} from 'shared/helpers/cloneState'
 import {
@@ -5,7 +6,8 @@ import {
   CREATING_SPRINT,
   CREATED_SPRINT,
   FETCHING_SPRINTS,
-  FETCHED_SPRINTS
+  FETCHED_SPRINTS,
+  ADD_SPRINTS
 } from '../actions/sprint'
 
 export interface ISprintStore {
@@ -20,6 +22,16 @@ const initialState: ISprintStore = {
   createErrors: [],
   isFetching: false,
   isCreating: false
+}
+
+const addSprints = function(state, sprint: any|any[]) {
+  debugger
+  if (Array.isArray(sprint))
+    return sprint.map((iSprint) => addSprints(state, iSprint))
+  else
+    return state.sprints
+      .filter(iSprint => iSprint.id !== sprint.id)
+      .concat(sprint)
 }
 
 export const sprint: Reducer<ISprintStore> = (state = initialState, {type, payload}: Action): ISprintStore => {
@@ -38,7 +50,6 @@ export const sprint: Reducer<ISprintStore> = (state = initialState, {type, paylo
 
     case CREATED_SPRINT:
       return cloneState(state, {
-        sprints: state.sprints.concat(payload),
         isCreating: false
       })
 
@@ -52,6 +63,11 @@ export const sprint: Reducer<ISprintStore> = (state = initialState, {type, paylo
       return cloneState(state, {
         sprints: payload,
         isFetching: false
+      })
+
+    case ADD_SPRINTS:
+      return cloneState(state, {
+        sprints: addSprints(state, payload)
       })
 
     default:

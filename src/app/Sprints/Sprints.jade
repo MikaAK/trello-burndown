@@ -3,8 +3,6 @@ back-button.sprints_back
 section.sprints
   h1 Sprints
 
-  button.btn--default('(click)'='sprints.findAll()') Refresh
-
   ul.sprints_list('*ngIf'='!(sprints.isFetching | async)')
     li.clickable('*ngFor'='#sprint of sprints.items | async' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
       h5 {{ sprint.sprintName }}

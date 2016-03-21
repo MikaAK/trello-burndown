@@ -3,6 +3,7 @@ defmodule TrelloBurndown.UserSocket do
 
   ## Channels
   # channel "rooms:*", TrelloBurndown.RoomChannel
+  channel "model_change:*", TrelloBurndown.ModelChangeChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

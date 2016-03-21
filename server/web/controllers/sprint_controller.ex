@@ -2,6 +2,7 @@ defmodule TrelloBurndown.SprintController do
   use TrelloBurndown.Web, :controller
 
   alias TrelloBurndown.Sprint
+  alias TrelloBurndown.ModelChangeChannel
 
   def index(conn, _params) do
     sprints = Repo.all(from s in Sprint, preload: [:team])
@@ -14,6 +15,10 @@ defmodule TrelloBurndown.SprintController do
 
     case Repo.insert(changeset) do
       {:ok, sprint} ->
+        sprint = Repo.preload sprint, :team
+
+        broadcast_create(sprint)
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", sprint_path(conn, :show, sprint))
@@ -39,6 +44,8 @@ defmodule TrelloBurndown.SprintController do
 
     case Repo.update(changeset) do
       {:ok, sprint} ->
+        broadcast_update(sprint)
+
         render(conn, "show.json", sprint: sprint)
       {:error, changeset} ->
         conn
@@ -55,5 +62,13 @@ defmodule TrelloBurndown.SprintController do
     Repo.delete!(sprint)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp broadcast_update(model) do
+    ModelChangeChannel.broadcast_update("sprint", TrelloBurndown.SprintView, model)
+  end
+
+  defp broadcast_create(model) do
+    ModelChangeChannel.broadcast_create("sprint", TrelloBurndown.SprintView, model)
   end
 end

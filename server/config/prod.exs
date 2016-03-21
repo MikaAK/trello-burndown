@@ -13,7 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :trello_burndown, TrelloBurndown.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "104.236.43.15", port: 4000],
+  url: [host: "104.236.43.15", port: {:system, "PORT"}],
   secret_key_base: {:system, "SECRET"},
   server: true
 
@@ -26,9 +26,8 @@ config :phoenix, :serve_endpoints, true
 
 config :trello_burndown, TrelloBurndown.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: {:system, "DB_USERNAME"},
-  password: {:system, "DB_PASSWORD"},
   database: "trello_burndown",
+  url: {:system, "DATABASE_URL"},
   hostname: "localhost",
   pool_size: 10
 
