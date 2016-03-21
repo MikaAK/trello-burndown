@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Webpack NG2 Seed</title>
+    <title>Trello Burndowns</title>
     <base href="/">
     <link rel="icon" type="image/png" href="favicon.ico">
-<link rel='stylesheet' href='https://s3-us-west-2.amazonaws.com/trello-burndown/app-7d2659613cac415c4267.css'>
+<link rel='stylesheet' href='https://s3-us-west-2.amazonaws.com/trello-burndown/app-7c7783012e49d5e71e4b.css'>
   </head>
   <body>
     <app>
       <h1>Loading Application</h1>
     </app>
-<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/common-b4911365429727a56073.js'></script>
-<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/vendor-fcb518aaaea953196f1e.js'></script>
-<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/app-b4911365429727a56073.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/common-e2abd629486c54c8a14f.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/vendor-e21d5f10ac1e6e928f63.js'></script>
+<script src='https://s3-us-west-2.amazonaws.com/trello-burndown/app-e2abd629486c54c8a14f.js'></script>
   </body>
 </html>

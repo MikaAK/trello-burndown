@@ -8,9 +8,10 @@ import FLAG_COMMANDS from './lib/flagCommands'
 import build from './lib/build'
 import start from './lib/start'
 import test from './lib/test'
+import deploy from './lib/deploy'
 
 var CLI = {
-  COMMAND_TABLE: {build, start, test},
+  COMMAND_TABLE: {build, start, test, deploy},
   program: meow(HELP_TEXT, {
     alias: {
       p: 'production',

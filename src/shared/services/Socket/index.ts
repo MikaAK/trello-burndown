@@ -1,9 +1,11 @@
+
 import {Injectable} from 'angular2/core'
 import {Observable} from 'rxjs/Observable'
 import {Socket as PhoenixSocket, Channel, SocketOptions} from 'phoenix-ts'
 import {Store} from '@ngrx/store'
 import {ADD_SPRINTS} from 'shared/actions/sprint'
 import {deserializeKeys} from 'api/helpers'
+import {Config} from 'config'
 
 export interface ISocketsConfig {
   url?: string
@@ -12,7 +14,7 @@ export interface ISocketsConfig {
 
 @Injectable()
 export class SocketsConfig implements ISocketsConfig {
-  public url: string = 'ws://localhost:3000/socket'
+  public url: string = Config.websocketUrl
   public options: SocketOptions
 }
 
