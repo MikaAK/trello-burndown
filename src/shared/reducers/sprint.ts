@@ -7,11 +7,18 @@ import {
   CREATED_SPRINT,
   FETCHING_SPRINTS,
   FETCHED_SPRINTS,
-  ADD_SPRINTS
+  ADD_SPRINTS,
+  CALCULATING_POINTS,
+  CALCULATED_POINTS
 } from '../actions/sprint'
 
+export interface ISprintData {
+  sprint: any
+  isCalculating: boolean
+}
+
 export interface ISprintStore {
-  sprints: any[]
+  sprints: ISprintData[]
   createErrors: any[]
   isFetching: boolean
   isCreating: boolean
@@ -24,14 +31,19 @@ const initialState: ISprintStore = {
   isCreating: false
 }
 
-const addSprints = function(state, sprint: any|any[]) {
-  debugger
-  if (Array.isArray(sprint))
-    return sprint.map((iSprint) => addSprints(state, iSprint))
+const addSprints = (state, item: any|any[]) => {
+  if (Array.isArray(item))
+    return item.map((iSprint) => addSprints(state, iSprint))
   else
     return state.sprints
-      .filter(iSprint => iSprint.id !== sprint.id)
-      .concat(sprint)
+      .map(iSprint => iSprint.sprint.id === item.sprint.id ? item : iSprint)
+}
+
+const convertSprintToState = (sprint) => {
+  if (Array.isArray(sprint))
+    return sprint.map(iSprint => convertSprintToState(iSprint))
+  else
+    return {sprint}
 }
 
 export const sprint: Reducer<ISprintStore> = (state = initialState, {type, payload}: Action): ISprintStore => {
@@ -61,13 +73,27 @@ export const sprint: Reducer<ISprintStore> = (state = initialState, {type, paylo
 
     case FETCHED_SPRINTS:
       return cloneState(state, {
-        sprints: payload,
+        sprints: convertSprintToState(payload),
         isFetching: false
       })
 
     case ADD_SPRINTS:
       return cloneState(state, {
-        sprints: addSprints(state, payload)
+        sprints: addSprints(state, convertSprintToState(payload))
+      })
+
+    case CALCULATING_POINTS:
+      return cloneState(state, {
+        sprints: addSprints(state, Object.assign({sprint: payload}, {
+          isCalculating: true
+        }))
+      })
+
+    case CALCULATED_POINTS:
+      return cloneState(state, {
+        sprints: addSprints(state, Object.assign({sprint: payload}, {
+          isCalculating: false
+        }))
       })
 
     default:

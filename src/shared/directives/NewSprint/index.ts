@@ -53,7 +53,7 @@ export class NewSprint {
     this.newSprintForm = fb.group({
       boardId: ['', Validators.required],
       holidays: [''],
-      startDate: ['', Validators.required],
+      startDate: [''],
       teamName: ['', Validators.required]
     })
 

@@ -4,11 +4,19 @@ section.sprints
   h1 Sprints
 
   ul.sprints_list('*ngIf'='!(sprints.isFetching | async)')
-    li.clickable('*ngFor'='#sprint of sprints.items | async' '(click)'='router.navigate(["Sprint", {id: sprint.id}])')
-      h5 {{ sprint.sprintName }}
+    li.clickable.sprint_list-item('*ngFor'='#item of sprints.items | async')
+      a('(click)'='router.navigate(["Sprint", {id: item.sprint.id}])')
+      h5 {{ item.sprint.sprintName }}
 
-      span('*ngIf'='sprint.team') Team: {{ sprint.team.name }}
-      span('*ngIf'='sprint.pointTotal') Points in sprint: {{ sprint.pointTotal }}
+      button(
+        '[ngClass]'='{"animations_spin": item.isCalculating}'
+        '(click)'='sprints.calculatePoints(item.sprint)'
+      )
+        != require('svg/loop.svg')     
+
+      .sprint_list-stats
+        span('*ngIf'='item.sprint.team') Team: {{ item.sprint.team.name }}
+        span Points in sprint: {{ item.sprint.points || 'None' }}
 
   div.sprints_loader('*ngIf'='sprints.isFetching | async')
     h1 Loading Sprints

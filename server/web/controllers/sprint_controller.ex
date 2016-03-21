@@ -39,7 +39,7 @@ defmodule TrelloBurndown.SprintController do
 
   def update(conn, sprint_params) do
     changeset = from(s in Sprint, preload: [:team])
-      |> Repo.get!(sprint_params.id)
+      |> Repo.get!(Map.get(sprint_params, "id"))
       |> Sprint.changeset(sprint_params)
 
     case Repo.update(changeset) do

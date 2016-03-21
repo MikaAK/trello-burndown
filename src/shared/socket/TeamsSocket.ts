@@ -4,6 +4,6 @@ import {Sockets} from 'shared/services/Socket'
 @Injectable()
 export class TeamsSocket {
   constructor(private _socket: Sockets) {
-    debugger
+    // debugger
   }
 }

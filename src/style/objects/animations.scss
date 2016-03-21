@@ -1,0 +1,22 @@
+@include keyframes(spin) {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+%animations-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animations_spin {
+  @extend %animations-spin;
+}
+
+.animations_spin--reverse {
+  @extend %animations-spin;
+  animation-direction: reverse;
+}

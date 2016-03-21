@@ -5,13 +5,15 @@ defmodule TrelloBurndown.Sprint do
     field :board_id, :string
     field :sprint_name, :string
     field :holidays, {:array, :integer}
+    field :points, :integer
+    field :start_date, Ecto.Date
     belongs_to :team, TrelloBurndown.Team
 
     timestamps
   end
 
   @required_fields ~w(board_id sprint_name team_id)
-  @optional_fields ~w(holidays)
+  @optional_fields ~w(holidays points start_date)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

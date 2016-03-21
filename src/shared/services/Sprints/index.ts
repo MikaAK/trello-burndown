@@ -15,7 +15,12 @@ import {
   CREATE_SPRINT,
   CREATING_SPRINT,
   CREATED_SPRINT,
-  CREATE_SPRINT_ERROR
+  CREATE_SPRINT_ERROR,
+  UPDATE_SPRINT_ERROR,
+  CALCULATE_POINTS,
+  CALCULATING_POINTS,
+  CALCULATED_POINTS,
+  ADD_SPRINTS
 } from 'shared/actions/sprint'
 
 
@@ -24,11 +29,11 @@ const getCards = function(lists: any[], onlyPointed = true): any[] {
     .map('cards')
     .flatten()
     .compact()
-    .filter((card: any) => !onlyPointed || card.points)
+    .filter((card: any) => onlyPointed ? card.points : true)
     .value()
 }
 
-const calculatePoints = function(cards: any[]): number {
+const calculateCardPoints = function(cards: any[]): number {
   return _(cards)
     .map('points')
     .sum()
@@ -51,13 +56,13 @@ const splitCards = (sprint: any): any => {
     .filter(list => !/defered/i.test(list.name))
 
   sprint.completedCards = getCards(completedLists)
-  sprint.completedPoints = calculatePoints(sprint.completedCards)
+  sprint.completedPoints = calculateCardPoints(sprint.completedCards)
 
   sprint.uncompletedCards = getCards(uncompletedLists)
-  sprint.uncompletedPoints = calculatePoints(sprint.uncompletedCards)
+  sprint.uncompletedPoints = calculateCardPoints(sprint.uncompletedCards)
 
   sprint.devCompletedCards = getCards(devCompletedLists)
-  sprint.devCompletedPoints = calculatePoints(sprint.devCompletedCards)
+  sprint.devCompletedPoints = calculateCardPoints(sprint.devCompletedCards)
 
   sprint.bugCards = getCards(bugLists, false)
   sprint.totalPoints = sprint.devCompletedPoints + sprint.uncompletedPoints + sprint.completedPoints
@@ -97,7 +102,12 @@ export class Sprints {
       .do(() => _store.dispatch({type: FETCHING_SPRINTS}))
       .mergeMap(({payload}: Action) => this._fetchSprint.apply(this, payload))
 
-    Observable.merge(createSprint, fetchSprints, fetchSprint)
+    let calculatePoints = this._actions
+      .filter(({type}: Action) => type === CALCULATE_POINTS)
+      .do(({payload}: Action) => _store.dispatch({type: CALCULATING_POINTS, payload}))
+      .mergeMap(({payload}: Action) => this._calculatePoints(payload))
+
+    Observable.merge(createSprint, fetchSprints, fetchSprint, calculatePoints)
       .subscribe((action: Action) => _store.dispatch(action))
   }
 
@@ -105,12 +115,38 @@ export class Sprints {
     this._actions.next({type: CREATE_SPRINT, payload: sprint})
   }
 
-  public findAll() {
+  public findAll(): void {
     this._actions.next({type: FETCH_SPRINTS})
   }
 
-  public find(id: string|number, params?: any) {
+  public find(id: string|number, params?: any): void {
     this._actions.next({type: FETCH_SPRINT, payload: [id, params]})
+  }
+
+  public calculatePoints(sprint): void {
+    this._actions.next({type: CALCULATE_POINTS, payload: sprint})
+  }
+
+  private _calculatePoints(sprint) {
+    return this._calculatePointsNoUpdate(sprint)
+      .mergeMap(points => {
+        if (sprint.id && points !== sprint.points)
+          return this._api.update(this._sprintApi, sprint)
+        else
+          return Observable.of(sprint)
+      })
+      .map(sprint => ({type: CALCULATED_POINTS, payload: sprint}))
+  }
+
+  private _calculatePointsNoUpdate(sprint) {
+    return this._trelloApi.getFullBoard(sprint.boardId)
+      .map(board => calculateCardPoints(getCards(board.lists)))
+  }
+
+  private _updateSprint(sprint) {
+    return this._api.update(this._sprintApi, sprint)
+      .map(nSprint => ({type: ADD_SPRINTS, payload: nSprint}))
+      .catch(error => Observable.of({type: UPDATE_SPRINT_ERROR, payload: error}))
   }
 
   private _fetchSprint(id, params): Observable<Action> {
@@ -127,7 +163,8 @@ export class Sprints {
   }
 
   private _createSprint(data): Observable<Action> {
-    return this._sprintApi.create(data)
+    return this._calculatePointsNoUpdate(data)
+      .mergeMap(points => this._sprintApi.create(Object.assign(data, {points})))
       .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
       .catch(error => Observable.of({type: CREATE_SPRINT_ERROR, payload: error}))
   }

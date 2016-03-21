@@ -11,6 +11,28 @@
   position: relative;
   padding-left: 25px;
   padding-right: 25px;
+  
+  .sprint_list-item {
+    position: relative;
+  }
+
+  .sprint_list-item a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .sprint_list-item button {
+    z-index: 20;
+    position: relative;
+  }
+
+  .sprint_list-item button svg {
+    width: map-get($svg-sizes, 'small');
+  }
 
   h1 {
     text-align: center;
@@ -28,12 +50,13 @@
   width: 80%;
   margin: 0 auto 40px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
 .sprints_list li {
   background: $off-green;
-  width: 150px;
+  width: 250px;
   text-align: left;
   height: 100px;
   border-radius: 4px;
