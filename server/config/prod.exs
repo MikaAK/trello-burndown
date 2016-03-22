@@ -15,7 +15,8 @@ config :trello_burndown, TrelloBurndown.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "104.236.43.15", port: {:system, "PORT"}],
   secret_key_base: {:system, "SECRET"},
-  server: true
+  server: true,
+  check_origin: ["//edvisor.trello-burndowns.com", "//trello-burndowns.com"]
 
 # cache_static_manifest: "priv/static/manifest.json"
 

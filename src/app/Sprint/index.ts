@@ -4,6 +4,7 @@ import {RouteParams} from 'angular2/router'
 import {BackButton} from 'shared/directives/BackButton'
 import {SprintCardList} from './components/SprintCardList'
 import {Sprints} from 'shared/services/Sprints'
+import {ISprintData} from 'shared/reducers/sprint'
 
 
 @Component({
@@ -15,14 +16,24 @@ import {Sprints} from 'shared/services/Sprints'
 })
 export class SprintComponent {
   public sprint: any = {}
+  public isCalculating: boolean = false
+  private _sprintId: number
 
   constructor(public sprints: Sprints, params: RouteParams) {
-    sprints.items
-      .map(_.first)
-      .filter(sprint => sprint && sprint.id === +params.get('id'))
-      .subscribe(sprint => this.sprint = sprint)
+    this._sprintId = +params.get('id')
 
-    this.sprints.find(params.get('id'))
+    sprints.items
+      .map((items) => this._filterCurrentSprint(items))
+      .map(_.first)
+      .filter(item => !!item)
+      .subscribe((data: ISprintData) => Object.assign(this, data))
+
+    this.sprints.find(this._sprintId)
+  }
+
+  private _filterCurrentSprint(items: ISprintData[]) {
+    return items
+      .filter(({sprint}: ISprintData) => sprint && sprint.id === this._sprintId)
   }
 }
 

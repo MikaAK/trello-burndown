@@ -31,12 +31,40 @@ const initialState: ISprintStore = {
   isCreating: false
 }
 
-const addSprints = (state, item: any|any[]) => {
-  if (Array.isArray(item))
-    return item.map((iSprint) => addSprints(state, iSprint))
-  else
+// const getSprintIndex = (sprints: ISprintData[], item: ISprintData): number => {
+  // var index = -1
+
+  // sprints.some((sItem: ISprintData, i: number) => {
+    // if (sItem.sprint.id === item.sprint.id) {
+      // index = i
+
+      // return true
+    // }
+  // })
+
+  // return index
+// }
+
+const hasSprint = (state: ISprintStore, item: ISprintData) => {
+  return state.sprints
+    .some(({sprint}: ISprintData) => sprint.id === item.sprint.id)
+}
+
+const addSprintToState = function(state: ISprintStore, item: ISprintData): ISprintData[] {
+  if (hasSprint(state, item))
     return state.sprints
       .map(iSprint => iSprint.sprint.id === item.sprint.id ? item : iSprint)
+  else
+    return state.sprints.concat(item)
+}
+
+
+const addSprints = (state: ISprintStore, item: ISprintData|ISprintData[]): ISprintData[]  => {
+  if (Array.isArray(item)) {
+    return item
+  } else {
+    return addSprintToState(state, item)
+  }
 }
 
 const convertSprintToState = (sprint) => {
@@ -73,7 +101,6 @@ export const sprint: Reducer<ISprintStore> = (state = initialState, {type, paylo
 
     case FETCHED_SPRINTS:
       return cloneState(state, {
-        sprints: convertSprintToState(payload),
         isFetching: false
       })
 
