@@ -60,11 +60,10 @@ const addSprintToState = function(state: ISprintStore, item: ISprintData): ISpri
 
 
 const addSprints = (state: ISprintStore, item: ISprintData|ISprintData[]): ISprintData[]  => {
-  if (Array.isArray(item)) {
+  if (Array.isArray(item))
     return item
-  } else {
+  else
     return addSprintToState(state, item)
-  }
 }
 
 const convertSprintToState = (sprint) => {

@@ -6,6 +6,7 @@ import {HTTP_PROVIDERS} from 'angular2/http'
 import {API_PROVIDERS} from 'api'
 import {STORE_PROVIDERS} from 'shared/store'
 import {SOCKET_PROVIDERS} from 'shared/socket'
+import {convertDates} from 'shared/helpers/convertFunctions'
 
 import {Locker, LockerConfig, DRIVERS} from 'angular2-locker'
 import {ApiService, ApiConfig} from 'angular2-api'
@@ -27,7 +28,7 @@ export const APP_PROVIDERS = [
       basePath: '/api',
 
       deserialize(data) {
-        return deserializeKeys('data' in data ? data.data : data)
+        return convertDates(deserializeKeys('data' in data ? data.data : data))
       },
 
       serialize(data) {

@@ -93,6 +93,7 @@ export class TrelloApi {
     return this.getBoard(boardId)
       .mergeMap(board => this._attachListsToBoard(board))
       .mergeMap(board => this._attachCardsToBoard(board))
+      .catch(resp => Observable.throw(resp.text()))
   }
 
   private _attachListsToBoard(board): Observable<any> {

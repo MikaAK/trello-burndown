@@ -63,7 +63,7 @@ export class NewSprint {
 
     this._actions
       .filter(({type}: Action) => type === CREATE_SPRINT)
-      .mergeMap(sprint => this._serialize(this.newSprint))
+      .mergeMap(() => this._serialize(this.newSprint))
       .subscribe(sprint => this.sprints.create(sprint))
 
     this._actions
