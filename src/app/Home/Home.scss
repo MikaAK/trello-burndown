@@ -6,6 +6,10 @@ h1 {
   width: 100%;
 }
 
+:host {
+  height: 100vh;
+}
+
 h1,
 nav {
   margin-top: 20px

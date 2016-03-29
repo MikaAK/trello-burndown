@@ -1,39 +1,86 @@
 @import '~style/utility';
 
 :host {
-  flex: 0 0 200px;
-  background: #C7BAB2;
+  // flex: 0 0 200px;
+  // background: #C7BAB2;
 }
 
 .nav {
+  border-bottom: 1px solid $off-grey;
+  border-bottom-style: dashed;
+  margin-bottom: 50px;
   display: flex;
-  width: 100%;
   justify-content: center;
+  width: 100%;
 }
 
 .nav li {
   color: $brown;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 14px;
   padding: 10px 20px;
   margin: 0 10px;
+  position: relative;
+  width: 100px;
   transition: all map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
-  width: 200px;
 
   &:hover {
     color: #fff;
   }
 
-  &:nth-child(1) {
-    text-align: right;
-  }
+  &.triangle {
+    div {
+      position: relative;
+      z-index: 1;
+    }
 
-  &:nth-child(2) {
-    width: 0;
-    height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-top: 50px solid $orange;
-    padding: 0;
-    cursor: crosshair;
+    &:before,
+    &:after {
+      border-left-style: solid;
+      border-right-style: solid;
+      border-top-style: solid;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      
+      content: '';
+      width: 0;
+      height: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &:before {
+      border-left-width: 70px;
+      border-right-width: 70px;
+      border-top-color: $orange;
+      border-top-width: 70px;
+    }
+
+    &:after {
+      border-left-width: 0px;
+      border-right-width: 0px;
+      border-top-width: 0px;
+      border-top-color: $off-grey;
+      transition: border-left-width map-get($animation-duration, 'medium-long') map-get($animation-easing, 'elastic'),
+      border-right-width map-get($animation-duration, 'medium-long') map-get($animation-easing, 'elastic'),
+      border-top-width map-get($animation-duration, 'short-medium') map-get($animation-easing, 'elastic');
+    }
+
+    &:hover {
+      color: $mint;
+
+      &:after {
+        border-left-width: 70px;
+        border-right-width: 70px;
+        border-top-width: 70px;
+      }
+    }
+    
   }
+  
 }
 

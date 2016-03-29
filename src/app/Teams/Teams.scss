@@ -3,7 +3,7 @@
 .teams_back {
   position: absolute;
   width: 30px;
-  top: 0;
+  top: 8px;
   margin: 15px;
 }
 
@@ -23,15 +23,49 @@ new-team {
   width: 80%;
   margin: 0 auto 40px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.teams_header {
+  padding: 10px;
+  text-align: center;
+  background: $forest;
 }
 
 .teams_list > li {
   background: $off-green;
-  width: 250px;
-  text-align: center;
+  text-align: initial;
   border-radius: 4px;
-  line-height: 100px;
   display: inline-block;
   margin: 10px;
   color: $light-grey;
+  min-width: 300px;
+  min-height: 200px;
+}
+
+.teams_members {
+  padding: 10px 20px 30px;
+  line-height: 16px;
+
+  > ul:not(:last-child) {
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,.2);
+    padding-bottom: 10px;
+  }
+}
+
+.teams_label,
+.teams_content {
+  display: inline-block;
+}
+
+.teams_label {
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.teams_content {
+  font-size: 16px;
 }

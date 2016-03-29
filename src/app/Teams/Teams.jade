@@ -5,13 +5,15 @@ section.teams
 
   ul.teams_list
     li('*ngFor'='#team of teams.items | async')
-      span {{ team.name }}
+      .teams_header {{ team.name }}
 
-      .teams_list_members('*ngIf'='team.teamMembers.length')
-        span Members:
-        div('*ngFor'='#member of team.teamMembers')
-          ul
-            li Trello ID: {{ member.trelloId }}
-            li Velocity: {{ member.velocity }}
+      .teams_members('*ngIf'='team.teamMembers.length')
+        ul('*ngFor'='#member of team.teamMembers')
+          li
+            .teams_label Trello ID:
+            .teams_content {{ member.trelloId }}
+          li
+            .teams_label Velocity:
+            .teams_content {{ member.velocity }}
 
   new-team('(onClose)'='fetchTeams()')
