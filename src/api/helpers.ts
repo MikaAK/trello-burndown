@@ -9,7 +9,7 @@ export const objToQueryParams = function(obj) {
 }
 
 const convertKeys = function(convertFn): any|any[] {
-  var convert = function(params) {
+  return function convert(params) {
     if (Array.isArray(params))
       return _.map(params, convert)
     else if (params && typeof params === 'object') {
@@ -28,8 +28,6 @@ const convertKeys = function(convertFn): any|any[] {
     } else
       return params
   }
-
-  return convert
 }
 
 

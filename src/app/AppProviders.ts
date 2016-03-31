@@ -6,12 +6,13 @@ import {HTTP_PROVIDERS} from 'angular2/http'
 import {API_PROVIDERS} from 'api'
 import {STORE_PROVIDERS} from 'shared/store'
 import {SOCKET_PROVIDERS} from 'shared/socket'
-import {convertDates} from 'shared/helpers/convertFunctions'
+import {convertDates, convertMomentToString} from 'shared/helpers/convertFunctions'
 
 import {Locker, LockerConfig, DRIVERS} from 'angular2-locker'
 import {ApiService, ApiConfig} from 'angular2-api'
 import {Auth} from 'shared/services/Auth'
 import {Sockets, SocketsConfig} from 'shared/services/Socket'
+import {instrumentStore, devtoolsConfig} from '@ngrx/devtools'
 
 export const APP_PROVIDERS = [
   // Providers
@@ -32,7 +33,7 @@ export const APP_PROVIDERS = [
       },
 
       serialize(data) {
-        return serializeKeys(data)
+        return serializeKeys(convertMomentToString(data))
       },
 
       serializeParams(params) {
@@ -43,11 +44,17 @@ export const APP_PROVIDERS = [
       }
     })
   }),
+  devtoolsConfig({
+      position: 'bottom',
+      visible: false,
+      size: 0.3
+  }),
   provide(LockerConfig, {
     useValue: new LockerConfig('burndown', DRIVERS.LOCAL)
   }),
 
   // Services
+  instrumentStore(),
   ApiService,
   Locker,
   Sockets,

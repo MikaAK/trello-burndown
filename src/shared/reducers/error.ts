@@ -13,6 +13,9 @@ const initialState: IErrorStore = {
 export const error: Reducer<IErrorStore> = (state = initialState, {type, payload}: Action): IErrorStore => {
   switch (type) {
     case ADD_API_ERROR:
+      if (payload instanceof Error)
+        throw payload
+
       return cloneState(state, {
         apiErrors: payload
       })

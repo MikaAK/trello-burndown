@@ -1,6 +1,7 @@
 import {Component} from 'angular2/core'
 import {RouteConfig, RouterOutlet, Router, Location} from 'angular2/router'
 import {load} from 'webfontloader'
+import {Devtools} from '@ngrx/devtools'
 
 import {NavBar} from 'shared/directives/NavBar'
 import {Auth} from 'shared/services/Auth'
@@ -17,7 +18,7 @@ import {APP_PROVIDERS} from './AppProviders'
   selector: 'app',
   template: require('./app.jade')(),
   styles: [require('./app.scss')],
-  directives: [RouterOutlet, NavBar],
+  directives: [RouterOutlet, NavBar, Devtools],
   providers: APP_PROVIDERS
 })
 @RouteConfig([

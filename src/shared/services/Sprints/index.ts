@@ -138,15 +138,15 @@ export class Sprints {
 
   private _compairAndUpdatePoints(sprint: any, points: number): Observable<any> {
     if (sprint.id && +points !== +sprint.points)
-      return this._api.update(this._sprintApi, sprint)
+      return this._api.update(this._sprintApi, Object.assign(sprint, {points}))
         .map(nSprint => Object.assign(sprint, nSprint))
     else
       return Observable.of(sprint)
   }
 
   private _calculatePointsNoUpdate(sprint): Observable<number> {
-    return this._trelloApi.getFullBoard(sprint.boardId)
-      .map(board => calculateCardPoints(getCards(board.lists)))
+    return this._trelloApi.getBoardLabels(sprint.boardId)
+      .map(labels => labels.reduce((res, label) => res += label.points, 0))
   }
 
   private _updateSprint(sprint): Observable<Action> {

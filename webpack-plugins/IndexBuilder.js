@@ -40,7 +40,6 @@ export default function(context, locals = {}) {
       doctype: 'html'
     })
 
-    console.log(sortJS(files.js).map(makeTag))
     return compiler(_.merge(locals, {
       scripts: {
         head: files.css.map(makeTag),

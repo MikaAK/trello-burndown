@@ -18,6 +18,13 @@ const LABEL_MAP = {
   extraLarge: 8
 }
 
+const LABEL_NAME_MAP = {
+  Small: LABEL_MAP.small,
+  Medium: LABEL_MAP.medium,
+  Large: LABEL_MAP.large,
+  'Extra Large': LABEL_MAP.extraLarge
+}
+
 const TRELLO_BASE_CONFIG = {
   key: __TRELLO_KEY__,
   name: 'Edvisor',
@@ -87,6 +94,7 @@ export class TrelloApi {
   public getBoardLabels(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/labels`))
       .map(data => data.json())
+      .map(labels => this._attachPointsToLabels(labels))
   }
 
   public getFullBoard(boardId: string): Observable<any> {
@@ -94,6 +102,16 @@ export class TrelloApi {
       .mergeMap(board => this._attachListsToBoard(board))
       .mergeMap(board => this._attachCardsToBoard(board))
       .catch(resp => Observable.throw(resp.text()))
+  }
+
+  private _attachPointsToLabels(labels: any[]) {
+    return labels.map(label => {
+      let points = LABEL_NAME_MAP[label.name]
+
+      label.points = points ? label.uses * points : 0
+      
+      return label
+    })
   }
 
   private _attachListsToBoard(board): Observable<any> {
