@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core'
-import {Socket as PhoenixSocket, SocketOptions} from 'phoenix-ts' //, Channel
+import {Socket as PhoenixSocket, SocketOptions} from 'phoenix-ts' // , Channel
 import {Store} from '@ngrx/store'
 import {ADD_SPRINTS} from 'shared/actions/sprint'
 import {deserializeKeys} from 'api/helpers'

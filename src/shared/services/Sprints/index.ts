@@ -105,7 +105,6 @@ const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
 }
 
 const changeSprintPoints = (sprint: any, points: number): any {
-  debugger
   let params: any = {points}
 
   if (sprint.startDate && _.get(sprint, 'team.teamMembers')) {
