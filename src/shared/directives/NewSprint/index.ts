@@ -1,4 +1,5 @@
 import * as _ from 'lodash'
+import * as moment from 'moment'
 import {Component, Output, EventEmitter} from 'angular2/core'
 import {FormBuilder, Validators, ControlGroup, NgForm} from 'angular2/common'
 import {Observable} from 'rxjs/Observable'
@@ -98,16 +99,19 @@ export class NewSprint {
     let params = {
       holidays,
       boardId: data.boardId,
-      startDate: data.startDate,
-      teamId: null
+      startDate: moment(data.startDate, 'YYYY-MM-DD'),
+      teamId: null,
+      team: null
     }
 
     return this.teams.items
       .take(1)
       .map(teams => _.find(teams, {name: data.teamName}))
       .map(team => {
-        if (team)
+        if (team) {
+          params.team = team
           params.teamId = team.id
+        }
 
         return params
       })

@@ -76,6 +76,7 @@ export class TrelloApi {
   public getBoardCards(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/cards`))
       .map(data => data.json())
+      .catch(resp => Observable.throw(resp.text()))
   }
 
   public getBoard(boardId: string): Observable<any> {
@@ -84,24 +85,26 @@ export class TrelloApi {
 
     return this.http.get(this.createTrelloUrl(`boards/${boardId}`))
       .map(data => data.json())
+      .catch(resp => Observable.throw(resp.text()))
   }
 
   public getBoardLists(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/lists`))
       .map(data => data.json())
+      .catch(resp => Observable.throw(resp.text()))
   }
 
   public getBoardLabels(boardId: string): Observable<any> {
     return this.http.get(this.createTrelloUrl(`boards/${boardId}/labels`))
       .map(data => data.json())
       .map(labels => this._attachPointsToLabels(labels))
+      .catch(resp => Observable.throw(resp.text()))
   }
 
   public getFullBoard(boardId: string): Observable<any> {
     return this.getBoard(boardId)
       .mergeMap(board => this._attachListsToBoard(board))
       .mergeMap(board => this._attachCardsToBoard(board))
-      .catch(resp => Observable.throw(resp.text()))
   }
 
   private _attachPointsToLabels(labels: any[]) {
@@ -109,7 +112,7 @@ export class TrelloApi {
       let points = LABEL_NAME_MAP[label.name]
 
       label.points = points ? label.uses * points : 0
-      
+
       return label
     })
   }

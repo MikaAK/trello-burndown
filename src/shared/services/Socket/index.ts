@@ -1,7 +1,5 @@
-
 import {Injectable} from 'angular2/core'
-import {Observable} from 'rxjs/Observable'
-import {Socket as PhoenixSocket, Channel, SocketOptions} from 'phoenix-ts'
+import {Socket as PhoenixSocket, SocketOptions} from 'phoenix-ts' //, Channel
 import {Store} from '@ngrx/store'
 import {ADD_SPRINTS} from 'shared/actions/sprint'
 import {deserializeKeys} from 'api/helpers'
@@ -20,7 +18,7 @@ export class SocketsConfig implements ISocketsConfig {
 
 @Injectable()
 export class Sockets {
-  private _channels: Channel[] = []
+  // private _channels: Channel[] = []
   private _socket: PhoenixSocket
 
   constructor(socketConfig: SocketsConfig, store: Store<any>) {
@@ -42,5 +40,7 @@ export class Sockets {
 
   public channel(channelName, params) {
     const channel = this._socket.channel(channelName, params)
+
+    return channel
   }
 }

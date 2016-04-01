@@ -1,5 +1,3 @@
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
-import {Action} from '@ngrx/store'
 import {Component} from 'angular2/core'
 import {RouterLink, Router} from 'angular2/router'
 

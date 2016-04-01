@@ -1,4 +1,3 @@
-import {indexOf} from 'lodash'
 import {Reducer, Action} from '@ngrx/store'
 import {cloneState} from 'shared/helpers/cloneState'
 import {
