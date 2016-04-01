@@ -16,6 +16,8 @@ import {
   CREATE_TEAM_ERROR
 } from 'shared/actions/team'
 
+export const getTeamVelocity = (team: any): number => team.teamMembers.reduce((res: number, member: any) => res += member.velocity, 0)
+
 @Injectable()
 export class Teams {
   public errors: Observable<any[]>

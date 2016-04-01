@@ -3,9 +3,14 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Store, Action} from '@ngrx/store'
 import {ApiService} from 'angular2-api'
+import {Moment} from 'moment'
+import * as moment from 'moment'
+import * as _ from 'lodash'
+
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
+import {getTeamVelocity} from 'shared/services/Teams'
 import {ADD_API_ERROR} from 'shared/actions/error'
 import {
   FETCH_SPRINTS,
@@ -73,6 +78,17 @@ const splitCards = (sprint: any): any => {
   return sprint
 }
 
+const calculateEndDate = (startDate: Moment, velocity: number, totalPoints: number): Moment => moment(startDate).add(Math.ceil(totalPoints / velocity), 'days')
+
+const changeSprintPoints = (sprint: any, points: number): any {
+  let params: any = {points}
+
+  if (sprint.startDate && _.get(sprint, 'team.teamMembers'))
+    params.endDate = calculateEndDate(sprint.startDate, getTeamVelocity(sprint.team), points)
+
+  return Object.assign({}, sprint, params)
+}
+
 @Injectable()
 export class Sprints {
   public errors: Observable<any[]>
@@ -83,7 +99,7 @@ export class Sprints {
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _api: ApiService, private _trelloApi: TrelloApi, private _sprintApi: SprintApi, private _store: Store<any>) {
-    var store = _store.select<ISprintStore>('sprint')
+    let store = _store.select<ISprintStore>('sprint')
 
     this.items = store.map(({sprints}: ISprintStore) => sprints)
     this.errors = store.map(({createErrors}: ISprintStore) => createErrors)
@@ -138,7 +154,7 @@ export class Sprints {
 
   private _compairAndUpdatePoints(sprint: any, points: number): Observable<any> {
     if (sprint.id && +points !== +sprint.points)
-      return this._api.update(this._sprintApi, Object.assign(sprint, {points}))
+      return this._api.update(this._sprintApi, changeSprintPoints(sprint, points))
         .map(nSprint => Object.assign(sprint, nSprint))
     else
       return Observable.of(sprint)
