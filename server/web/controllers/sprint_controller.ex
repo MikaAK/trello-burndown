@@ -5,7 +5,7 @@ defmodule TrelloBurndown.SprintController do
   alias TrelloBurndown.ModelChangeChannel
 
   def index(conn, _params) do
-    sprints = Repo.all(from s in Sprint, preload: [:team])
+    sprints = Repo.all(from s in Sprint, preload: [team: :team_members])
 
     render(conn, "index.json", sprints: sprints)
   end

@@ -16,6 +16,7 @@ defmodule TrelloBurndown.SprintView do
       sprint_name: sprint.sprint_name,
       team_id: sprint.team_id,
       start_date: sprint.start_date,
+      end_date: sprint.end_date,
       points: sprint.points,
       holidays: sprint.holidays
     }

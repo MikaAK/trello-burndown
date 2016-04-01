@@ -28,7 +28,6 @@ const TS_INGORES = [
   1005
 ]
 
-
 const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
       BUILD_PATH = createPath('server/priv/static'),
       CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin,

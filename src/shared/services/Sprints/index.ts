@@ -3,15 +3,23 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Store, Action} from '@ngrx/store'
 import {ApiService} from 'angular2-api'
+import {Moment} from 'moment'
+import * as moment from 'moment'
+import * as _ from 'lodash'
+
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
+import {getTeamVelocity} from 'shared/services/Teams'
 import {ADD_API_ERROR} from 'shared/actions/error'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
   FETCHING_SPRINTS,
   FETCHED_SPRINTS,
+  UPDATE_SPRINT,
+  UPDATING_SPRINT,
+  UPDATED_SPRINT,
   CREATE_SPRINT,
   CREATING_SPRINT,
   CREATED_SPRINT,
@@ -23,6 +31,9 @@ import {
   ADD_SPRINTS
 } from 'shared/actions/sprint'
 
+
+const SATURDAY = 6,
+      SUNDAY = 7
 
 const getCards = function(lists: any[], onlyPointed = true): any[] {
   return _(lists)
@@ -73,6 +84,37 @@ const splitCards = (sprint: any): any => {
   return sprint
 }
 
+const addWeekdays = (date: Moment|Date, days: number): Moment => {
+  let futureDate = moment(date)
+
+  while (days > 0) {
+    futureDate = futureDate.add(1, 'days')
+
+    if (futureDate.isoWeekday() !== SATURDAY && futureDate.isoWeekday() !== SUNDAY)
+      days -= 1
+  }
+
+  return futureDate
+}
+
+const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
+  let velocity = getTeamVelocity(sprint.team),
+      days = Math.ceil(totalPoints / velocity) - 1
+
+  return addWeekdays(moment(sprint.startDate), days)
+}
+
+const changeSprintPoints = (sprint: any, points: number): any {
+  debugger
+  let params: any = {points}
+
+  if (sprint.startDate && _.get(sprint, 'team.teamMembers')) {
+    params.endDate = calculateEndDate(sprint, points)
+  }
+
+  return Object.assign({}, sprint, params)
+}
+
 @Injectable()
 export class Sprints {
   public errors: Observable<any[]>
@@ -83,7 +125,7 @@ export class Sprints {
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _api: ApiService, private _trelloApi: TrelloApi, private _sprintApi: SprintApi, private _store: Store<any>) {
-    var store = _store.select<ISprintStore>('sprint')
+    let store = _store.select<ISprintStore>('sprint')
 
     this.items = store.map(({sprints}: ISprintStore) => sprints)
     this.errors = store.map(({createErrors}: ISprintStore) => createErrors)
@@ -110,7 +152,12 @@ export class Sprints {
       .do(({payload}: Action) => _store.dispatch({type: CALCULATING_POINTS, payload}))
       .mergeMap(({payload}: Action) => this._calculatePoints(payload))
 
-    Observable.merge(createSprint, fetchSprints, fetchSprint, calculatePoints)
+    let updateSprint = this._actions
+      .filter(({type}: Action) => type === UPDATE_SPRINT)
+      .do(({payload}: Action) => _store.dispatch({type: UPDATING_SPRINT, payload}))
+      .mergeMap(({payload}: Action) => this._updateSprint(payload))
+
+    Observable.merge(createSprint, fetchSprints, fetchSprint, calculatePoints, updateSprint)
       .subscribe((action: Action) => _store.dispatch(action))
   }
 
@@ -133,24 +180,25 @@ export class Sprints {
   private _calculatePoints(sprint): Observable<Action> {
     return this._calculatePointsNoUpdate(sprint)
       .mergeMap(points => this._compairAndUpdatePoints(sprint, points))
-      .map(sprint => ({type: CALCULATED_POINTS, payload: sprint}))
+      .map(iSprint => ({type: CALCULATED_POINTS, payload: iSprint}))
   }
 
   private _compairAndUpdatePoints(sprint: any, points: number): Observable<any> {
     if (sprint.id && +points !== +sprint.points)
-      return this._api.update(this._sprintApi, sprint)
+      return this._api.update(this._sprintApi, changeSprintPoints(sprint, points))
         .map(nSprint => Object.assign(sprint, nSprint))
     else
       return Observable.of(sprint)
   }
 
   private _calculatePointsNoUpdate(sprint): Observable<number> {
-    return this._trelloApi.getFullBoard(sprint.boardId)
-      .map(board => calculateCardPoints(getCards(board.lists)))
+    return this._trelloApi.getBoardLabels(sprint.boardId)
+      .map(labels => labels.reduce((res, label) => res += label.points, 0))
   }
 
   private _updateSprint(sprint): Observable<Action> {
     return this._api.update(this._sprintApi, sprint)
+      .do(({payload}: Action) => this._store.dispatch({type: UPDATED_SPRINT, payload}))
       .map(nSprint => ({type: ADD_SPRINTS, payload: nSprint}))
       .catch(error => Observable.of({type: UPDATE_SPRINT_ERROR, payload: error}))
   }
@@ -173,7 +221,7 @@ export class Sprints {
 
   private _createSprint(data): Observable<Action> {
     return this._calculatePointsNoUpdate(data)
-      .mergeMap(points => this._sprintApi.create(Object.assign(data, {points})))
+      .mergeMap(points => this._sprintApi.create(changeSprintPoints(data, points)))
       .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
       .catch(error => Observable.of({type: CREATE_SPRINT_ERROR, payload: error}))
   }

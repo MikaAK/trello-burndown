@@ -17,6 +17,7 @@ section.sprints
       .sprint_list-stats
         span('*ngIf'='item.sprint.team') Team: {{ item.sprint.team.name }}
         span Points in sprint: {{ item.sprint.points || 'None' }}
+        span('*ngIf'='item.sprint.endDate') End Date: {{ item.sprint.endDate }}
 
   div.sprints_loader('*ngIf'='sprints.isFetching | async')
     h1 Loading Sprints
