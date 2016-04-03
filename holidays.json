@@ -1,0 +1,11 @@
+{
+	"_comment": "Holidays should be formatted like Month-Day (EG - '12-25' = Christmas)",
+	"holidays": [
+    "1-1",
+    "2-2",
+    "7-1",
+    "11-11",
+    "12-25",
+    "12-26"
+	]
+}

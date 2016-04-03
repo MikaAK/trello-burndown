@@ -91,13 +91,7 @@ export class NewSprint {
   }
 
   private _serialize(data): Observable<any> {
-    let holidays = _(data.holidays.split(','))
-      .map(_.trim)
-      .compact()
-      .value()
-
     let params = {
-      holidays,
       boardId: data.boardId,
       startDate: moment(data.startDate, 'YYYY-MM-DD'),
       teamId: null,
