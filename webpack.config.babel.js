@@ -13,12 +13,13 @@ import {vendor} from './vendors.json'
 const CONTEXT = path.resolve(__dirname),
       DEV_SERVER_PORT = 4000,
       APP_ROOT = path.resolve(CONTEXT, 'src'),
-      PUBLIC_PATH = path.resolve(CONTEXT, 'public')
+      PUBLIC_PATH = path.resolve(CONTEXT, 'public'),
+      createPath = nPath => path.resolve(CONTEXT, nPath),
+      {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
+      BUILD_PATH = createPath('server/priv/static'),
+      CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
 
 var devtool
-var createPath = function(nPath) {
-  return path.resolve(CONTEXT, nPath)
-}
 
 const TS_INGORES = [
   2403,
@@ -28,11 +29,6 @@ const TS_INGORES = [
   1005
 ]
 
-const {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
-      BUILD_PATH = createPath('server/priv/static'),
-      CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin,
-      SASS_LOADER = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`
-
 const ENV = {
   __DEV__: NODE_ENV === 'development',
   __PROD__: NODE_ENV === 'production',
@@ -41,7 +37,9 @@ const ENV = {
   __TRELLO_KEY__: TRELLO_KEY
 }
 
-const IS_BUILD = ENV.__STAGING__ || ENV.__PROD__
+const IS_BUILD = ENV.__STAGING__ || ENV.__PROD__,
+      SASS_LOADER = `${IS_BUILD ? 'postcss!' : ''}sass?sourceMap`,
+      DEFAULT_CDN = `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
 
 var loaders = {
   javascript: {
@@ -107,6 +105,7 @@ var config = {
 
   output: {
     path: BUILD_PATH,
+    publicPath: IS_BUILD ? DEFAULT_CDN : '',
     filename: IS_BUILD ? '[name]-[hash].js' : '[name].js',
     sourceMapFilename: '[name].map',
     chunkFilename: '[id].chunk.js'
@@ -116,7 +115,8 @@ var config = {
     extensions: ['', '.ts', '.js', '.json'],
     root: [APP_ROOT, PUBLIC_PATH],
     alias: {
-      vendor: createPath('vendor')
+      vendor: createPath('vendor'),
+      holidays: createPath('holidays.json')
     }
   },
 
@@ -241,7 +241,7 @@ else
         CacheControl: 'max-age=315360000, no-transform, public'
       },
       cdnizerOptions: {
-        defaultCDNBase: `https://s3-us-west-2.amazonaws.com/${AWS_BUCKET}`
+        defaultCDNBase: DEFAULT_CDN
       }
     })
     // new S3Plugin({

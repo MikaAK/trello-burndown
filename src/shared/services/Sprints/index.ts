@@ -7,6 +7,7 @@ import {Moment} from 'moment'
 import * as moment from 'moment'
 import * as _ from 'lodash'
 
+import {addWorkingDays} from 'shared/helpers/dates'
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
@@ -30,10 +31,6 @@ import {
   CALCULATED_POINTS,
   ADD_SPRINTS
 } from 'shared/actions/sprint'
-
-
-const SATURDAY = 6,
-      SUNDAY = 7
 
 const getCards = function(lists: any[], onlyPointed = true): any[] {
   return _(lists)
@@ -84,32 +81,18 @@ const splitCards = (sprint: any): any => {
   return sprint
 }
 
-const addWeekdays = (date: Moment|Date, days: number): Moment => {
-  let futureDate = moment(date)
-
-  while (days > 0) {
-    futureDate = futureDate.add(1, 'days')
-
-    if (futureDate.isoWeekday() !== SATURDAY && futureDate.isoWeekday() !== SUNDAY)
-      days -= 1
-  }
-
-  return futureDate
-}
-
 const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
   let velocity = getTeamVelocity(sprint.team),
       days = Math.ceil(totalPoints / velocity) - 1
 
-  return addWeekdays(moment(sprint.startDate), days)
+  return addWorkingDays(moment(sprint.startDate), days)
 }
 
 const changeSprintPoints = (sprint: any, points: number): any {
   let params: any = {points}
 
-  if (sprint.startDate && _.get(sprint, 'team.teamMembers')) {
+  if (sprint.startDate && _.get(sprint, 'team.teamMembers'))
     params.endDate = calculateEndDate(sprint, points)
-  }
 
   return Object.assign({}, sprint, params)
 }

@@ -13,7 +13,7 @@ import {Pipe, PipeTransform} from 'angular2/core'
 */
 @Pipe({name: 'momentDate'})
 export class MomentPipe implements PipeTransform {
-  transform(value: Moment, [format]): string {
+  public transform(value: Moment, [format]): string {
     return moment(value).format(format || 'dddd MMMM Do')
   }
 }

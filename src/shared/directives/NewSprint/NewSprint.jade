@@ -15,15 +15,6 @@ modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
         )
 
       .input-group
-        label(for='holidays') Holidays
-        input(
-          type='text'
-          ngControl='holidays'
-          '[(ngModel)]'='newSprint.holidays'
-          placeholder='Enter holiday dates sperated by ,'
-        )
-
-      .input-group
         label(for='startDate') Start Date
         input(
           type='date'
