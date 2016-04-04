@@ -3,17 +3,12 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Store, Action} from '@ngrx/store'
 import {ApiService} from 'angular2-api'
-import {Moment} from 'moment'
-import * as moment from 'moment'
-import * as _ from 'lodash'
 
-import {downloadFile} from 'shared/helpers/downloadFile'
-import {addWorkingDays} from 'shared/helpers/dates'
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
-import {getTeamVelocity} from 'shared/services/Teams'
 import {ADD_API_ERROR} from 'shared/actions/error'
+import {changeSprintPoints, calculateListPoints, splitCards} from 'shared/helpers/sprint'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
@@ -30,108 +25,8 @@ import {
   CALCULATE_POINTS,
   CALCULATING_POINTS,
   CALCULATED_POINTS,
-  ADD_SPRINTS,
-  DOWNLOAD_CSV,
-  CREATING_CSV,
-  CREATED_CSV,
-  DOWNLOADING_CSV,
-  DOWNLOADED_CSV
+  ADD_SPRINTS
 } from 'shared/actions/sprint'
-
-const getCards = function(lists: any[], onlyPointed = true): any[] {
-  return _(lists)
-    .map('cards')
-    .flatten()
-    .compact()
-    .filter((card: any) => onlyPointed ? card.points : true)
-    .value()
-}
-
-const calculateCardPoints = function(cards: any[]): number {
-  return _(cards)
-    .map('points')
-    .sum()
-}
-
-const calculateListPoints = function(lists: any[]): number {
-  return calculateCardPoints(getCards(lists))
-}
-
-const splitCards = (sprint: any): any => {
-  if (!sprint.board || !sprint.board.lists)
-    return sprint
-
-  var completedLists: any[] = sprint.board.lists
-    .filter(list => /done!/i.test(list.name))
-
-  var devCompletedLists: any[] = sprint.board.lists
-    .filter(list => /signoff|completed|stage/i.test(list.name))
-
-  var bugLists: any[] = sprint.board.lists
-    .filter(list => /bugs?/i.test(list.name) && !/extra/.test(list.name))
-
-  var uncompletedLists: any[] = _.without(sprint.board.lists, ...completedLists, ...devCompletedLists, ...bugLists)
-    .filter(list => !/defered/i.test(list.name))
-
-  sprint.completedCards = getCards(completedLists)
-  sprint.completedPoints = calculateCardPoints(sprint.completedCards)
-
-  sprint.uncompletedCards = getCards(uncompletedLists)
-  sprint.uncompletedPoints = calculateCardPoints(sprint.uncompletedCards)
-
-  sprint.devCompletedCards = getCards(devCompletedLists)
-  sprint.devCompletedPoints = calculateCardPoints(sprint.devCompletedCards)
-
-  sprint.bugCards = getCards(bugLists, false)
-
-  return sprint
-}
-
-const isSprintList = (name: string): boolean => /\[(school|agency|agent|extra)(\/(school|agency|agent|extra))?.*\]/i.test(name)
-
-const getSprintLists = (sprint: any): any[] => {
-  return sprint.board.lists
-    .filter(list => isSprintList(list.name))
-}
-
-const turnListsToCSV = (lists: any[]): string => {
-  return _(lists)
-    .map((list: any) =>  {
-      list.cards = list.cards.map((card: any) => {
-        card.listName = list.name
-
-        return card
-      })
-
-      return list.cards
-    })
-    .flatten()
-    .map((card: any) => {
-      const points = card.points || ''
-
-      return `${points}, ${card.listName}, ${card.name.replace(/,/g, '')}, ${card.url}, ${card.id}`
-    })
-    .unshift('Points, List Name, Title, Url, Card Id')
-    .join('\n')
-}
-
-const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
-  let velocity = getTeamVelocity(sprint.team),
-      days = Math.ceil(totalPoints / velocity) - 1
-
-  return addWorkingDays(moment(sprint.startDate), days)
-}
-
-const changeSprintPoints = (sprint: any, points: number): any {
-  let params: any = {points}
-
-  if (sprint.startDate && _.get(sprint, 'team.teamMembers'))
-    params.endDate = calculateEndDate(sprint, points)
-
-  return Object.assign({}, sprint, params)
-}
-
-const newSprintToCSV = _.flow(getSprintLists, turnListsToCSV)
 
 @Injectable()
 export class Sprints {
@@ -175,22 +70,12 @@ export class Sprints {
       .do(({payload}: Action) => _store.dispatch({type: UPDATING_SPRINT, payload}))
       .mergeMap(({payload}: Action) => this._updateSprint(payload))
 
-    let downloadEstimate = this._actions
-      .filter(({type}: Action) => type === DOWNLOAD_CSV)
-      .do(() => _store.dispatch({type: CREATING_CSV}))
-      .mergeMap(({payload}: Action) => this._createSprintCSV(payload))
-      .do(() => _store.dispatch({type: CREATED_CSV}))
-      .do(() => _store.dispatch({type: DOWNLOADING_CSV}))
-      .mergeMap(([csvName, csvText]: string[]) => downloadFile(csvName, csvText 'type/csv'))
-      .map(() => _store.dispatch({type: DOWNLOADED_CSV}))
-
     Observable.merge(
       createSprint,
       fetchSprints,
       fetchSprint,
       calculatePoints,
-      updateSprint,
-      downloadEstimate
+      updateSprint
     )
       .subscribe((action: Action) => _store.dispatch(action))
   }
@@ -209,10 +94,6 @@ export class Sprints {
 
   public calculatePoints(sprint): void {
     this._actions.next({type: CALCULATE_POINTS, payload: sprint})
-  }
-
-  public downloadEstimates(sprintId: number|string) {
-    this._actions.next({type: DOWNLOAD_CSV, payload: sprintId})
   }
 
   private _calculatePoints(sprint): Observable<Action> {
@@ -266,11 +147,6 @@ export class Sprints {
       .mergeMap(points => this._sprintApi.create(changeSprintPoints(data, points)))
       .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
       .catch(error => Observable.of({type: CREATE_SPRINT_ERROR, payload: error}))
-  }
-
-  private _createSprintCSV(sprintId: number|string): Observable<string[]> {
-    return this._findSprint(+sprintId)
-      .map(sprint => [sprint.sprintName, newSprintToCSV(sprint)])
   }
 
   private _attachBoardToSprint(sprint): Observable<any> {
