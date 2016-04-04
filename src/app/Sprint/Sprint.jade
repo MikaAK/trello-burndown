@@ -7,7 +7,11 @@ section.sprints
     h5 Total Points: {{ sprint.points }}
     a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
 
-    // button.btn--default('*ngIf'='sprint.team') Refresh
+    button.btn--default(
+      '*ngIf'='sprint.points > 0'
+      '(click)'='sprints.downloadEstimates(sprint.id)'
+    )
+      | Download Estimates
 
 
   .trello-cards
