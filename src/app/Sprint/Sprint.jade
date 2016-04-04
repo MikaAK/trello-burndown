@@ -10,7 +10,7 @@ section.sprints
     a.btn--default(
       download='{{sprint.sprintName}}.csv'
       '[href]'='sprintEstimates | async'
-      '*ngIf'='sprint.points > 0'
+      '*ngIf'='shouldShowEstimates | async'
     )
       | Download Estimates
 

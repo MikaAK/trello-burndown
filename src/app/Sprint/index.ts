@@ -22,6 +22,7 @@ export class SprintComponent {
   public sprint: any = {}
   public isCalculating: boolean = false
   public sprintEstimates: Observable<string>
+  public shouldShowEstimates: Observable<boolean>
   private _sprintId: number
 
   constructor(public sprints: Sprints, private _params: RouteParams, private _sprintDocuments: SprintDocuments) {
@@ -34,6 +35,10 @@ export class SprintComponent {
 
     this.sprintEstimates = sprint
       .map((data: ISprintData) => this._createEstimatesBlob(data))
+
+    this.shouldShowEstimates = sprint
+      .map((data: ISprintData) => data.sprint)
+      .map(sprint => !sprint.completedPoints && !sprint.devCompletedPoints)
 
     sprint.subscribe((data: ISprintData) => Object.assign(this, data))
 
