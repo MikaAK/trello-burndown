@@ -34,7 +34,7 @@ const ENV = {
   __PROD__: NODE_ENV === 'production',
   __TEST__: NODE_ENV === 'test',
   __STAGING__: NODE_ENV === 'staging',
-  __TRELLO_KEY__: TRELLO_KEY
+  __TRELLO_KEY__: `"${TRELLO_KEY}"`
 }
 
 const IS_BUILD = ENV.__STAGING__ || ENV.__PROD__,

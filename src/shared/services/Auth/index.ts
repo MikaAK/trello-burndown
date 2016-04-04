@@ -20,6 +20,7 @@ export class Auth {
   public isAuthorized: Observable<boolean>
   public isCheckingAuthorization: Observable<boolean>
   public isGettingAuth: Observable<boolean>
+  public trelloToken: Observable<string>
   private _actions: BehaviorSubject<Action> = new BehaviorSubject<Action>({type: null, payload: null})
 
   constructor(private _store: Store<any>, private _trelloApi: TrelloApi) {
@@ -36,19 +37,22 @@ export class Auth {
       .map(auth => auth.isCheckingAuthorization)
       .distinctUntilChanged()
 
+    this.trelloToken = store
+      .map(auth => auth.trelloToken)
+
     let checkAuth = this._actions
       .filter(({type}: Action) => type === CHECK_AUTH)
-      .map(() => this._isAuthorized())
+      .map(() => this._isAuthorized() ? _trelloApi.trelloToken : '')
 
     let getAuth = this._actions
       .filter(({type}: Action) => type === GET_AUTH)
       .do(() => _store.dispatch({type: GETTING_AUTH}))
       .mergeMap(() => this._getTrelloAuth())
       .do(() => _store.dispatch({type: GOT_AUTH}))
-      .map(key => key && !/invalid/.test(<string>key))
+      .map(key => key && !/invalid/.test(<string>key) ? key : '')
 
     Observable.merge(checkAuth, getAuth)
-      .map(isAuthorized => ({type: isAuthorized ? AUTHORIZED : UNAUTHORIZED}))
+      .map(token => ({type: token ? AUTHORIZED : UNAUTHORIZED, payload: token}))
       .subscribe({
         next: action => _store.dispatch(action),
         error: () => _store.dispatch({type: UNAUTHORIZED})

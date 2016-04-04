@@ -47,6 +47,10 @@ export {TRELLO_KEY}
 export class TrelloApi {
   constructor(private http: Http, private locker: Locker) {}
 
+  public get trelloToken(): string {
+    return this.locker.get(TRELLO_KEY)
+  }
+
   public isAuthorized(): boolean {
     return !!this.locker.get(TRELLO_KEY)
   }

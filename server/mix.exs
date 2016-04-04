@@ -19,7 +19,7 @@ defmodule TrelloBurndown.Mixfile do
   def application do
     [mod: {TrelloBurndown, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :quantum]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,7 +37,9 @@ defmodule TrelloBurndown.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
-     {:exrm, "~> 1.0.2"}]
+     {:exrm, "~> 1.0.2"},
+     {:quantum, ">= 1.7.1"},
+     {:dotenv, "~> 2.0.0"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

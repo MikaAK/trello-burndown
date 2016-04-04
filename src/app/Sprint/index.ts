@@ -38,7 +38,7 @@ export class SprintComponent {
 
     this.shouldShowEstimates = sprint
       .map((data: ISprintData) => data.sprint)
-      .map(sprint => !sprint.completedPoints && !sprint.devCompletedPoints)
+      .map(iSprint => !iSprint.completedPoints && !iSprint.devCompletedPoints)
 
     sprint.subscribe((data: ISprintData) => Object.assign(this, data))
 

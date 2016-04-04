@@ -41,3 +41,4 @@ config :trello_burndown, TrelloBurndown.Repo,
   database: "trello_burndown_dev",
   hostname: "localhost",
   pool_size: 10
+

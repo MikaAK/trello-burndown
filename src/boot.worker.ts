@@ -1,3 +1,5 @@
+declare const __PROD__: boolean, __STAGING__: boolean
+
 import 'angular2/web_worker/worker.js'
 import {WORKER_RENDER_PLATFORM, WORKER_RENDER_APPLICATION, WORKER_SCRIPT} from 'angular2/platform/worker_render'
 import {platform, enableProdMode} from 'angular2/core'
@@ -14,4 +16,4 @@ platform([WORKER_RENDER_PLATFORM])
 
 platform([WORKER_APP_PLATFORM])
   .application([WORKER_APP_APPLICATION])
-  .then((ref) => ref.bootstrap(AppComponent))
+  // .then((ref) => ref.bootstrap(AppComponent))

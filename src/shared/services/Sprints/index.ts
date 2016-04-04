@@ -144,7 +144,9 @@ export class Sprints {
 
   private _createSprint(data): Observable<Action> {
     return this._calculatePointsNoUpdate(data)
-      .mergeMap(points => this._sprintApi.create(changeSprintPoints(data, points)))
+      .map(points => changeSprintPoints(data, points))
+      .map(sprint => Object.assign(sprint, {authToken: this._trelloApi.trelloToken}))
+      .mergeMap(sprint => this._sprintApi.create(sprint))
       .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
       .catch(error => Observable.of({type: CREATE_SPRINT_ERROR, payload: error}))
   }
