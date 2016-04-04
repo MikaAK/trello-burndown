@@ -1,5 +1,6 @@
 import {Moment} from 'moment'
 import * as moment from 'moment'
+import {some} from 'lodash'
 import {getTeamVelocity} from 'shared/services/Teams'
 import {addWorkingDays} from 'shared/helpers/dates'
 
@@ -52,6 +53,10 @@ export const splitCards = (sprint: any): any => {
   return sprint
 }
 
+export const isSprintStartDate = (sprint): boolean => {
+  return sprint.startDate ? moment().isSame(sprint.startDate, 'day') : false
+}
+
 export const isSprintList = (name: string): boolean => /\[(school|agency|agent|extra)(\/(school|agency|agent|extra))?.*\]/i.test(name)
 
 export const getSprintLists = (lists: any[]): any[] => {
@@ -61,6 +66,7 @@ export const getSprintLists = (lists: any[]): any[] => {
 
 export const turnListsToCSV = (lists: any[]): string => {
   return _(lists)
+    .filter((list: any) => some(list.cards))
     .map((list: any) =>  {
       list.cards = list.cards.map((card: any) => {
         card.listName = list.name

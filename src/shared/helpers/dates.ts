@@ -8,7 +8,7 @@ const SATURDAY = 6,
         .holidays
         .map((holiday: string) => moment(holiday, Config.holidaysFormat))
 
-export const isHoliday = (date: Moment|Date): boolean => HOLIDAYS.some(holiday => holiday.isSame(moment(date)))
+export const isHoliday = (date: Moment|Date): boolean => HOLIDAYS.some(holiday => holiday.isSame(moment(date), 'day'))
 export const isWeekend = (date: Moment|Date): boolean => {
   const weekday = moment(date).isoWeekday()
 

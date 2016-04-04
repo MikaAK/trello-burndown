@@ -7,6 +7,7 @@ import {BackButton} from 'shared/directives/BackButton'
 import {SprintDocuments} from 'shared/services/SprintDocuments'
 import {Sprints} from 'shared/services/Sprints'
 import {ISprintData} from 'shared/reducers/sprint'
+import {isSprintStartDate} from 'shared/helpers/sprint'
 
 import {SprintCardList} from './components/SprintCardList'
 
@@ -33,12 +34,12 @@ export class SprintComponent {
       .map(_.first)
       .filter(item => !!item)
 
-    this.sprintEstimates = sprint
-      .map((data: ISprintData) => this._createEstimatesBlob(data))
-
     this.shouldShowEstimates = sprint
-      .map((data: ISprintData) => data.sprint)
-      .map(iSprint => !iSprint.completedPoints && !iSprint.devCompletedPoints)
+      .map((iSprint: ISprintData) => this._shouldShowEstimate(iSprint))
+
+    this.sprintEstimates = sprint
+      .filter((iSprint: ISprintData) => this._shouldShowEstimate(iSprint))
+      .map((data: ISprintData) => this._createEstimatesBlob(data))
 
     sprint.subscribe((data: ISprintData) => Object.assign(this, data))
 
@@ -50,6 +51,16 @@ export class SprintComponent {
           sprintCSV = this._sprintDocuments.createEstimatesForBoard(sprint.board)
 
     return window.URL.createObjectURL(new File([sprintCSV], sprint.name, {type: 'text/csv'}))
+  }
+
+  private _shouldShowEstimate(data: ISprintData): boolean {
+    const {sprint} = data
+
+    debugger
+    if (sprint.board)
+      return isSprintStartDate(sprint) || !sprint.completedPoints && !sprint.devCompletedPoints
+    else
+      return false
   }
 
   private _filterCurrentSprint(items: ISprintData[]): ISprintData[] {
