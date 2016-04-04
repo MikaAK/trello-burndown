@@ -3,16 +3,12 @@ import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Store, Action} from '@ngrx/store'
 import {ApiService} from 'angular2-api'
-import {Moment} from 'moment'
-import * as moment from 'moment'
-import * as _ from 'lodash'
 
-import {addWorkingDays} from 'shared/helpers/dates'
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
-import {getTeamVelocity} from 'shared/services/Teams'
 import {ADD_API_ERROR} from 'shared/actions/error'
+import {changeSprintPoints, calculateListPoints, splitCards} from 'shared/helpers/sprint'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
@@ -31,71 +27,6 @@ import {
   CALCULATED_POINTS,
   ADD_SPRINTS
 } from 'shared/actions/sprint'
-
-const getCards = function(lists: any[], onlyPointed = true): any[] {
-  return _(lists)
-    .map('cards')
-    .flatten()
-    .compact()
-    .filter((card: any) => onlyPointed ? card.points : true)
-    .value()
-}
-
-const calculateCardPoints = function(cards: any[]): number {
-  return _(cards)
-    .map('points')
-    .sum()
-}
-
-const calculateListPoints = function(lists: any[]): number {
-  return calculateCardPoints(getCards(lists))
-}
-
-const splitCards = (sprint: any): any => {
-  if (!sprint.board || !sprint.board.lists)
-    return sprint
-
-  var completedLists: any[] = sprint.board.lists
-    .filter(list => /done!/i.test(list.name))
-
-  var devCompletedLists: any[] = sprint.board.lists
-    .filter(list => /signoff|completed|stage/i.test(list.name))
-
-  var bugLists: any[] = sprint.board.lists
-    .filter(list => /bugs?/i.test(list.name) && !/extra/.test(list.name))
-
-  var uncompletedLists: any[] = _.without(sprint.board.lists, ...completedLists, ...devCompletedLists, ...bugLists)
-    .filter(list => !/defered/i.test(list.name))
-
-  sprint.completedCards = getCards(completedLists)
-  sprint.completedPoints = calculateCardPoints(sprint.completedCards)
-
-  sprint.uncompletedCards = getCards(uncompletedLists)
-  sprint.uncompletedPoints = calculateCardPoints(sprint.uncompletedCards)
-
-  sprint.devCompletedCards = getCards(devCompletedLists)
-  sprint.devCompletedPoints = calculateCardPoints(sprint.devCompletedCards)
-
-  sprint.bugCards = getCards(bugLists, false)
-
-  return sprint
-}
-
-const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
-  let velocity = getTeamVelocity(sprint.team),
-      days = Math.ceil(totalPoints / velocity) - 1
-
-  return addWorkingDays(moment(sprint.startDate), days)
-}
-
-const changeSprintPoints = (sprint: any, points: number): any {
-  let params: any = {points}
-
-  if (sprint.startDate && _.get(sprint, 'team.teamMembers'))
-    params.endDate = calculateEndDate(sprint, points)
-
-  return Object.assign({}, sprint, params)
-}
 
 @Injectable()
 export class Sprints {
@@ -139,7 +70,13 @@ export class Sprints {
       .do(({payload}: Action) => _store.dispatch({type: UPDATING_SPRINT, payload}))
       .mergeMap(({payload}: Action) => this._updateSprint(payload))
 
-    Observable.merge(createSprint, fetchSprints, fetchSprint, calculatePoints, updateSprint)
+    Observable.merge(
+      createSprint,
+      fetchSprints,
+      fetchSprint,
+      calculatePoints,
+      updateSprint
+    )
       .subscribe((action: Action) => _store.dispatch(action))
   }
 
@@ -186,12 +123,16 @@ export class Sprints {
   }
 
   private _fetchSprint(id, params): Observable<Action> {
-    return this._api.find(this._sprintApi, id, params)
-      .mergeMap(sprint => this._attachBoardToSprint(sprint))
+    return this._findSprint(id params)
       .do(() => this._store.dispatch({type: FETCHED_SPRINTS}))
       .mergeMap((sprint: any) => this._compairAndUpdatePoints(sprint, calculateListPoints(sprint.board.lists)))
       .map(sprint => ({type: ADD_SPRINTS, payload: sprint}))
       .catch(error => Observable.of({type: ADD_API_ERROR, payload: error}))
+  }
+
+  private _findSprint(id, params?): Observable<any> {
+    return this._api.find(this._sprintApi, id, params)
+      .mergeMap(sprint => this._attachBoardToSprint(sprint))
   }
 
   private _fetchSprints(params?: any): Observable<Action> {

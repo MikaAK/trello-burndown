@@ -1,3 +1,4 @@
+require('style/global.scss')
 import {Component} from 'angular2/core'
 import {RouteConfig, RouterOutlet, Router, Location} from 'angular2/router'
 import {load} from 'webfontloader'
