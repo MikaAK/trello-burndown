@@ -2,7 +2,7 @@ import {Moment} from 'moment'
 import * as moment from 'moment'
 import {some} from 'lodash'
 import {getTeamVelocity} from 'shared/services/Teams'
-import {addWorkingDays} from 'shared/helpers/dates'
+import {addWorkingDays, isToday} from 'shared/helpers/dates'
 
 export const getCards = function(lists: any[], onlyPointed = true): any[] {
   return _(lists)
@@ -13,15 +13,13 @@ export const getCards = function(lists: any[], onlyPointed = true): any[] {
     .value()
 }
 
-export const calculateCardPoints = function(cards: any[]): number {
+export const calculateCardPoints = (cards: any[]): number => {
   return _(cards)
     .map('points')
     .sum()
 }
 
-export const calculateListPoints = function(lists: any[]): number {
-  return calculateCardPoints(getCards(lists))
-}
+export const calculateListPoints = (lists: any[]): number => calculateCardPoints(getCards(lists))
 
 export const splitCards = (sprint: any): any => {
   if (!sprint.board || !sprint.board.lists)
@@ -53,16 +51,9 @@ export const splitCards = (sprint: any): any => {
   return sprint
 }
 
-export const isSprintStartDate = (sprint): boolean => {
-  return sprint.startDate ? moment().isSame(sprint.startDate, 'day') : false
-}
-
+export const isSprintStartDate = (sprint): boolean => sprint.startDate ? isToday(sprint.startDate) : false
+export const getSprintLists = (lists: any[]): any[] => lists.filter(list => isSprintList(list.name))
 export const isSprintList = (name: string): boolean => /\[(school|agency|agent|extra)(\/(school|agency|agent|extra))?.*\]/i.test(name)
-
-export const getSprintLists = (lists: any[]): any[] => {
-  return lists
-    .filter(list => isSprintList(list.name))
-}
 
 export const turnListsToCSV = (lists: any[]): string => {
   return _(lists)
@@ -88,7 +79,7 @@ export const turnListsToCSV = (lists: any[]): string => {
 
 export const calculateEndDate = (sprint: any, totalPoints: number): Moment => {
   const velocity = getTeamVelocity(sprint.team),
-      days = Math.ceil(totalPoints / velocity) - 1
+        days = Math.ceil(totalPoints / velocity) - 1
 
   return addWorkingDays(moment(sprint.startDate), days)
 }

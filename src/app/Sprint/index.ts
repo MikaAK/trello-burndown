@@ -8,6 +8,7 @@ import {SprintDocuments} from 'shared/services/SprintDocuments'
 import {Sprints} from 'shared/services/Sprints'
 import {ISprintData} from 'shared/reducers/sprint'
 import {isSprintStartDate} from 'shared/helpers/sprint'
+import {isToday} from 'shared/helpers/date'
 
 import {SprintCardList} from './components/SprintCardList'
 
@@ -33,6 +34,7 @@ export class SprintComponent {
       .map((items) => this._filterCurrentSprint(items))
       .map(_.first)
       .filter(item => !!item)
+      .distinctUntilChanged()
 
     this.shouldShowEstimates = sprint
       .map((iSprint: ISprintData) => this._shouldShowEstimate(iSprint))
@@ -56,9 +58,11 @@ export class SprintComponent {
   private _shouldShowEstimate(data: ISprintData): boolean {
     const {sprint} = data
 
-    debugger
     if (sprint.board)
-      return isSprintStartDate(sprint) || !sprint.completedPoints && !sprint.devCompletedPoints
+      return isToday(sprint.created)   ||
+             isSprintStartDate(sprint) ||
+             !sprint.completedPoints   &&
+             !sprint.devCompletedPoints
     else
       return false
   }

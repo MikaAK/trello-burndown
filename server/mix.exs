@@ -18,8 +18,7 @@ defmodule TrelloBurndown.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {TrelloBurndown, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :quantum]]
+     applications: app_list(Mix.env)]
   end
 
   # Specifies which paths to compile per environment.
@@ -40,6 +39,16 @@ defmodule TrelloBurndown.Mixfile do
      {:exrm, "~> 1.0.2"},
      {:quantum, ">= 1.7.1"},
      {:dotenv, "~> 2.0.0"}]
+  end
+
+  defp app_list(:dev), do: [:dotenv | app_list]
+  defp app_list(_), do: app_list
+  defp app_list do
+    [
+      :phoenix, :phoenix_html,
+      :cowboy, :logger, :gettext,
+      :phoenix_ecto, :postgrex, :quantum
+    ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
