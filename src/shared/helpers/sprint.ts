@@ -52,8 +52,8 @@ export const splitCards = (sprint: any): any => {
 }
 
 export const isSprintStartDate = (sprint): boolean => sprint.startDate ? isToday(sprint.startDate) : false
-export const getSprintLists = (lists: any[]): any[] => lists.filter(list => isSprintList(list.name))
 export const isSprintList = (name: string): boolean => /\[(school|agency|agent|extra)(\/(school|agency|agent|extra))?.*\]/i.test(name)
+export const getSprintLists = (lists: any[]): any[] => lists.filter(list => isSprintList(list.name))
 
 export const turnListsToCSV = (lists: any[]): string => {
   return _(lists)

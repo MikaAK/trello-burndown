@@ -15,9 +15,20 @@ const CONTEXT = path.resolve(__dirname),
       APP_ROOT = path.resolve(CONTEXT, 'src'),
       PUBLIC_PATH = path.resolve(CONTEXT, 'public'),
       createPath = nPath => path.resolve(CONTEXT, nPath),
-      {NODE_ENV, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET, TRELLO_KEY} = process.env,
       BUILD_PATH = createPath('server/priv/static'),
       CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
+
+const {
+  NODE_ENV,
+  AWS_ACCESS_KEY,
+  AWS_SECRET_KEY,
+  AWS_BUCKET,
+  TRELLO_KEY,
+  SMALL_LABEL_NAME,
+  MEDIUM_LABEL_NAME,
+  LARGE_LABEL_NAME,
+  EXTRA_LARGE_LABEL_NAME
+} = process.env
 
 var devtool
 
@@ -34,7 +45,11 @@ const ENV = {
   __PROD__: NODE_ENV === 'production',
   __TEST__: NODE_ENV === 'test',
   __STAGING__: NODE_ENV === 'staging',
-  __TRELLO_KEY__: `"${TRELLO_KEY}"`
+  __TRELLO_KEY__: `"${TRELLO_KEY}"`,
+  __SMALL_LABEL_NAME__: `"${SMALL_LABEL_NAME}"`,
+  __MEDIUM_LABEL_NAME__: `"${MEDIUM_LABEL_NAME}"`,
+  __LARGE_LABEL_NAME__: `"${LARGE_LABEL_NAME}"`,
+  __EXTRA_LARGE_LABEL_NAME__: `"${EXTRA_LARGE_LABEL_NAME}"`
 }
 
 const IS_BUILD = ENV.__STAGING__ || ENV.__PROD__,

@@ -19,10 +19,10 @@ const LABEL_MAP = {
 }
 
 const LABEL_NAME_MAP = {
-  Small: LABEL_MAP.small,
-  Medium: LABEL_MAP.medium,
-  Large: LABEL_MAP.large,
-  'Extra Large': LABEL_MAP.extraLarge
+  [LABEL_MAP.small]: LABEL_MAP.small,
+  [LABEL_MAP.medium]: LABEL_MAP.medium,
+  [LABEL_MAP.large]: LABEL_MAP.large,
+  [LABEL_MAP.extraLarge]: LABEL_MAP.extraLarge
 }
 
 const TRELLO_BASE_CONFIG = {

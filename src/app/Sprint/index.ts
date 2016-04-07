@@ -8,7 +8,7 @@ import {SprintDocuments} from 'shared/services/SprintDocuments'
 import {Sprints} from 'shared/services/Sprints'
 import {ISprintData} from 'shared/reducers/sprint'
 import {isSprintStartDate} from 'shared/helpers/sprint'
-import {isToday} from 'shared/helpers/date'
+import {isToday} from 'shared/helpers/dates'
 
 import {SprintCardList} from './components/SprintCardList'
 
