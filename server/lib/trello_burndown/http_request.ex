@@ -1,10 +1,20 @@
 defmodule TrelloBurndown.HttpRequest do
+  import IEx
   def get(url) do
-    %HTTPoison.Response{body: body} = HTTPoison.get! url
+    case HTTPoison.get url do
+      {:ok, %HTTPoison.Response{body: body}} ->
+        if (is_json body), do: decode_body(body), else: {:ok, body}
+      value -> value
+    end
+  end
 
-    {:ok, data} = Poison.decode body
+  def is_json(string), do: Regex.match?(~r/^({|\[).*(}|\])$/, string)
 
-    atomize_keys data
+  defp decode_body(body) do
+    case Poison.decode body do
+      {:ok, data} -> {:ok, atomize_keys(data)}
+      value -> value
+    end
   end
 
   defp atomize_keys(data) when is_map(data) do

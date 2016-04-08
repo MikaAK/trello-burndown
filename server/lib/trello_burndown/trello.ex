@@ -10,23 +10,40 @@ defmodule TrelloBurndown.Trello do
   }
 
   def get_full_board(board_id, secret) do
-    board = get_board(board_id, secret)
-      |> Map.put(:labels, get_labels_for_board(board_id, secret))
+    case get_board(board_id, secret) do
+      {:ok, board} ->
+        case get_labels_for_board board_id, secret do
+          {:ok, labels} ->
+            points = calculate_points_from_labels(labels)
 
-    Map.put(board, :points, calculate_points_from_labels(board.labels))
+            board = Map.put(board, :points, points)
+              |> Map.put(:labels, labels)
+
+            {:ok, board}
+
+          value -> value
+        end
+      value -> value
+    end
   end
 
   def get_board(board_id, secret) do
-    sprint = get("/board/#{board_id}", secret)
+    {:ok, data} = get("/board/#{board_id}", secret)
+
+    if (is_map data) do
+      sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, data[:name])
+        |> List.last
     
-    sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, sprint[:name])
-      |> List.last
-  
-    Map.put(sprint, :sprint_name, sprint_name)
+      {:ok, Map.put(data, :sprint_name, sprint_name)}
+    else
+      {:error, data}
+    end
   end
 
   def get_labels_for_board(board_id, secret) do
-    get("boards/#{board_id}/labels", secret)
+    {:ok, data} = get("boards/#{board_id}/labels", secret)
+
+    if (is_list data), do: {:ok, data}, else: {:error, data}
   end
 
   def calculate_points_for_board(board, secret \\ nil) do
