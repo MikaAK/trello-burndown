@@ -1,13 +1,13 @@
-defmodule TrelloBurndown.TrelloController do
-  import IEx
+defmodule TrelloBurndown.TrelloBoardController do
   use TrelloBurndown.Web, :controller
+
   alias TrelloBurndown.Trello
 
   def show(conn, %{"id" => id}) do
-    if (Map.has_key? conn.query_params, "secret") do
-      %{"secret" => secret} = conn.query_params
+    secret = get_req_header conn, "authorization"
 
-      case Trello.get_full_board(id, secret) do
+    if (secret) do
+      case Trello.get_board(id, secret) do
         {:ok, board} -> 
           put_status(conn, :ok)
             |> json(board)
@@ -18,12 +18,10 @@ defmodule TrelloBurndown.TrelloController do
       end
     else
       put_status(conn, :unauthorized)
-        |> json(parse_error("Must provide secret"))
+        |> json(parse_error("Must provide authorization header"))
     end
   end
 
-  defp parse_error(error) when is_bitstring(error) do
-    %{error: error}
-  end
+  defp parse_error(error), do: %{error: error}
 end
 

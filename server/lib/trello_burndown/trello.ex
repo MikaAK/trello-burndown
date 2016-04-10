@@ -1,6 +1,22 @@
 defmodule TrelloBurndown.Trello do
-  import IEx
   alias TrelloBurndown.HttpRequest
+
+  @unstarted_lists [~r/\[(agency|school|agencies).*\]/i]
+  @current_development_lists [~r/in progress/i]
+  @blocked_development_lists [~r/blocked/i]
+  @development_complete_lists [~r/(signoff|stage)/i]
+  @fully_complete_lists [~r/(complete|done).*!?/i]
+  @testing_lists [~r/test(ing)?/i]
+  @testing_complete_lists [~r/testing *?(done|complete)/i]
+  @all_lists List.flatten([
+    @fully_complete_lists,
+    @blocked_development_lists,
+    @unstarted_lists,
+    @current_development_lists,
+    @testing_complete_lists,
+    @testing_lists,
+    @development_complete_lists
+  ])
 
   @raw_label_map %{
     SMALL: 1,
@@ -9,54 +25,84 @@ defmodule TrelloBurndown.Trello do
     EXTRA_LARGE: 8
   }
 
-  def get_full_board(board_id, secret) do
-    case get_board(board_id, secret) do
-      {:ok, board} ->
-        case get_labels_for_board board_id, secret do
-          {:ok, labels} ->
-            points = calculate_points_from_labels(labels)
-
-            board = Map.put(board, :points, points)
-              |> Map.put(:labels, labels)
-
-            {:ok, board}
-
-          value -> value
-        end
-      value -> value
-    end
-  end
-
   def get_board(board_id, secret) do
-    {:ok, data} = get("/board/#{board_id}", secret)
-
-    if (is_map data) do
-      sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, data[:name])
+    with {:ok, board} <- Trello.get_full_board board_id, secret do
+      sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, board[:name])
         |> List.last
-    
-      {:ok, Map.put(data, :sprint_name, sprint_name)}
-    else
-      {:error, data}
+
+      board = Map.put(board, :sprint_name, sprint_name)
+       |> Map.put(:points, calculate_points_from_labels(board.labels))
+       |> sort_cards_for_board
+
+      {:ok, board}
     end
   end
 
-  def get_labels_for_board(board_id, secret) do
-    {:ok, data} = get("boards/#{board_id}/labels", secret)
+  def sort_lists_for_board(board) do
+    lists = board.lists
+      |> get_used_lists(@all_lists)
+      |> calculate_points_per_list
 
-    if (is_list data), do: {:ok, data}, else: {:error, data}
+    in_progress_lists = List.flatten [@current_development_lists, @blocked_development_lists]
+    dev_complete_lists = List.flatten [@development_complete_lists, @testing_complete_lists, @testing_lists]
+
+    lists = Enum.group_by lists, fn(list) ->
+      cond do
+        is_in_list? list, @development_complete_lists -> :dev_complete
+        is_in_list? list, @fully_complete_lists -> :complete
+        is_in_list? list, in_progress_lists -> :in_progress
+        true -> :uncompleted
+      end
+    end
+
+    Map.put(board, :lists, lists)
   end
 
-  def calculate_points_for_board(board, secret \\ nil) do
-    if (board.labels) do
-      calculate_points_from_labels(board.labels)
-    else
-      board.id
-        |> get_labels_for_board(secret)
-        |> calculate_points_from_labels
+  def calculate_points_per_list(lists) do
+    Enum.map(lists, fn(list) ->
+      if (Enum.any? list.cards) do
+        Map.put list, :points, calculate_list_points(list)
+      else
+        list
+      end
+    end)
+  end
+
+  def calculate_list_points(list) do
+    Enum.reduce list.cards, 0, fn(card, acc) ->
+      # points = get_label_points(card.labels)
+      points = Enum.reduce card.labels, 0, fn(label, acc) ->
+        acc = acc + get_label_points(label.name)
+      end
+
+      acc = acc + points
     end
   end
 
-  def calculate_points_from_labels(labels) do
+  def sort_cards_for_board(board), do: sort_lists_for_board(board)
+
+  def sort_cards_for_board(board_id, secret) do
+    if (is_map(board_id)) do
+      sort_cards_for_board board_id
+    else
+      with {:ok, board} <- get_board(board_id, secret) do
+        {:ok, sort_cards_for_board(board)}
+      end
+    end
+  end
+
+  defp get_label_points(label_name), do: Map.get(label_map, label_name) || 0
+
+  defp label_map do
+    for {key, value} <- Map.to_list(@raw_label_map), into: %{} do
+      env_key = System.get_env(Atom.to_string(key) <> "_LABEL_NAME")
+        |> String.strip
+
+      {env_key, value}
+    end
+  end
+
+  defp calculate_points_from_labels(labels) do
     Enum.reduce(labels, 0, fn(label, acc) ->
       %{name: name, uses: uses} = label
 
@@ -69,24 +115,21 @@ defmodule TrelloBurndown.Trello do
     end)
   end
 
-  defp create_url(url, secret) do
-    params = "token=#{secret}&key=#{token}"
-    base = if has_query_params?(url), do: url <> params, else: "#{url}?#{params}"
-
-    trello_base <> base
+  defp is_in_list?(list, list_regexes) do
+    Enum.any? list_regexes, fn(list_item) ->
+      Regex.match? list_item, list.name
+    end
   end
 
-  defp get(url, secret), do: HttpRequest.get create_url(url, secret)
-  defp has_query_params?(url), do: Regex.match?(~r/\?/, url)
-  defp token, do: System.get_env("TRELLO_KEY")
-  defp trello_base, do: "https://trello.com/1/"
-  defp get_label_points(label_name), do: Map.get(label_map, label_name) || 0
-  defp label_map do
-    for {key, value} <- Map.to_list(@raw_label_map), into: %{} do
-      env_key = System.get_env(Atom.to_string(key) <> "_LABEL_NAME")
-        |> String.strip
+  defp is_used_list?(list, list_regexes) do
+    Enum.any? list_regexes, fn(regex) ->
+      Regex.match?(regex, list.name)
+    end
+  end
 
-      {env_key, value}
+  defp get_used_lists(lists, list_regexes) do
+    Enum.filter lists, fn(list) ->
+      is_used_list?(list, list_regexes)
     end
   end
 end

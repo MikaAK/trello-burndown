@@ -26,7 +26,7 @@ export const splitCards = (sprint: any): any => {
     return sprint
 
   var completedLists: any[] = sprint.board.lists
-    .filter(list => /done!/i.test(list.name))
+    .filter(list => /done *!/i.test(list.name))
 
   var devCompletedLists: any[] = sprint.board.lists
     .filter(list => /signoff|completed|stage/i.test(list.name))

@@ -38,6 +38,7 @@ defmodule TrelloBurndown.Mixfile do
      {:cowboy, "~> 1.0"},
      {:exrm, "~> 1.0.2"},
      {:httpoison, "~> 0.8.2"},
+     {:trello, "~> 1.1.0"},
      {:quantum, ">= 1.7.1"},
      {:dotenv, "~> 2.0.0"}]
   end
