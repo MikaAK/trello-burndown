@@ -4,14 +4,14 @@
     <title>Trello Burndowns</title>
     <base href="/">
     <link rel="icon" type="image/png" href="favicon.ico">
-<link rel='stylesheet' href='https:/s3-us-west-2.amazonaws.com/trello-burndown/app-375e6e611432a89db21a.css'>
+<link rel='stylesheet' href='https:/s3-us-west-2.amazonaws.com/trello-burndown/app-fc12172a55073c203ec6.css'>
   </head>
   <body>
     <app>
       <h1>Loading Application</h1>
     </app>
-<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/common-be8990c0f35537f58aae.js'></script>
-<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/vendor-ca09100d3f3ffb3fca5a.js'></script>
-<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/app-be8990c0f35537f58aae.js'></script>
+<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/common-966f6b7b38db9446047d.js'></script>
+<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/vendor-8aaf230adb7c9e41ba1d.js'></script>
+<script src='https:/s3-us-west-2.amazonaws.com/trello-burndown/app-966f6b7b38db9446047d.js'></script>
   </body>
 </html>

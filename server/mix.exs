@@ -40,7 +40,7 @@ defmodule TrelloBurndown.Mixfile do
      {:httpoison, "~> 0.8.2"},
      {:trello, "~> 1.1.0"},
      {:quantum, ">= 1.7.1"},
-     {:dotenv, "~> 2.0.0"}]
+     {:dotenv, "~> 2.0.0", only: :dev}]
   end
 
   defp app_list(:dev), do: [:dotenv | app_list]
@@ -49,7 +49,8 @@ defmodule TrelloBurndown.Mixfile do
     [
       :phoenix, :phoenix_html, :httpoison,
       :cowboy, :logger, :gettext,
-      :phoenix_ecto, :postgrex, :quantum
+      :phoenix_ecto, :postgrex, :quantum,
+      :trello
     ]
   end
 
