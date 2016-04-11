@@ -54,7 +54,9 @@ export class SprintComponent {
 
       sprint.subscribe((data: ISprintData) => {
         Object.assign(this, data)
-        this._splitListIntoCards(data.sprint.board.lists)
+
+        if (data.sprint.board)
+          this._splitListIntoCards(data.sprint.board.lists)
       })
 
     this.sprints.find(this._sprintId)
