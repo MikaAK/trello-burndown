@@ -3,11 +3,16 @@ defmodule TrelloBurndown.Trello do
 
   @unstarted_lists [~r/\[(agency|school|agencies).*\]/i]
   @current_development_lists [~r/in progress/i]
-  @blocked_development_lists [~r/blocked/i, ~r/reject(ed)?/i]
+  @blocked_development_lists [~r/(blocked|failed|reject(ed)?)/i]
   @development_complete_lists [~r/(signoff|stage)/i]
   @fully_complete_lists [~r/(complete|done).*!?/i]
   @testing_lists [~r/test(ing)?/i]
-  @testing_complete_lists [~r/testing *?(done|complete)/i]
+
+  @testing_complete_lists [
+    ~r/(test(ing)?|regression) (passed|done|complete|validated)/i,
+    ~r/(passed|done|complete|validated) (test(ing)?|regression)/i
+  ]
+
   @all_lists List.flatten([
     @fully_complete_lists,
     @blocked_development_lists,
@@ -54,11 +59,11 @@ defmodule TrelloBurndown.Trello do
       |> calculate_points_per_list
 
     in_progress_lists = List.flatten [@current_development_lists, @blocked_development_lists]
-    dev_complete_lists = List.flatten [@development_complete_lists, @testing_complete_lists, @testing_lists]
-
+    dev_complete_lists = List.flatten [@development_complete_lists, @testing_lists]
 
     lists = Enum.group_by lists, fn(list) ->
       cond do
+        is_in_list? list, @testing_complete_lists -> :complete
         is_in_list? list, in_progress_lists -> :in_progress
         is_in_list? list, dev_complete_lists -> :dev_complete
         is_in_list? list, @fully_complete_lists -> :complete
@@ -100,7 +105,7 @@ defmodule TrelloBurndown.Trello do
     cards = calculate_cards_points(list.cards)
 
     points = Enum.reduce(cards, 0, fn(card, acc) ->
-      acc = acc + card.points
+      acc + card.points
     end)
 
     Map.put(list, :points, points)
@@ -135,8 +140,7 @@ defmodule TrelloBurndown.Trello do
       %{name: name, uses: uses} = label
 
       if (uses > 0 && name != "") do
-        acc = acc + get_label_points(name) * uses
-        acc
+        acc + get_label_points(name) * uses
       else
         acc
       end
@@ -146,7 +150,7 @@ defmodule TrelloBurndown.Trello do
   defp calculate_cards_points(cards) do
     Enum.map cards, fn(card) ->
       points = Enum.reduce card.labels, 0, fn(label, acc) ->
-        acc = acc + get_label_points(label.name)
+        acc + get_label_points(label.name)
       end
 
       Map.put(card, :points, points)

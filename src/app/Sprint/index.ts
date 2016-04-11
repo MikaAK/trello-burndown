@@ -86,7 +86,8 @@ export class SprintComponent {
       return isToday(sprint.created)   ||
              isSprintStartDate(sprint) ||
              !this.inProgressPoints    &&
-             !this.devCompletePoints
+             !this.devCompletePoints   &&
+             this.unstartedPoints
     else
       return false
   }
