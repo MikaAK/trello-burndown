@@ -26,12 +26,13 @@ defmodule TrelloBurndown.Router do
       resources "/boards", TrelloBoardController, only: [:show]
 
     end
+
+    forward "/", ApiController, :not_found
   end
 
   scope "/", TrelloBurndown do
     pipe_through :browser # Use the default browser stack
 
-    # get "/", PageController, :index
     get "*path", PageController, :index
   end
 end

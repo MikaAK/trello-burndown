@@ -8,7 +8,7 @@ import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
 import {ADD_API_ERROR} from 'shared/actions/error'
-import {changeSprintPoints, calculateListPoints, splitCards} from 'shared/helpers/sprint'
+import {changeSprintPoints, calculateListPoints} from 'shared/helpers/sprint'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
@@ -152,13 +152,12 @@ export class Sprints {
   }
 
   private _attachBoardToSprint(sprint): Observable<any> {
-    return this._trelloApi.getFullBoard(sprint.boardId)
+    return this._trelloApi.getBoard(sprint.boardId)
       .map(board => {
         sprint.board = board
         sprint.teamName = sprint.team ? sprint.team.name : ''
 
         return sprint
       })
-      .map(splitCards)
   }
 }

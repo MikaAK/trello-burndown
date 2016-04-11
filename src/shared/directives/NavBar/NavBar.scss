@@ -15,7 +15,6 @@
 }
 
 .nav li {
-  color: $brown;
   text-transform: uppercase;
   text-align: center;
   font-size: 14px;
@@ -25,11 +24,15 @@
   width: 100px;
   transition: all map-get($animation-duration, 'short') map-get($animation-easing, 'neutral');
 
-  &:hover {
+  a {
+    color: $brown;
+  }
+
+  a:hover {
     color: #fff;
   }
 
-  &.triangle {
+  .triangle {
     div {
       position: relative;
       z-index: 1;

@@ -1,9 +1,10 @@
 defmodule TrelloBurndown.Trello do
   alias TrelloBurndown.HttpRequest
+  import IEx
 
   @unstarted_lists [~r/\[(agency|school|agencies).*\]/i]
   @current_development_lists [~r/in progress/i]
-  @blocked_development_lists [~r/blocked/i]
+  @blocked_development_lists [~r/blocked/i, ~r/reject(ed)?/i]
   @development_complete_lists [~r/(signoff|stage)/i]
   @fully_complete_lists [~r/(complete|done).*!?/i]
   @testing_lists [~r/test(ing)?/i]
@@ -31,7 +32,7 @@ defmodule TrelloBurndown.Trello do
         |> List.last
 
       board = Map.put(board, :sprint_name, sprint_name)
-       |> Map.put(:points, calculate_points_from_labels(board.labels))
+       |> Map.put(:points, calculate_total_points_from_labels(board.labels))
        |> sort_cards_for_board
 
       {:ok, board}
@@ -46,14 +47,32 @@ defmodule TrelloBurndown.Trello do
     in_progress_lists = List.flatten [@current_development_lists, @blocked_development_lists]
     dev_complete_lists = List.flatten [@development_complete_lists, @testing_complete_lists, @testing_lists]
 
+
     lists = Enum.group_by lists, fn(list) ->
       cond do
-        is_in_list? list, @development_complete_lists -> :dev_complete
-        is_in_list? list, @fully_complete_lists -> :complete
         is_in_list? list, in_progress_lists -> :in_progress
-        true -> :uncompleted
+        is_in_list? list, dev_complete_lists -> :dev_complete
+        is_in_list? list, @fully_complete_lists -> :completed
+        true -> :unstarted
       end
     end
+
+    lists = Map.put lists, :uncompleted, Enum.concat(lists.unstarted, lists.in_progress)
+
+    testing_lists = Enum.group_by lists.dev_complete, fn(list) ->
+      cond do
+        is_in_list? list, @testing_complete_lists -> :testing_complete
+        is_in_list? list, @testing_lists -> :testing
+        true -> :throwaway
+      end
+    end
+
+    blocked_lists = Enum.filter lists.in_progress, fn(list) ->
+      is_in_list? list, @blocked_development_lists
+    end
+
+    lists = Map.put(lists, :blocked, blocked_lists)
+      |> Map.merge(Map.delete(testing_lists, :throwaway))
 
     Map.put(board, :lists, lists)
   end
@@ -61,22 +80,22 @@ defmodule TrelloBurndown.Trello do
   def calculate_points_per_list(lists) do
     Enum.map(lists, fn(list) ->
       if (Enum.any? list.cards) do
-        Map.put list, :points, calculate_list_points(list)
+        calculate_list_points(list)
       else
-        list
+        Map.put(list, :points, 0)
       end
     end)
   end
 
   def calculate_list_points(list) do
-    Enum.reduce list.cards, 0, fn(card, acc) ->
-      # points = get_label_points(card.labels)
-      points = Enum.reduce card.labels, 0, fn(label, acc) ->
-        acc = acc + get_label_points(label.name)
-      end
+    cards = calculate_cards_points(list.cards)
 
-      acc = acc + points
-    end
+    points = Enum.reduce(cards, 0, fn(card, acc) ->
+      acc = acc + card.points
+    end)
+
+    Map.put(list, :points, points)
+      |> Map.put(:cards, cards)
   end
 
   def sort_cards_for_board(board), do: sort_lists_for_board(board)
@@ -102,7 +121,7 @@ defmodule TrelloBurndown.Trello do
     end
   end
 
-  defp calculate_points_from_labels(labels) do
+  defp calculate_total_points_from_labels(labels) do
     Enum.reduce(labels, 0, fn(label, acc) ->
       %{name: name, uses: uses} = label
 
@@ -113,6 +132,16 @@ defmodule TrelloBurndown.Trello do
         acc
       end
     end)
+  end
+
+  defp calculate_cards_points(cards) do
+    Enum.map cards, fn(card) ->
+      points = Enum.reduce card.labels, 0, fn(label, acc) ->
+        acc = acc + get_label_points(label.name)
+      end
+
+      Map.put(card, :points, points)
+    end
   end
 
   defp is_in_list?(list, list_regexes) do

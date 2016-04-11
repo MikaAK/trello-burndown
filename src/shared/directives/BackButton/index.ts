@@ -1,6 +1,8 @@
 import {Component} from 'angular2/core'
 import {Router} from 'angular2/router'
 
+import {ROUTES} from 'app/routes'
+
 @Component({
   selector: 'back-button',
   template: require('./BackButton.jade')(),
@@ -17,7 +19,7 @@ export class BackButton {
     // Check after back has had chance if is on same page
     setTimeout(() => {
       if (currentLocation === location.href)
-        this.router.navigate(['Home'])
+        this.router.navigate([ROUTES.HOME])
     }, 100)
   }
 }

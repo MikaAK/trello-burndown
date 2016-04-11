@@ -26,10 +26,10 @@ import {ROUTES} from './routes'
 @RouteConfig([
   { path: ROUTES.HOME.url, component: HomeComponent, name: ROUTES.HOME.name, useAsDefault: true },
   { path: ROUTES.LOGIN.url, component: LoginComponent, name: ROUTES.LOGIN.name },
-  { path: ROUTES.TEAM.url, component: TeamsComponent, name: ROUTES.TEAM.name },
-  { path: ROUTES.SPRINT.url, component: SprintsComponent, name: ROUTES.SPRINT.name },
-  { path: ROUTES.SPRINT_VIEW.url, component: SprintComponent, name: ROUTES.SPRINT_VIEW.name },
-  { path: '/**', redirectTo: ROUTES.HOME.name }
+  { path: ROUTES.TEAMS.url, component: TeamsComponent, name: ROUTES.TEAMS.name },
+  { path: ROUTES.SPRINTS.url, component: SprintsComponent, name: ROUTES.SPRINTS.name },
+  { path: ROUTES.SPRINT.url, component: SprintComponent, name: ROUTES.SPRINT.name },
+  { path: '/**', redirectTo: [ROUTES.HOME.name] }
 ])
 export class AppComponent {
   constructor(

@@ -9,17 +9,17 @@ export const ROUTES = {
     url: '/login'
   },
 
-  TEAM: {
-    name: 'Team',
+  TEAMS: {
+    name: 'Teams',
     url: '/teams'
   },
 
-  SPRINT: {
-    name: 'Sprint',
+  SPRINTS: {
+    name: 'Sprints',
     url: '/sprints'
   },
 
-  SPRINT_VIEW: {
+  SPRINT: {
     name: 'Sprint',
     url: '/sprints/:id'
   }

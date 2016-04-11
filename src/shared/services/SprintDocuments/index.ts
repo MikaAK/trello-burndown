@@ -13,7 +13,7 @@ export class SprintDocuments {
 
   public createEstimatesForSprint(sprintId: string|number): Observable<string> {
     return this._apiService.find(this._sprintApi, sprintId)
-      .mergeMap(sprint => this._trelloApi.getFullBoard(sprint.boardId))
+      .mergeMap(sprint => this._trelloApi.getBoard(sprint.boardId))
       .map(board => this.createEstimatesForBoard(board))
   }
 

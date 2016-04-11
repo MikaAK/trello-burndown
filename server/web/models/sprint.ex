@@ -1,6 +1,7 @@
 defmodule TrelloBurndown.Sprint do
   use TrelloBurndown.Web, :model
   alias TrelloBurndown.Trello
+  alias TrelloBurndown.Repo
 
   schema "sprints" do
     field :board_id, :string
@@ -30,7 +31,7 @@ defmodule TrelloBurndown.Sprint do
 
 
   def get_active do
-    query = from s in Sprint,
+    query = from s in TrelloBurndown.Sprint,
             where: s.end_date > ^Ecto.Date.utc
 
     Repo.all query

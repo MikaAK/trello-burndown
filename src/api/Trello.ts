@@ -1,29 +1,13 @@
 declare var __TRELLO_KEY__: string
 
-import {groupBy, find} from 'lodash'
 import {Observable} from 'rxjs/Observable'
 import {Injectable} from 'angular2/core'
-import {Http} from 'angular2/http'
 import {Locker} from 'angular2-locker'
+import {ApiResource, ApiService} from 'angular2-api'
+import {RequestOptionsArgs, Headers} from 'angular2/http'
 
 import {objToQueryParams} from './helpers'
 import {openWindow} from 'shared/helpers/openWindow'
-
-const TRELLO_BASE = 'https://trello.com/1/'
-
-const LABEL_MAP = {
-  small: 1,
-  medium: 2,
-  large: 4,
-  extraLarge: 8
-}
-
-const LABEL_NAME_MAP = {
-  [LABEL_MAP.small]: LABEL_MAP.small,
-  [LABEL_MAP.medium]: LABEL_MAP.medium,
-  [LABEL_MAP.large]: LABEL_MAP.large,
-  [LABEL_MAP.extraLarge]: LABEL_MAP.extraLarge
-}
 
 const TRELLO_BASE_CONFIG = {
   key: __TRELLO_KEY__,
@@ -38,28 +22,31 @@ const TRELLO_BASE_CONFIG = {
   callback_method: 'postMessage'
 }
 
+const TRELLO_BASE = 'https://trello.com/1/'
 const TRELLO_AUTH_SECRET_URL = `${TRELLO_BASE}authorize?${objToQueryParams(TRELLO_BASE_CONFIG)}`
-const TRELLO_KEY = 'trelloKey'
+const TRELLO_LOCKER_KEY = 'trelloKey'
 
-export {TRELLO_KEY}
+export {TRELLO_LOCKER_KEY}
 
 @Injectable()
-export class TrelloApi {
-  constructor(private http: Http, private locker: Locker) {}
+export class TrelloApi implements ApiResource {
+  public endpoint: string = 'trello'
+
+  constructor(private _api: ApiService, private locker: Locker) {}
 
   public get trelloToken(): string {
-    return this.locker.get(TRELLO_KEY)
+    return this.locker.get(TRELLO_LOCKER_KEY)
   }
 
   public isAuthorized(): boolean {
-    return !!this.locker.get(TRELLO_KEY)
+    return !!this.locker.get(TRELLO_LOCKER_KEY)
   }
 
   public getAuthorization(): Observable<any> {
     return new Observable(observer => {
 
       if (this.isAuthorized()) {
-        observer.next(this.locker.get(TRELLO_KEY))
+        observer.next(this.locker.get(TRELLO_LOCKER_KEY))
         observer.complete()
 
         return
@@ -69,7 +56,7 @@ export class TrelloApi {
         if (!event || !event.data) {
           observer.error()
         } else if (event.data) {
-          this.locker.set(TRELLO_KEY, event.data)
+          this.locker.set(TRELLO_LOCKER_KEY, event.data)
           observer.next(event.data)
           observer.complete()
         }
@@ -77,100 +64,20 @@ export class TrelloApi {
     })
   }
 
-  public getBoardCards(boardId: string): Observable<any> {
-    return this.http.get(this.createTrelloUrl(`boards/${boardId}/cards`))
-      .map(data => data.json())
-      .catch(resp => Observable.throw(resp.text()))
+  public getBoardLabels(board_id: string|number, params?: RequestOptionsArgs): Observable<any> {
+    return this._api.get(this, `boards/${board_id}/labels`, params)
   }
 
-  public getBoard(boardId: string): Observable<any> {
-    if (!boardId)
-      return Observable.throw('No board Id Given')
-
-    return this.http.get(this.createTrelloUrl(`boards/${boardId}`))
-      .map(data => data.json())
-      .catch(resp => Observable.throw(resp.text()))
+  public getBoard(board_id: string|number, params?: RequestOptionsArgs): Observable<any> {
+    return this._api.get(this, `boards/${board_id}`, params)
   }
 
-  public getBoardLists(boardId: string): Observable<any> {
-    return this.http.get(this.createTrelloUrl(`boards/${boardId}/lists`))
-      .map(data => data.json())
-      .catch(resp => Observable.throw(resp.text()))
-  }
+  public serializeParams(params: RequestOptionsArgs) {
+    if (!params.headers)
+      params.headers = new Headers()
 
-  public getBoardLabels(boardId: string): Observable<any> {
-    return this.http.get(this.createTrelloUrl(`boards/${boardId}/labels`))
-      .map(data => data.json())
-      .map(labels => this._attachPointsToLabels(labels))
-      .catch(resp => Observable.throw(resp.text()))
-  }
+    params.headers.set('authorization', this.trelloToken)
 
-  public getFullBoard(boardId: string): Observable<any> {
-    return this.getBoard(boardId)
-      .mergeMap(board => this._attachListsToBoard(board))
-      .mergeMap(board => this._attachCardsToBoard(board))
-  }
-
-  private _attachPointsToLabels(labels: any[]) {
-    return labels.map(label => {
-      let points = LABEL_NAME_MAP[label.name]
-
-      label.points = points ? label.uses * points : 0
-
-      return label
-    })
-  }
-
-  private _attachListsToBoard(board): Observable<any> {
-    return this.getBoardLists(board.id)
-      .map((lists: any[]) => {
-        board.lists = lists
-
-        return board
-      })
-  }
-
-  private _attachLabelsToCards(boardId: string, cards: any[]): Observable<any> {
-    return this.getBoardLabels(boardId)
-      .map((labels: any[]) => {
-        cards.map((card) => {
-          card.labels = card.idLabels.map(id => find(labels, {id}))
-
-          card.points = _(card.labels)
-            .map(label => _.camelCase(label.name))
-            .map(labelName => LABEL_MAP[labelName])
-            .compact()
-            .sum()
-
-          return card
-        })
-
-        return cards
-      })
-  }
-
-  private _attachCardsToBoard(board): Observable<any> {
-      return this.getBoardCards(board.id)
-        .mergeMap(cards => this._attachLabelsToCards(board.id, cards))
-        .map(function(cards: any[]) {
-          var listIds = groupBy(cards, 'idList')
-          var listItems: any[] = Object.entries(listIds)
-
-          for (let [id, lCards] of listItems) {
-            let list: any = find(board.lists, {id})
-
-            list.cards = lCards
-          }
-
-          return board
-        })
-    }
-
-  private createTrelloUrl(url: string): string {
-    var secret = this.locker.get(TRELLO_KEY),
-        params = `token=${secret}&key=${__TRELLO_KEY__}`,
-        base = /\?/.test(url) ? url + params : `${url}?${params}`
-
-    return TRELLO_BASE + base
+    return params
   }
 }
