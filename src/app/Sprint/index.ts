@@ -7,6 +7,8 @@ import {BackButton} from 'shared/directives/BackButton'
 import {SprintDocuments} from 'shared/services/SprintDocuments'
 import {Sprints} from 'shared/services/Sprints'
 import {ISprintData} from 'shared/reducers/sprint'
+import {isSprintStartDate, getCards} from 'shared/helpers/sprint'
+import {isToday} from 'shared/helpers/dates'
 
 import {SprintCardList} from './components/SprintCardList'
 
@@ -20,7 +22,16 @@ import {SprintCardList} from './components/SprintCardList'
 })
 export class SprintComponent {
   public sprint: any = {}
+  public lists: any = {}
+  public completeCards: any[] = []
+  public devCompleteCards: any[] = []
+  public inProgressCards: any[] = []
+  public unstartedCards: any[] = []
   public isCalculating: boolean = false
+  public devCompletePoints: number = 0
+  public completePoints: number = 0
+  public inProgressPoints: number = 0
+  public unstartedPoints: number = 0
   public sprintEstimates: Observable<string>
   public shouldShowEstimates: Observable<boolean>
   private _sprintId: number
@@ -32,17 +43,31 @@ export class SprintComponent {
       .map((items) => this._filterCurrentSprint(items))
       .map(_.first)
       .filter(item => !!item)
-
-    this.sprintEstimates = sprint
-      .map((data: ISprintData) => this._createEstimatesBlob(data))
+      .distinctUntilChanged()
 
     this.shouldShowEstimates = sprint
-      .map((data: ISprintData) => data.sprint)
-      .map(sprint => !sprint.completedPoints && !sprint.devCompletedPoints)
+      .map((iSprint: ISprintData) => this._shouldShowEstimate(iSprint))
 
-    sprint.subscribe((data: ISprintData) => Object.assign(this, data))
+    this.sprintEstimates = sprint
+      .filter((iSprint: ISprintData) => this._shouldShowEstimate(iSprint))
+      .map((data: ISprintData) => this._createEstimatesBlob(data))
+
+      sprint.subscribe((data: ISprintData) => {
+        Object.assign(this, data)
+        this._splitListIntoCards(data.sprint.board.lists)
+      })
 
     this.sprints.find(this._sprintId)
+  }
+
+  private _splitListIntoCards(lists: any): void {
+    if (!lists)
+      return
+
+    this.completeCards = getCards(lists.complete)
+    this.unstartedCards = getCards(lists.unstarted)
+    this.devCompleteCards = getCards(lists.devComplete)
+    this.inProgressCards = getCards(lists.inProgress)
   }
 
   private _createEstimatesBlob(data: ISprintData): string {
@@ -50,6 +75,18 @@ export class SprintComponent {
           sprintCSV = this._sprintDocuments.createEstimatesForBoard(sprint.board)
 
     return window.URL.createObjectURL(new File([sprintCSV], sprint.name, {type: 'text/csv'}))
+  }
+
+  private _shouldShowEstimate(data: ISprintData): boolean {
+    const {sprint} = data
+
+    if (sprint.board)
+      return isToday(sprint.created)   ||
+             isSprintStartDate(sprint) ||
+             !this.inProgressPoints    &&
+             !this.devCompletePoints
+    else
+      return false
   }
 
   private _filterCurrentSprint(items: ISprintData[]): ISprintData[] {

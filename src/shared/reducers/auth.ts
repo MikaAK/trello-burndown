@@ -6,24 +6,26 @@ export interface IAuthStore {
   isAuthorized?: boolean
   isGettingAuth: boolean
   isCheckingAuthorization: boolean
+  trelloToken: string
 }
 
 const initialState: IAuthStore = {
   isAuthorized: null,
   isGettingAuth: false,
-  isCheckingAuthorization: false
+  isCheckingAuthorization: false,
+  trelloToken: ''
 }
 
-export const auth: Reducer<IAuthStore> = (state = initialState, {type}: Action): IAuthStore => {
+export const auth: Reducer<IAuthStore> = (state = initialState, {type, payload}: Action): IAuthStore => {
   switch (type) {
     case CHECKING_AUTH:
-      return cloneState(state, {isCheckingAuthorization: true})
+      return cloneState(state, {isCheckingAuthorization: true, trelloToken: ''})
 
     case CHECKED_AUTH:
       return cloneState(state, {isCheckingAuthorization: false})
 
     case AUTHORIZED:
-      return cloneState(state, {isAuthorized: true})
+      return cloneState(state, {isAuthorized: true, trelloToken: payload})
 
     case UNAUTHORIZED:
       return cloneState(state, {isAuthorized: false})

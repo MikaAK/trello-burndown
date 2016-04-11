@@ -21,7 +21,8 @@ config :trello_burndown, TrelloBurndown.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{web/templates/.*(eex)$},
+      ~r{lib/trello_burndown/.*(eex)$}
     ]
   ]
 
@@ -41,3 +42,6 @@ config :trello_burndown, TrelloBurndown.Repo,
   database: "trello_burndown_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :trello,
+  secret: {:system, "TRELLO_KEY"}

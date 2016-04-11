@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 export const objToQueryParams = function(obj) {
   var str = []
 

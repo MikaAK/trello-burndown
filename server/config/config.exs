@@ -27,3 +27,9 @@ import_config "#{Mix.env}.exs"
 config :phoenix, :generators,
   migration: true,
   binary_id: false
+
+config :quantum,
+  timezone: :local,
+  cron: [
+    "0 5 * * 1-5": {TrelloBurndown.SprintSnapshot, :take_snapshots}
+  ]

@@ -5,7 +5,7 @@ import {ApiService} from 'angular2-api'
 
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
-import {newSprintToCSV} from 'shared/helpers/sprint'
+import {turnListsToCSV} from 'shared/helpers/sprint'
 
 @Injectable()
 export class SprintDocuments {
@@ -13,11 +13,11 @@ export class SprintDocuments {
 
   public createEstimatesForSprint(sprintId: string|number): Observable<string> {
     return this._apiService.find(this._sprintApi, sprintId)
-      .mergeMap(sprint => this._trelloApi.getFullBoard(sprint.boardId))
+      .mergeMap(sprint => this._trelloApi.getBoard(sprint.boardId))
       .map(board => this.createEstimatesForBoard(board))
   }
 
   public createEstimatesForBoard(board: any): string {
-    return newSprintToCSV(board.lists)
+    return turnListsToCSV(board.lists.uncompleted)
   }
 }

@@ -8,7 +8,7 @@ import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
 import {ADD_API_ERROR} from 'shared/actions/error'
-import {changeSprintPoints, calculateListPoints, splitCards} from 'shared/helpers/sprint'
+import {changeSprintPoints, calculateSprintListPoints} from 'shared/helpers/sprint'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
@@ -125,7 +125,7 @@ export class Sprints {
   private _fetchSprint(id, params): Observable<Action> {
     return this._findSprint(id params)
       .do(() => this._store.dispatch({type: FETCHED_SPRINTS}))
-      .mergeMap((sprint: any) => this._compairAndUpdatePoints(sprint, calculateListPoints(sprint.board.lists)))
+      .mergeMap((sprint: any) => this._compairAndUpdatePoints(sprint, calculateSprintListPoints(sprint.board.lists)))
       .map(sprint => ({type: ADD_SPRINTS, payload: sprint}))
       .catch(error => Observable.of({type: ADD_API_ERROR, payload: error}))
   }
@@ -144,19 +144,20 @@ export class Sprints {
 
   private _createSprint(data): Observable<Action> {
     return this._calculatePointsNoUpdate(data)
-      .mergeMap(points => this._sprintApi.create(changeSprintPoints(data, points)))
+      .map(points => changeSprintPoints(data, points))
+      .map(sprint => Object.assign(sprint, {authToken: this._trelloApi.trelloToken}))
+      .mergeMap(sprint => this._sprintApi.create(sprint))
       .map(sprint => ({type: CREATED_SPRINT, payload: sprint}))
       .catch(error => Observable.of({type: CREATE_SPRINT_ERROR, payload: error}))
   }
 
   private _attachBoardToSprint(sprint): Observable<any> {
-    return this._trelloApi.getFullBoard(sprint.boardId)
+    return this._trelloApi.getBoard(sprint.boardId)
       .map(board => {
         sprint.board = board
         sprint.teamName = sprint.team ? sprint.team.name : ''
 
         return sprint
       })
-      .map(splitCards)
   }
 }

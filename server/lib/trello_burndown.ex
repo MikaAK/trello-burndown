@@ -1,5 +1,6 @@
 defmodule TrelloBurndown do
   use Application
+  import IEx
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -18,6 +19,14 @@ defmodule TrelloBurndown do
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TrelloBurndown.Supervisor]
+
+    if Mix.env === :dev do
+      Path.expand("../.env")
+        |> Dotenv.load
+        |> Map.get(:values)
+        |> load_into_env
+    end
+
     Supervisor.start_link(children, opts)
   end
 
@@ -26,5 +35,13 @@ defmodule TrelloBurndown do
   def config_change(changed, _new, removed) do
     TrelloBurndown.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp load_into_env(env) do
+    keys = HashDict.keys env
+
+    for key <- keys, into: [] do
+      System.put_env(key, HashDict.get(env, key))
+    end
   end
 end

@@ -1,6 +1,8 @@
 import {Component} from 'angular2/core'
 import {Router, RouterLink} from 'angular2/router'
 
+import {ROUTES} from 'app/routes'
+
 @Component({
   selector: 'nav-bar',
   template: require('./NavBar.jade')(),
@@ -9,6 +11,7 @@ import {Router, RouterLink} from 'angular2/router'
 })
 
 export class NavBar {
-  constructor(private _router: Router) {
-  }
+  public ROUTES = ROUTES
+
+  constructor(private _router: Router) {}
 }

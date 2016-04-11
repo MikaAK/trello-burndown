@@ -14,6 +14,7 @@ import {TeamsComponent} from './Teams'
 import {SprintsComponent} from './Sprints'
 import {SprintComponent} from './Sprint'
 import {APP_PROVIDERS} from './AppProviders'
+import {ROUTES} from './routes'
 
 @Component({
   selector: 'app',
@@ -23,12 +24,12 @@ import {APP_PROVIDERS} from './AppProviders'
   providers: APP_PROVIDERS
 })
 @RouteConfig([
-  { path: '/', component: HomeComponent, name: 'Home', useAsDefault: true },
-  { path: '/login', component: LoginComponent, name: 'Login' },
-  { path: '/teams', component: TeamsComponent, name: 'Teams' },
-  { path: '/sprints', component: SprintsComponent, name: 'Sprints' },
-  { path: '/sprint/:id', component: SprintComponent, name: 'Sprint' },
-  { path: '/**', redirectTo: ['Home'] }
+  { path: ROUTES.HOME.url, component: HomeComponent, name: ROUTES.HOME.name, useAsDefault: true },
+  { path: ROUTES.LOGIN.url, component: LoginComponent, name: ROUTES.LOGIN.name },
+  { path: ROUTES.TEAMS.url, component: TeamsComponent, name: ROUTES.TEAMS.name },
+  { path: ROUTES.SPRINTS.url, component: SprintsComponent, name: ROUTES.SPRINTS.name },
+  { path: ROUTES.SPRINT.url, component: SprintComponent, name: ROUTES.SPRINT.name },
+  { path: '/**', redirectTo: [ROUTES.HOME.name] }
 ])
 export class AppComponent {
   constructor(
