@@ -1,5 +1,6 @@
 import {Reducer, Action} from '@ngrx/store'
 import {cloneState} from 'shared/helpers/cloneState'
+import {calculateListPoints} from 'shared/helpers/sprint'
 import {
   CREATE_SPRINT_ERROR,
   CREATING_SPRINT,
@@ -13,6 +14,10 @@ import {
 
 export interface ISprintData {
   sprint: any
+  devCompletePoints?: number
+  completePoints?: number
+  inProgressPoints?: number
+  unstartedPoints?: number
   isCalculating: boolean
 }
 
@@ -30,19 +35,19 @@ const initialState: ISprintStore = {
   isCreating: false
 }
 
-// const getSprintIndex = (sprints: ISprintData[], item: ISprintData): number => {
-  // var index = -1
+const addPoints = (item: ISprintData) => {
+  if (!item.sprint.board)
+    return item
 
-  // sprints.some((sItem: ISprintData, i: number) => {
-    // if (sItem.sprint.id === item.sprint.id) {
-      // index = i
+  const {lists} = item.sprint.board
 
-      // return true
-    // }
-  // })
-
-  // return index
-// }
+  return Object.assign(item, {
+    devCompletePoints: calculateListPoints(lists.devComplete),
+    inProgressPoints: calculateListPoints(lists.inProgress),
+    unstartedPoints: calculateListPoints(lists.unstarted),
+    completePoints: calculateListPoints(lists.complete)
+  })
+}
 
 const hasSprint = (state: ISprintStore, item: ISprintData) => {
   return state.sprints
@@ -50,11 +55,13 @@ const hasSprint = (state: ISprintStore, item: ISprintData) => {
 }
 
 const addSprintToState = function(state: ISprintStore, item: ISprintData): ISprintData[] {
-  if (hasSprint(state, item))
+  var sprintData = addPoints(item)
+
+  if (hasSprint(state, sprintData))
     return state.sprints
-      .map(iSprint => iSprint.sprint.id === item.sprint.id ? item : iSprint)
+      .map(iSprint => iSprint.sprint.id === sprintData.sprint.id ? sprintData : iSprint)
   else
-    return state.sprints.concat(item)
+    return state.sprints.concat(sprintData)
 }
 
 

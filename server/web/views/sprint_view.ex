@@ -17,7 +17,8 @@ defmodule TrelloBurndown.SprintView do
       team_id: sprint.team_id,
       start_date: sprint.start_date,
       end_date: sprint.end_date,
-      points: sprint.points
+      points: sprint.points,
+      created: sprint.inserted_at
     }
 
     if Ecto.assoc_loaded? sprint.team do

@@ -8,7 +8,7 @@ import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
 import {ISprintStore} from 'shared/reducers/sprint'
 import {ADD_API_ERROR} from 'shared/actions/error'
-import {changeSprintPoints, calculateListPoints} from 'shared/helpers/sprint'
+import {changeSprintPoints, calculateSprintListPoints} from 'shared/helpers/sprint'
 import {
   FETCH_SPRINTS,
   FETCH_SPRINT,
@@ -125,7 +125,7 @@ export class Sprints {
   private _fetchSprint(id, params): Observable<Action> {
     return this._findSprint(id params)
       .do(() => this._store.dispatch({type: FETCHED_SPRINTS}))
-      .mergeMap((sprint: any) => this._compairAndUpdatePoints(sprint, calculateListPoints(sprint.board.lists)))
+      .mergeMap((sprint: any) => this._compairAndUpdatePoints(sprint, calculateSprintListPoints(sprint.board.lists)))
       .map(sprint => ({type: ADD_SPRINTS, payload: sprint}))
       .catch(error => Observable.of({type: ADD_API_ERROR, payload: error}))
   }

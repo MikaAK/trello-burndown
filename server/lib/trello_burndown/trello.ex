@@ -39,6 +39,16 @@ defmodule TrelloBurndown.Trello do
     end
   end
 
+  def get_labels_for_board(board_id, secret) do
+    with {:ok, labels} <- Trello.get_board_labels(board_id, secret) do
+      labels = Enum.map labels, fn(label) ->
+        Map.put label, :points, get_label_points(label.name) * label.uses
+      end
+
+      {:ok, labels}
+    end
+  end
+
   def sort_lists_for_board(board) do
     lists = board.lists
       |> get_used_lists(@all_lists)
@@ -52,7 +62,7 @@ defmodule TrelloBurndown.Trello do
       cond do
         is_in_list? list, in_progress_lists -> :in_progress
         is_in_list? list, dev_complete_lists -> :dev_complete
-        is_in_list? list, @fully_complete_lists -> :completed
+        is_in_list? list, @fully_complete_lists -> :complete
         true -> :unstarted
       end
     end

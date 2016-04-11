@@ -5,7 +5,7 @@ import {ApiService} from 'angular2-api'
 
 import {SprintApi} from 'api/Sprint'
 import {TrelloApi} from 'api/Trello'
-import {newSprintToCSV} from 'shared/helpers/sprint'
+import {turnListsToCSV} from 'shared/helpers/sprint'
 
 @Injectable()
 export class SprintDocuments {
@@ -18,6 +18,6 @@ export class SprintDocuments {
   }
 
   public createEstimatesForBoard(board: any): string {
-    return newSprintToCSV(board.lists)
+    return turnListsToCSV(board.lists.uncompleted)
   }
 }

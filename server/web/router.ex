@@ -23,7 +23,9 @@ defmodule TrelloBurndown.Router do
     resources "/sprint_team_member_snapshots", SprintTeamMemberSnapshotController, except: [:new, :edit, :create, :update]
 
     scope "/trello" do
-      resources "/boards", TrelloBoardController, only: [:show]
+      resources "/boards", TrelloBoardController, only: [:show] do
+        get "/labels", TrelloBoardController, :labels_index, as: :board_labels
+      end
 
     end
 

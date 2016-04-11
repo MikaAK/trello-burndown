@@ -20,40 +20,16 @@ export const calculateCardPoints = (cards: any[]): number => {
 }
 
 export const calculateListPoints = (lists: any[]): number => calculateCardPoints(getCards(lists))
-
-export const splitCards = (sprint: any): any => {
-  if (!sprint.board || !sprint.board.lists)
-    return sprint
-
-  var completedLists: any[] = sprint.board.lists
-    .filter(list => /done *!/i.test(list.name))
-
-  var devCompletedLists: any[] = sprint.board.lists
-    .filter(list => /signoff|completed|stage/i.test(list.name))
-
-  var bugLists: any[] = sprint.board.lists
-    .filter(list => /bugs?/i.test(list.name) && !/extra/.test(list.name))
-
-  var uncompletedLists: any[] = _.without(sprint.board.lists, ...completedLists, ...devCompletedLists, ...bugLists)
-    .filter(list => !/defered/i.test(list.name))
-
-  sprint.completedCards = getCards(completedLists)
-  sprint.completedPoints = calculateCardPoints(sprint.completedCards)
-
-  sprint.uncompletedCards = getCards(uncompletedLists)
-  sprint.uncompletedPoints = calculateCardPoints(sprint.uncompletedCards)
-
-  sprint.devCompletedCards = getCards(devCompletedLists)
-  sprint.devCompletedPoints = calculateCardPoints(sprint.devCompletedCards)
-
-  sprint.bugCards = getCards(bugLists, false)
-
-  return sprint
-}
-
 export const isSprintStartDate = (sprint): boolean => sprint.startDate ? isToday(sprint.startDate) : false
-export const isSprintList = (name: string): boolean => /\[(school|agency|agent|extra)(\/(school|agency|agent|extra))?.*\]/i.test(name)
-export const getSprintLists = (lists: any[]): any[] => lists.filter(list => isSprintList(list.name))
+export const calculateSprintListPoints = (lists: any) => {
+  var nLists = _(lists)
+    .pick(['inProgress', 'complete', 'devComplete', 'unstarted'])
+    .values()
+    .flatten()
+    .value()
+
+  return calculateCardPoints(getCards(nLists))
+}
 
 export const turnListsToCSV = (lists: any[]): string => {
   return _(lists)
@@ -93,4 +69,3 @@ export const changeSprintPoints = (sprint: any, points: number): any {
   return Object.assign({}, sprint, params)
 }
 
-export const newSprintToCSV = _.flow(getSprintLists, turnListsToCSV)
