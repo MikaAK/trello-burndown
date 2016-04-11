@@ -1,6 +1,5 @@
 defmodule TrelloBurndown.TrelloBoardController do
   use TrelloBurndown.Web, :controller
-  import IEx
 
   alias TrelloBurndown.Trello
 

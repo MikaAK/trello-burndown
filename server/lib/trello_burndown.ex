@@ -1,6 +1,5 @@
 defmodule TrelloBurndown do
   use Application
-  import IEx
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -20,7 +19,7 @@ defmodule TrelloBurndown do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TrelloBurndown.Supervisor]
 
-    if Mix.env === :dev do
+    if (System.get_env("MIX_ENV") === "dev") do
       Path.expand("../.env")
         |> Dotenv.load
         |> Map.get(:values)

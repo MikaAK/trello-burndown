@@ -1,6 +1,5 @@
 defmodule TrelloBurndown.Trello do
   alias TrelloBurndown.HttpRequest
-  import IEx
 
   @unstarted_lists [~r/\[(agency|school|agencies).*\]/i]
   @current_development_lists [~r/in progress/i]

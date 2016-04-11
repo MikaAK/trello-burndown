@@ -33,3 +33,6 @@ config :quantum,
   cron: [
     "0 5 * * 1-5": {TrelloBurndown.SprintSnapshot, :take_snapshots}
   ]
+
+config :trello,
+  secret: {:system, "TRELLO_KEY"}

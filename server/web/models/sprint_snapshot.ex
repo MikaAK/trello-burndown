@@ -1,6 +1,5 @@
 defmodule TrelloBurndown.SprintSnapshot do
   use TrelloBurndown.Web, :model
-  import IEx
 
   alias TrelloBurndown.Sprint
   alias TrelloBurndown.Repo
@@ -45,7 +44,7 @@ defmodule TrelloBurndown.SprintSnapshot do
       with {:ok, board} <- Trello.get_board sprint.board_id, sprint.auth_token do
         dev_complete_points = calculate_list_points board.lists.dev_complete
         uncomplete_points = calculate_list_points board.lists.uncompleted
-        completed_points = calculate_list_points board.lists.completed
+        completed_points = calculate_list_points board.lists.complete
 
         %SprintSnapshot{
           sprint_id: sprint.id,
