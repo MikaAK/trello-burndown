@@ -10,6 +10,7 @@ defmodule TrelloBurndown.SprintSnapshot do
     field :points_left, :integer
     field :points_complete, :integer
     field :points_dev_complete, :integer
+    field :in_progress_points, :integer
 
     belongs_to :sprint, TrelloBurndown.Sprint
     has_many :sprint_team_member_snapshots, TrelloBurndown.SprintTeamMemberSnapshot
@@ -42,15 +43,14 @@ defmodule TrelloBurndown.SprintSnapshot do
   defp create_snapshots_from_sprints(sprints) do
     Enum.map sprints, fn(sprint) ->
       with {:ok, board} <- Trello.get_board sprint.board_id, sprint.auth_token do
-        dev_complete_points = calculate_list_points board.lists.dev_complete
-        uncomplete_points = calculate_list_points board.lists.uncompleted
-        completed_points = calculate_list_points board.lists.complete
+        lists = board.lists
 
         %SprintSnapshot{
           sprint_id: sprint.id,
-          points_left: uncomplete_points,
-          points_dev_complete: dev_complete_points,
-          points_complete: completed_points
+          points_left: calculate_list_points(lists.uncompleted),
+          points_dev_complete: calculate_list_points(lists.dev_complete),
+          points_complete: calculate_list_points(lists.complete),
+          in_progress_points: calculate_list_points(lists.in_progress)
         }
       end
     end
