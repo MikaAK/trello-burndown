@@ -10,7 +10,7 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshotController do
     render(conn, "index.json", sprint_team_member_snapshots: sprint_team_member_snapshots)
   end
 
-  def create(conn, %{"sprint_team_member_snapshot" => sprint_team_member_snapshot_params}) do
+  def create(conn, sprint_team_member_snapshot_params) do
     changeset = SprintTeamMemberSnapshot.changeset(%SprintTeamMemberSnapshot{}, sprint_team_member_snapshot_params)
 
     case Repo.insert(changeset) do
@@ -31,9 +31,9 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshotController do
     render(conn, "show.json", sprint_team_member_snapshot: sprint_team_member_snapshot)
   end
 
-  def update(conn, %{"id" => id, "sprint_team_member_snapshot" => sprint_team_member_snapshot_params}) do
-    sprint_team_member_snapshot = Repo.get!(SprintTeamMemberSnapshot, id)
-    changeset = SprintTeamMemberSnapshot.changeset(sprint_team_member_snapshot, sprint_team_member_snapshot_params)
+  def update(conn, sprint_team_member_snapshot_params) do
+    changeset = Repo.get!(SprintTeamMemberSnapshot, sprint_team_member_snapshot_params["id"])
+      |> SprintTeamMemberSnapshot.changeset(sprint_team_member_snapshot_params)
 
     case Repo.update(changeset) do
       {:ok, sprint_team_member_snapshot} ->

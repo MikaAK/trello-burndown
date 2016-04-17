@@ -30,34 +30,34 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshotControllerTest do
     end
   end
 
-  test "creates and renders resource when data is valid", %{conn: conn} do
-    conn = post conn, sprint_team_member_snapshot_path(conn, :create), sprint_team_member_snapshot: @valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
-    assert Repo.get_by(SprintTeamMemberSnapshot, @valid_attrs)
-  end
+  # test "creates and renders resource when data is valid", %{conn: conn} do
+  #   conn = post conn, sprint_team_member_snapshot_path(conn, :create), sprint_team_member_snapshot: @valid_attrs
+  #   assert json_response(conn, 201)["data"]["id"]
+  #   assert Repo.get_by(SprintTeamMemberSnapshot, @valid_attrs)
+  # end
 
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, sprint_team_member_snapshot_path(conn, :create), sprint_team_member_snapshot: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
+  # test "does not create resource and renders errors when data is invalid", %{conn: conn} do
+  #   conn = post conn, sprint_team_member_snapshot_path(conn, :create), sprint_team_member_snapshot: @invalid_attrs
+  #   assert json_response(conn, 422)["errors"] != %{}
+  # end
 
-  test "updates and renders chosen resource when data is valid", %{conn: conn} do
-    sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
-    conn = put conn, sprint_team_member_snapshot_path(conn, :update, sprint_team_member_snapshot), sprint_team_member_snapshot: @valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
-    assert Repo.get_by(SprintTeamMemberSnapshot, @valid_attrs)
-  end
+  # test "updates and renders chosen resource when data is valid", %{conn: conn} do
+  #   sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
+  #   conn = put conn, sprint_team_member_snapshot_path(conn, :update, sprint_team_member_snapshot), sprint_team_member_snapshot: @valid_attrs
+  #   assert json_response(conn, 200)["data"]["id"]
+  #   assert Repo.get_by(SprintTeamMemberSnapshot, @valid_attrs)
+  # end
 
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
-    conn = put conn, sprint_team_member_snapshot_path(conn, :update, sprint_team_member_snapshot), sprint_team_member_snapshot: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
+  # test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
+  #   sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
+  #   conn = put conn, sprint_team_member_snapshot_path(conn, :update, sprint_team_member_snapshot), sprint_team_member_snapshot: @invalid_attrs
+  #   assert json_response(conn, 422)["errors"] != %{}
+  # end
 
-  test "deletes chosen resource", %{conn: conn} do
-    sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
-    conn = delete conn, sprint_team_member_snapshot_path(conn, :delete, sprint_team_member_snapshot)
-    assert response(conn, 204)
-    refute Repo.get(SprintTeamMemberSnapshot, sprint_team_member_snapshot.id)
-  end
+  # test "deletes chosen resource", %{conn: conn} do
+  #   sprint_team_member_snapshot = Repo.insert! %SprintTeamMemberSnapshot{}
+  #   conn = delete conn, sprint_team_member_snapshot_path(conn, :delete, sprint_team_member_snapshot)
+  #   assert response(conn, 204)
+  #   refute Repo.get(SprintTeamMemberSnapshot, sprint_team_member_snapshot.id)
+  # end
 end

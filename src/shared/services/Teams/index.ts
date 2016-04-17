@@ -59,7 +59,7 @@ export class Teams {
   }
 
   private _createTeam(data): Observable<Action> {
-    return this._teamApi.create(data)
+    return this._api.create(this._teamApi, data)
       .map(team => ({type: CREATED_TEAM, payload: team}))
       .catch(error => Observable.of({type: CREATE_TEAM_ERROR, payload: error}))
   }

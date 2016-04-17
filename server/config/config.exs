@@ -31,7 +31,7 @@ config :phoenix, :generators,
 config :quantum,
   timezone: :local,
   cron: [
-    "0 5 * * 1-5": {TrelloBurndown.SprintSnapshot, :take_snapshots}
+    "0 3 * * 0-4 TrelloBurndown.SprintSnapshot.take_snapshots"
   ]
 
 config :trello,

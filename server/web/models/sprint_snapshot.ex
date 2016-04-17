@@ -18,8 +18,8 @@ defmodule TrelloBurndown.SprintSnapshot do
     timestamps
   end
 
-  @required_fields ~w(points_left points_complete points_dev_complete sprint_id)
-  @optional_fields ~w()
+  @required_fields ~w(points_left points_complete points_dev_complete)a
+  @optional_fields ~w()a
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -27,9 +27,11 @@ defmodule TrelloBurndown.SprintSnapshot do
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+      |> cast(params, Enum.concat(@required_fields, @optional_fields))
+      |> validate_required(@required_fields)
+      |> assoc_constraint(:sprint)
   end
 
   def take_snapshots do

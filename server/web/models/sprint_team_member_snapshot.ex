@@ -2,7 +2,7 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshot do
   use TrelloBurndown.Web, :model
 
   schema "sprint_team_member_snapshots" do
-    belongs_to :sprint, TrelloBurndown.Sprint
+    belongs_to :sprint_snapshot, TrelloBurndown.SprintSnapshot
     belongs_to :team_member, TrelloBurndown.TeamMember
     field :points_complete, :integer
     field :points_dev_complete, :integer
@@ -10,8 +10,8 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshot do
     timestamps
   end
 
-  @required_fields ~w(sprint_snapshot_id team_member_id points_complete points_dev_complete)
-  @optional_fields ~w()
+  @required_fields ~w(points_complete points_dev_complete)a
+  @optional_fields ~w()a
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -19,8 +19,10 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshot do
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+      |> cast(params, Enum.concat(@required_fields, @optional_fields))
+      |> validate_required(@required_fields)
+      |> cast_assoc(:team_member, required: true)
   end
 end

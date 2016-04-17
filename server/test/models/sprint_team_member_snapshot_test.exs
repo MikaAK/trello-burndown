@@ -3,7 +3,15 @@ defmodule TrelloBurndown.SprintTeamMemberSnapshotTest do
 
   alias TrelloBurndown.SprintTeamMemberSnapshot
 
-  @valid_attrs %{points_complete: 42, points_dev_complete: 42, sprint_snapshot_id: 42, team_member_id: 42}
+  @valid_attrs %{
+    points_complete: 42,
+    points_dev_complete: 42,
+    sprint_snapshot_id: 42,
+    team_member: %{
+      trello_id: "trello",
+      velocity: 3.2
+    }
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

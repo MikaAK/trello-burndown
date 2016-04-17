@@ -3,7 +3,10 @@ defmodule TrelloBurndown.TeamTest do
 
   alias TrelloBurndown.Team
 
-  @valid_attrs %{name: "some content"}
+  @valid_attrs %{name: "some content", team_members: [%{
+    trello_id: "My Name",
+    velocity: 32.0,
+  }]}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -3,7 +3,7 @@ defmodule TrelloBurndown.Mixfile do
 
   def project do
     [app: :trello_burndown,
-     version: "0.0.2",
+     version: "0.0.1",
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -31,7 +31,7 @@ defmodule TrelloBurndown.Mixfile do
   defp deps do
     [{:phoenix, "~> 1.1.4"},
      {:postgrex, ">= 0.0.0"},
-     {:phoenix_ecto, "~> 3.0.0-beta.2"},
+     {:phoenix_ecto, "~> 3.0.0-rc.0"},
      {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
@@ -40,17 +40,20 @@ defmodule TrelloBurndown.Mixfile do
      {:httpoison, "~> 0.8.2"},
      {:trello, "~> 1.1.0"},
      {:quantum, ">= 1.7.1"},
-     {:dotenv, "~> 2.0.0", only: :dev}]
+     {:exfile, "~> 0.3.2"},
+     {:exfile_imagemagick, "~> 0.1.2"},
+     {:dotenv, "~> 2.0.0", only: [:dev, :test]}]
   end
 
   defp app_list(:dev), do: [:dotenv | app_list]
+  defp app_list(:test), do: [:dotenv | app_list]
   defp app_list(_), do: app_list
   defp app_list do
     [
       :phoenix, :phoenix_html, :httpoison,
       :cowboy, :logger, :gettext,
       :phoenix_ecto, :postgrex, :quantum,
-      :trello
+      :trello, :exfile, :exfile_imagemagick
     ]
   end
 

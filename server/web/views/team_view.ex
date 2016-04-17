@@ -10,8 +10,10 @@ defmodule TrelloBurndown.TeamView do
   end
 
   def render("team.json", %{team: team}) do
-    params = %{id: team.id,
-      name: team.name}
+    params = %{
+      id: team.id,
+      name: team.name
+    }
 
     if Ecto.assoc_loaded? team.team_members do
       members = for member <- team.team_members, into: [] do

@@ -43,7 +43,8 @@ export const team: Reducer<ITeamStore> = (state = initialState, {type, payload}:
 
     case CREATED_TEAM:
       return cloneState(state, {
-        isCreatingTeam: false
+        isCreatingTeam: false,
+        teams: state.teams.concat(payload)
       })
 
     case CREATE_TEAM_ERROR:

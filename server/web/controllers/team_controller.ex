@@ -30,7 +30,9 @@ defmodule TrelloBurndown.TeamController do
   end
 
   def update(conn, team_params) do
-    team = Repo.get!(Team, team_params.id)
+    team = from(t in Team, preload: [:team_members])
+      |> Repo.get!(team_params["id"])
+
     changeset = Team.changeset(team, team_params)
 
     case Repo.update(changeset) do

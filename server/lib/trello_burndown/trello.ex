@@ -23,6 +23,17 @@ defmodule TrelloBurndown.Trello do
     @development_complete_lists
   ])
 
+  @list_atoms [
+    :complete,
+    :in_progress,
+    :dev_complete,
+    :unstarted,
+    :uncompleted,
+    :testing,
+    :testing_complete,
+    :blocked
+  ]
+
   @raw_label_map %{
     SMALL: 1,
     MEDIUM: 2,
@@ -30,10 +41,12 @@ defmodule TrelloBurndown.Trello do
     EXTRA_LARGE: 8
   }
 
+  def used_list_atoms, do: @list_atoms
+
   def get_board(board_id, secret) do
     with {:ok, board} <- Trello.get_full_board board_id, secret do
-      sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, board[:name])
-        |> List.last
+      sprint_name = Regex.run(~r/Sprint +\W +(.*)/i, board.name)
+      sprint_name = if (is_list sprint_name), do: List.last(sprint_name), else: board.name
 
       board = Map.put(board, :sprint_name, sprint_name)
        |> Map.put(:points, calculate_total_points_from_labels(board.labels))
@@ -71,7 +84,9 @@ defmodule TrelloBurndown.Trello do
       end
     end
 
-    lists = Map.put lists, :uncompleted, Enum.concat(lists.unstarted, lists.in_progress)
+    lists = add_missing_atoms_to_lists(lists)
+
+    lists = Map.put(lists, :uncompleted, Enum.concat(lists.unstarted, lists.in_progress))
 
     testing_lists = Enum.group_by lists.dev_complete, fn(list) ->
       cond do
@@ -172,6 +187,12 @@ defmodule TrelloBurndown.Trello do
   defp get_used_lists(lists, list_regexes) do
     Enum.filter lists, fn(list) ->
       is_used_list?(list, list_regexes)
+    end
+  end
+
+  defp add_missing_atoms_to_lists(lists) do
+    Enum.reduce @list_atoms, lists, fn(atom, acc) ->
+      if Map.get(acc, atom), do: acc, else: Map.put(acc, atom, [])
     end
   end
 end

@@ -5,6 +5,8 @@ section.sprints
     h1 {{ sprint.sprintName }}
     h5 Team: {{ sprint.teamName }}
     h5 Total Points: {{ sprint.points }}
+    h5('*ngIf'='sprint.startDate') Start Date: {{ sprint.startDate | momentDate }}
+    h5('*ngIf'='sprint.endDate') End Date: {{ sprint.endDate | momentDate }}
     a(href='http://trello.com/b/{{sprint.boardId}}' target='_blank') Trello Board
 
     a.btn--default(

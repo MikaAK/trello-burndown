@@ -9,6 +9,7 @@ import {Sprints} from 'shared/services/Sprints'
 import {ISprintData} from 'shared/reducers/sprint'
 import {isSprintStartDate, getCards} from 'shared/helpers/sprint'
 import {isToday} from 'shared/helpers/dates'
+import {MomentPipe} from 'shared/pipes/MomentPipe'
 
 import {SprintCardList} from './components/SprintCardList'
 
@@ -18,7 +19,8 @@ import {SprintCardList} from './components/SprintCardList'
   template: require('./Sprint.jade')(),
   styles: [require('./Sprint.scss')],
   directives: [BackButton, SprintCardList],
-  providers: [Sprints, SprintDocuments]
+  providers: [Sprints, SprintDocuments],
+  pipes: [MomentPipe]
 })
 export class SprintComponent {
   public sprint: any = {}
@@ -87,7 +89,7 @@ export class SprintComponent {
              isSprintStartDate(sprint) ||
              !this.inProgressPoints    &&
              !this.devCompletePoints   &&
-             this.unstartedPoints
+             !!this.unstartedPoints
     else
       return false
   }

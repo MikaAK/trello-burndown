@@ -1,5 +1,6 @@
 defmodule TrelloBurndown.ModelChangeChannel do
   use Phoenix.Channel
+  import Logger
 
   def join("model_change:update", _message, socket) do
     {:ok, socket}
@@ -12,25 +13,20 @@ defmodule TrelloBurndown.ModelChangeChannel do
   def broadcast_create(name, view, model) do
     render_set = Map.put %{}, String.to_atom(name), model
 
-    IO.puts "CREATED"
-    IO.inspect(render_set)
+    Logger.info "#{name}:CREATED"
+    IO.inspect render_set
 
     TrelloBurndown.Endpoint.broadcast! "model_change:create", name, view.render("show.json", render_set)
   end
 
-  def broadcast_update(name, view, model) when is_list model do 
+  def broadcast_update(name, view, model) do 
     render_set = Map.put %{}, String.to_atom(name), model
+    render_name = if is_list(model), do: "index.json", else: "show.json"
 
-    IO.inspect(render_set)
+    Logger.info "#{name}:UPDATE"
+    IO.inspect render_name
+    IO.inspect render_set
 
-    TrelloBurndown.Endpoint.broadcast! "model_change:update", name, view.render("index.json", render_set)
-  end
-
-  def broadcast_update(name, view, model) do
-    render_set = Map.put %{}, String.to_atom(name), model
-
-    IO.inspect(render_set)
-
-    TrelloBurndown.Endpoint.broadcast! "model_change:update", name, view.render("show.json", render_set)
+    TrelloBurndown.Endpoint.broadcast! "model_change:update", name, view.render(render_name, render_set)
   end
 end

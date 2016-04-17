@@ -3,7 +3,13 @@ defmodule TrelloBurndown.SprintTest do
 
   alias TrelloBurndown.Sprint
 
-  @valid_attrs %{board_id: "some content", holidays: [], point_total: 42, sprint_name: "some content"}
+  @valid_attrs %{
+    board_id: "some content",
+    start_date: "2014-02-23",
+    auth_token: "willboar",
+    point_total: 42,
+    sprint_name: "some content"
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

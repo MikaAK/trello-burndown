@@ -19,7 +19,7 @@ defmodule TrelloBurndown do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TrelloBurndown.Supervisor]
 
-    if (System.get_env("MIX_ENV") === "dev") do
+    if (System.get_env("MIX_ENV") === "dev" || System.get_env("MIX_ENV") === "test") do
       Path.expand("../.env")
         |> Dotenv.load
         |> Map.get(:values)

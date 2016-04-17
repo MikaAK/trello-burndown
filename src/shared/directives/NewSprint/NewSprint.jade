@@ -3,7 +3,7 @@ button.btn--default((click)='modalService.open()') Add Sprint
 modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
   .new-sprint
     error-display('[errors]'='sprints.errors | async')
-    form.flex-form('(ngSubmit)'='createSprint()' '[ngFormModel]'='newSprintForm')
+    form.flex-form('(ngSubmit)'='sprints.create(newSprint)' '[ngFormModel]'='newSprintForm')
       .input-group
         label(for='boardId') Sprint Board ID
         input(
@@ -24,9 +24,9 @@ modal(title='New Sprint' '(onClose)'='reset()' '(onOpen)'='teams.findAll()')
 
       .input-group
         label(for='team') Team
-        select(ngControl='teamName' '[(ngModel)]'='newSprint.teamName' required)
+        select(ngControl='teamName' '[(ngModel)]'='newSprint.teamId' required)
           option(disabled value selected) Select a team
-          option('*ngFor'='#team of teams.items | async') {{ team.name }}
+          option('*ngFor'='#team of teams.items | async' '[ngValue]'='team.id') {{ team.name }}
 
       .form-save.pull-right
         button.btn--default('[disabled]'='sprints.isCreating | async') Create

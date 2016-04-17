@@ -1,8 +1,5 @@
-import * as _ from 'lodash'
-import * as moment from 'moment'
 import {Component, Output, EventEmitter} from 'angular2/core'
 import {FormBuilder, Validators, ControlGroup, NgForm} from 'angular2/common'
-import {Observable} from 'rxjs/Observable'
 import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject'
 import {Action, Dispatcher} from '@ngrx/store'
 
@@ -15,18 +12,17 @@ import {ErrorDisplay} from '../ErrorDisplay'
 
 interface INewSprint {
   boardId: string
-  holidays: string
-  team: any
+  startDate: string
+  teamId: number
 }
 
-const CREATE_SPRINT = 'NEW_SPRINT:CREATE_SPRINT'
 const CLOSE = 'NEW_SPRINT:CLOSE'
 const RESET = 'NEW_SPRINT:RESET'
 
 const DEFAULT_SPRINT: INewSprint = {
   boardId: '',
-  holidays: '',
-  team: null
+  startDate: '',
+  teamId: 0
 }
 
 @Component({
@@ -63,11 +59,6 @@ export class NewSprint {
       .subscribe(() => this.modalService.close())
 
     this._actions
-      .filter(({type}: Action) => type === CREATE_SPRINT)
-      .mergeMap(() => this._serialize(this.newSprint))
-      .subscribe(sprint => this.sprints.create(sprint))
-
-    this._actions
       .filter(({type}: Action) => type === CLOSE)
       .subscribe(() => this.modalService.close())
 
@@ -78,36 +69,11 @@ export class NewSprint {
       })
   }
 
-  public createSprint() {
-    this._actions.next({type: CREATE_SPRINT})
-  }
-
   public close() {
     this._actions.next({type: CLOSE})
   }
 
   public reset() {
     this._actions.next({type: RESET})
-  }
-
-  private _serialize(data): Observable<any> {
-    let params = {
-      boardId: data.boardId,
-      startDate: moment(data.startDate, 'YYYY-MM-DD'),
-      teamId: null,
-      team: null
-    }
-
-    return this.teams.items
-      .take(1)
-      .map(teams => _.find(teams, {name: data.teamName}))
-      .map(team => {
-        if (team) {
-          params.team = team
-          params.teamId = team.id
-        }
-
-        return params
-      })
   }
 }

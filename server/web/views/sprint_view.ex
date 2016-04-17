@@ -11,7 +11,8 @@ defmodule TrelloBurndown.SprintView do
   end
 
   def render("sprint.json", %{sprint: sprint}) do
-    params = %{id: sprint.id,
+    params = %{
+      id: sprint.id,
       board_id: sprint.board_id,
       sprint_name: sprint.sprint_name,
       team_id: sprint.team_id,
@@ -21,8 +22,8 @@ defmodule TrelloBurndown.SprintView do
       created: sprint.inserted_at
     }
 
-    if Ecto.assoc_loaded? sprint.team do
-      json = TrelloBurndown.TeamView.render "team.json", %{team: Map.get(sprint, :team)}
+    if sprint.team && Ecto.assoc_loaded?(sprint.team) do
+      json = TrelloBurndown.TeamView.render "team.json", %{team: sprint.team}
 
       Map.put(params, :team, json)
     else
