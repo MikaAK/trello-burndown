@@ -1,7 +1,7 @@
 defmodule TrelloBurndown.Trello do
   alias TrelloBurndown.HttpRequest
 
-  @unstarted_lists [~r/\[(agency|school|agencies).*\]/i]
+  @unstarted_lists [~r/\[(agency|school|agencies|shared).*\]/i]
   @current_development_lists [~r/in progress/i]
   @blocked_development_lists [~r/(blocked|failed|reject(ed)?)/i]
   @development_complete_lists [~r/(signoff|stage)/i]

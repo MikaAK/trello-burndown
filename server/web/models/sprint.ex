@@ -16,7 +16,7 @@ defmodule TrelloBurndown.Sprint do
   end
 
   @required_fields ~w(board_id sprint_name auth_token)a
-  @optional_fields ~w(points start_date end_date)a
+  @optional_fields ~w(points start_date end_date team_id)a
 
   @doc """
   Creates a changeset based on the `model` and `params`.
