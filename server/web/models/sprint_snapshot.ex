@@ -1,4 +1,6 @@
 defmodule TrelloBurndown.SprintSnapshot do
+  import Logger
+
   use TrelloBurndown.Web, :model
 
   alias TrelloBurndown.Sprint
@@ -35,11 +37,14 @@ defmodule TrelloBurndown.SprintSnapshot do
   end
 
   def take_snapshots do
-   snapshots = create_snapshots_from_sprints Sprint.get_active
+    Logger.debug "Taking Snapshot"
 
-   Enum.each snapshots, fn(snapshot) ->
-     Repo.insert snapshot
-   end
+    sprints = create_snapshots_from_sprints Sprint.get_active
+
+    if (Enum.any? sprints) do
+      Enum.each(sprints, &Repo.insert/1)
+      Logger.debug("Created #{length(sprints)} Snapshots")
+    end
   end
 
   defp create_snapshots_from_sprints(sprints) do
@@ -60,7 +65,7 @@ defmodule TrelloBurndown.SprintSnapshot do
 
   defp calculate_list_points(lists) do
     Enum.reduce lists, 0, fn(list, acc) ->
-      acc = acc + list.points
+      acc + list.points
     end
   end
 end
