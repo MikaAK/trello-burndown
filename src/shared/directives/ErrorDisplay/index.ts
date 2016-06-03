@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import {some, words} from 'lodash'
 import {Component, Input} from 'angular2/core'
 
 interface ISprint {
@@ -17,7 +17,7 @@ export class ErrorDisplay {
   public displayErrors: any[]
 
   public ngDoCheck() {
-    if (_.some(this.errors))
+    if (some(this.errors))
       this.displayErrors = this._convertErrorsForDisplay(this.errors)
   }
 
@@ -27,7 +27,7 @@ export class ErrorDisplay {
 
     else if (typeof errors === 'object')
       return _(Object.entries('errors' in errors ? errors.errors : errors))
-        .map(([key, oErrors]) => oErrors.map(error => `${_(key).words().map(_.capitalize).join(' ')} - ${error}`))
+        .map(([key, oErrors]) => oErrors.map(error => `${words(key).map(_.capitalize).join(' ')} - ${error}`))
         .flatten()
         .value()
 

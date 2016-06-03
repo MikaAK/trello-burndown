@@ -35,4 +35,4 @@ config :quantum,
   ]
 
 config :trello,
-  secret: {:system, "TRELLO_KEY"}
+  app_key: {:system, "TRELLO_KEY"}
